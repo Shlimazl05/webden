@@ -12,6 +12,7 @@ import Link from "next/link";
 // Link điều hướng của Next.js (client-side navigation)
 
 import { useLogin } from "../auth.hooks";
+import toast from "react-hot-toast";
 // Custom hook xử lý logic đăng nhập (gọi API, loading, ...)
 
 export default function LoginForm() {
@@ -43,7 +44,7 @@ export default function LoginForm() {
 
     // Kiểm tra dữ liệu nhập
     if (!identifier || !password) {
-      alert("Vui lòng nhập đầy đủ thông tin");
+      toast.error("Vui lòng nhập đầy đủ thông tin");
       return;
     }
 

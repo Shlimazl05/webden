@@ -1,115 +1,4 @@
 
-// "use client";
-
-// import React, { useEffect, useState } from "react";
-// import Link from "next/link";
-// import { useRouter } from "next/navigation";
-// import { 
-//   Home, 
-//   ShoppingCart, 
-//   User, 
-//   LogOut, 
-//   Search, 
-//   Camera 
-// } from "lucide-react";
-// import Cookies from "js-cookie";
-
-// export default function Navbar() {
-//   const router = useRouter();
-//   const [username, setUsername] = useState<string | null>(null);
-
-//   useEffect(() => {
-//     const userStr = localStorage.getItem("user");
-//     if (userStr) {
-//       const user = JSON.parse(userStr);
-//       setUsername(user.username);
-//     }
-//   }, []);
-
-//   const handleLogout = () => {
-//     localStorage.removeItem("user");
-//     localStorage.removeItem("accessToken");
-//     Cookies.remove("user_role");
-//     window.location.href = "/login";
-//   };
-
-//   return (
-//     // 1. CHỈNH KHUNG: Thêm rounded-b-[40px] để bo góc cực mềm ở dưới
-//     <nav className="w-full bg-gradient-to-r from-[#d1e9ff] via-[#f3e8ff] to-[#ffdce5] px-8 py-4 shadow-md rounded-b-[40px]">
-//       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        
-//         {/* LOGO TRÒN */}
-//         <div className="flex-shrink-0 w-16 h-16 bg-white rounded-full shadow-lg overflow-hidden border-2 border-white flex items-center justify-center">
-//           <Link href="/">
-//             <img 
-//               src="/img/logo.jpg" 
-//               alt="Logo" 
-//               className="w-full h-full object-cover" 
-//               onError={(e) => {
-//                 e.currentTarget.src = "https://ui-avatars.com/api/?name=SL&background=random";
-//               }}
-//             />
-//           </Link>
-//         </div>
-
-//         {/* PHẦN ĐIỀU HƯỚNG VÀ TÌM KIẾM */}
-//         <div className="flex flex-col items-end gap-y-4">
-          
-//           {/* MENU TRÊN */}
-//           <div className="flex items-center gap-x-6 text-gray-800 text-[14px] font-semibold">
-//             {username && (
-//               <span>
-//                 Xin chào, <span className="text-black font-bold">{username}</span>
-//               </span>
-//             )}
-
-//             <Link href="/" className="flex items-center gap-x-1 hover:text-blue-600 transition-all">
-//               <Home size={18} strokeWidth={2.5} /> Trang chủ
-//             </Link>
-
-//             <Link href="/cart" className="flex items-center gap-x-1 hover:text-blue-600 transition-all">
-//               <ShoppingCart size={18} strokeWidth={2.5} /> Giỏ hàng
-//             </Link>
-
-//             <Link href="/profile" className="flex items-center gap-x-1 hover:text-blue-600 transition-all">
-//               <User size={18} strokeWidth={2.5} /> Tài khoản
-//             </Link>
-
-//             <button 
-//               onClick={handleLogout}
-//               className="flex items-center gap-x-1 text-red-600 hover:scale-105 transition-all font-bold"
-//             >
-//               <LogOut size={18} strokeWidth={2.5} /> Đăng xuất
-//             </button>
-//           </div>
-
-//           {/* THANH TÌM KIẾM (SỬA LỖI MỜ) */}
-//           <div className="relative w-[380px] group">
-//             <input
-//               type="text"
-//               placeholder="Tìm kiếm sản phẩm..."
-//               className="w-full bg-white/90 backdrop-blur-sm border border-white/50 rounded-full py-2.5 px-6 pr-20 
-//                          outline-none text-[15px] shadow-inner
-//                          text-gray-900 font-medium            {/* Chữ gõ vào: Đen đậm, rõ */}
-//                          placeholder:text-gray-600            {/* Chữ placeholder: Rõ nét hơn */}
-//                          focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all"
-//             />
-//             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-x-3">
-//               {/* Icon Search: Màu xám đậm (gray-700) để hết mờ */}
-//               <Search size={20} className="text-gray-700 cursor-pointer hover:text-blue-600 transition-colors" strokeWidth={2.5} />
-              
-//               {/* Vạch ngăn cách */}
-//               <div className="w-[1px] h-4 bg-gray-300"></div>
-              
-//               <Camera size={20} className="text-gray-700 cursor-pointer hover:text-blue-600 transition-colors" strokeWidth={2.5} />
-//             </div>
-//           </div>
-
-//         </div>
-//       </div>
-//     </nav>
-//   );
-// }
 
 "use client";
 
@@ -122,88 +11,136 @@ import {
   Package, 
   User,
   LogOut, 
-  UserPlus, 
   Search, 
-  Camera 
+  Camera,
+  ChevronRight,
+  UserCircle
 } from 'lucide-react';
 
 const Navbar = () => {
   const { user, isLoggedIn, isLoaded, logout } = useAuth();
 
-  // Nếu chưa load xong dữ liệu từ localStorage thì hiện tạm một khoảng trống hoặc loading mờ
-  if (!isLoaded) return <nav className="w-full h-[100px] bg-gradient-to-r from-[#D6E4FF] to-[#FDE2FF] rounded-b-[20px] shadow-sm" />;
+  if (!isLoaded) {
+    return <nav className="w-full h-[100px] bg-gradient-to-r from-[#D6E4FF] to-[#FDE2FF] rounded-b-[30px] shadow-sm" />;
+  }
 
   return (
-    <nav className="w-full h-[100px] px-[50px] py-[10px] bg-gradient-to-r from-[#D6E4FF] to-[#FDE2FF] rounded-b-[20px] flex items-center justify-between shadow-sm">
+    <nav className="w-full h-[100px] px-[50px] bg-gradient-to-r from-[#D6E4FF] to-[#FDE2FF] rounded-b-[30px] flex items-center justify-between shadow-md sticky top-0 z-50">
       
-      {/* A. LOGO */}
-      <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-        <div className="w-[60px] h-[60px] bg-white rounded-full border border-gray-100 flex items-center justify-center shadow-inner overflow-hidden">
-          <div className="text-[10px] font-extrabold text-center text-pink-500 leading-tight">
-            STELLAR<br/>LIGHTS
+      {/* 1. BÊN TRÁI: LOGO */}
+      <div className="flex-shrink-0 w-[180px]">
+        <Link href="/" className="inline-flex items-center hover:scale-105 transition-transform duration-300">
+          <div className="w-[60px] h-[60px] bg-white rounded-full border-2 border-white flex items-center justify-center shadow-lg overflow-hidden">
+            <div className="text-[10px] font-black text-center text-indigo-600 leading-tight tracking-tighter uppercase">
+              Stellar<br/>Lights
+            </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+      </div>
 
-      <div className="flex flex-col items-end gap-3">
-        {/* DÒNG TRÊN: Menu điều hướng */}
-        <div className="flex items-center gap-6 text-[#001529] font-bold text-[14px]">
-          
-          {isLoggedIn && user ? (
-            <>
-              {/* Lời chào với tên động */}
-              <div className="mr-4 py-1 border-r border-slate-300 pr-6">
-                <span className="font-extrabold text-[#001529]">Xin chào, </span>
-                <span className="text-[#001529] font-extrabold">
-                  {user.name || "Khách"} 
-                </span>
-              </div>
-
-              <Link href="/" className="flex items-center gap-1.5 hover:text-blue-700">
-                <Home size={18} strokeWidth={2.5} /> Trang chủ
-              </Link>
-              <Link href="/cart" className="flex items-center gap-1.5 hover:text-blue-700">
-                <ShoppingCart size={18} strokeWidth={2.5} /> Giỏ hàng
-              </Link>
-              <Link href="/orders" className="flex items-center gap-1.5 hover:text-blue-700">
-                <Package size={18} strokeWidth={2.5} /> Đơn hàng
-              </Link>
-
-              {/* THÊM TÀI KHOẢN SAU ĐƠN HÀNG */}
-              <Link href="/profile" className="flex items-center gap-1.5 hover:text-blue-700">
-                <User size={18} strokeWidth={2.5} /> Tài khoản
-              </Link>
-
-              <button onClick={logout} className="flex items-center gap-1.5 hover:text-red-600 ml-2">
-                <LogOut size={18} strokeWidth={2.5} /> Đăng xuất
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/" className="flex items-center gap-2 hover:text-blue-700">
-                <Home size={18} fill="currentColor" /> Trang chủ
-              </Link>
-              <div className="flex items-center gap-2">
-                <UserPlus size={20} strokeWidth={2.5} />
-                <Link href="/login" className="hover:text-blue-700">Đăng nhập</Link>
-                <span className="text-gray-400 font-normal">/</span>
-                <Link href="/register" className="hover:text-blue-700">Đăng ký</Link>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* DÒNG DƯỚI: Thanh tìm kiếm */}
-        <div className="relative w-[320px]">
+      {/* 2. CHÍNH GIỮA: THANH TÌM KIẾM */}
+      <div className="flex-1 max-w-[500px] mx-4">
+        <div className="relative group">
           <input 
             type="text" 
-           
-            placeholder="Tìm kiếm sản phẩm..."
-            className="w-full h-[38px] pl-6 pr-16 rounded-full border-none outline-none bg-white text-sm text-[#001529] font-medium placeholder:text-slate-500 shadow-sm shadow-black/5 focus:ring-1 focus:ring-blue-200 transition-all"
+            placeholder="Bạn đang tìm sản phẩm gì?..."
+            className="w-full h-[42px] pl-6 pr-16 rounded-full border-2 border-transparent outline-none bg-white text-sm text-indigo-900 font-medium placeholder:text-slate-400 shadow-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-200 transition-all"
           />
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3 text-[#001529]">
-            <Search size={18} strokeWidth={2.5} />
-            <Camera size={18} strokeWidth={2.5} />
+
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3 text-indigo-900 group-focus-within:text-indigo-600 transition-colors">
+           
+              <Search size={18} strokeWidth={3} className="cursor-pointer hover:scale-110" />
+              <div className="w-[1px] h-4 bg-slate-200" />
+              <Camera size={18} strokeWidth={3} className="cursor-pointer hover:scale-110" />
+          </div>
+        </div>
+      </div>
+
+      {/* 3. BÊN PHẢI: MENU & TÀI KHOẢN */}
+      <div className="flex items-center gap-6 text-[#001529] font-bold text-sm flex-shrink-0 justify-end w-[400px]">
+        
+
+        
+        <Link 
+          href={isLoggedIn ? "/cart" : "/login"} 
+          className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors"
+        >
+          <ShoppingCart size={18} strokeWidth={2.5} /> 
+          Giỏ hàng
+        </Link>
+
+        {/* KHỐI TÀI KHOẢN (Hover Menu) */}
+        <div className="relative group flex items-center py-4 cursor-pointer">
+          {isLoggedIn && user && (
+            <span className="mr-3 text-indigo-900 font-extrabold hidden lg:inline-block">
+              Chào, {user.name.split(' ').slice(-1)[0]}
+            </span>
+          )}
+
+          <div className="w-10 h-10 rounded-full bg-white border-2 border-white flex items-center justify-center text-indigo-400 group-hover:text-indigo-600 group-hover:shadow-md transition-all shadow-sm">
+            <User size={20} strokeWidth={2.5} />
+          </div>
+
+          {/* DROPDOWN MENU TƯƠI SÁNG (Đã fix lỗi rớt dòng) */}
+          <div className="absolute top-full right-0 pt-2 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-50">
+            <div className="min-w-max bg-white text-slate-700 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.12)] border border-slate-100 overflow-hidden">
+              
+              {isLoggedIn && user ? (
+                /* MENU KHI ĐÃ ĐĂNG NHẬP */
+                <div className="w-[260px] flex flex-col">
+                  <div className="px-6 py-5 bg-gradient-to-br from-indigo-50 to-pink-50 border-b border-slate-50">
+                    <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mb-1">Tài khoản quản lý</p>
+                    <p className="text-base font-black text-indigo-900 truncate">{user.name}</p>
+                  </div>
+
+                  <div className="p-2">
+                    <Link href="/profile" className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-indigo-50 transition-colors group/item">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
+                          <UserCircle size={18} />
+                        </div>
+                        <span className="font-bold text-sm text-slate-600 group-hover/item:text-indigo-700">Thông tin cá nhân</span>
+                      </div>
+                      <ChevronRight size={14} className="text-slate-300 group-hover/item:text-indigo-400 group-hover/item:translate-x-1 transition-all" />
+                    </Link>
+
+                    <Link href="/orders" className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-pink-50 transition-colors group/item">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-pink-100 rounded-lg text-pink-600">
+                          <Package size={18} />
+                        </div>
+                        <span className="font-bold text-sm text-slate-600 group-hover/item:text-pink-700">Đơn hàng của tôi</span>
+                      </div>
+                      <ChevronRight size={14} className="text-slate-300 group-hover/item:text-pink-400 group-hover/item:translate-x-1 transition-all" />
+                    </Link>
+                  </div>
+
+                  <button 
+                    onClick={logout}
+                    className="w-full mt-1 border-t border-slate-50 px-6 py-4 flex items-center gap-3 text-red-500 hover:bg-red-50 transition-colors text-sm font-bold text-left"
+                  >
+                    <div className="p-2 bg-red-50 rounded-lg">
+                      <LogOut size={16} />
+                    </div>
+                    Đăng xuất
+                  </button>
+                </div>
+              ) : (
+                /* MENU KHI CHƯA ĐĂNG NHẬP (GỌN GÀNG TRÊN 1 HÀNG) */
+                <div className="flex items-center gap-5 px-6 py-4 bg-white whitespace-nowrap">
+                  <Link href="/login" className="text-sm font-bold text-indigo-600 hover:scale-110 transition-transform">
+                    Đăng nhập
+                  </Link>
+                  <div className="w-[1px] h-4 bg-slate-200" />
+                  <Link href="/register" className="text-sm font-bold text-pink-500 hover:scale-110 transition-transform">
+                    Đăng ký
+                  </Link>
+                </div>
+              )}
+              
+              {/* Mũi tên nhỏ nhô lên (màu trắng đồng bộ) */}
+              <div className="absolute -top-1 right-4 w-3 h-3 bg-white rotate-45 border-l border-t border-slate-100" />
+            </div>
           </div>
         </div>
       </div>
@@ -211,5 +148,5 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar
 
