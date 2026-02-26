@@ -33,7 +33,7 @@
 "use client";
 import React from 'react';
 import { useAdminAuth } from "@/features/auth/auth.hooks";
-import { useCustomerManagement } from "@/features/customer/customer.hooks";
+import { useCustomerManagement } from "@/features/customer/hooks/useAdminCustomer";
 import { CustomerTable } from "@/features/customer/components/CustomerTable";
 import { CustomerSearch } from "@/features/customer/components/CustomerSearch";
 import { Users2 } from "lucide-react";

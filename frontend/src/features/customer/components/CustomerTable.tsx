@@ -1,10 +1,10 @@
 "use client";
 import React from 'react';
 import { UserX, UserCheck, Mail, Phone } from 'lucide-react';
-import { Customer } from '../customer.types';
+import { ICustomer } from '../customer.types';
 
 interface Props {
-  customers: Customer[] | null;
+  customers: ICustomer[] | null;
   loading: boolean;
   onStatusChange: (id: string) => void;
 }
