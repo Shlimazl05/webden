@@ -21,11 +21,11 @@
 // };
 
 import axiosInstance from "@/lib/axiosInstance";
-import { Category, CreateCategoryPayload } from "../category.types";
+import { ICategory, CreateCategoryPayload } from "../category.types";
 
 export const categoryApi = {
   // 1. Lấy danh sách danh mục
-  getAll: async (): Promise<Category[]> => {
+  getAll: async (): Promise<ICategory[]> => {
     const response = await axiosInstance.get('/categories');
     // Backend trả về { success: true, data: [...] } 
     // nên ta cần lấy đúng trường data
@@ -33,13 +33,13 @@ export const categoryApi = {
   },
 
   // 2. Tạo mới danh mục
-  create: async (data: CreateCategoryPayload): Promise<Category> => {
+  create: async (data: CreateCategoryPayload): Promise<ICategory> => {
     const response = await axiosInstance.post('/categories', data);
     return response.data.data || response.data;
   },
 
   // 3. Cập nhật danh mục (Dành cho nút Cây viết)
-  update: async (id: string, data: Partial<CreateCategoryPayload>): Promise<Category> => {
+  update: async (id: string, data: Partial<CreateCategoryPayload>): Promise<ICategory> => {
     const response = await axiosInstance.put(`/categories/${id}`, data);
     return response.data.data || response.data;
   },

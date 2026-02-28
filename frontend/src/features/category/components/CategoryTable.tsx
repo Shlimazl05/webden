@@ -2,12 +2,12 @@
 
 "use client";
 import { Edit3, Trash2 } from "lucide-react";
-import { Category } from "../category.types";
+import { ICategory } from "../category.types";
 
 interface CategoryTableProps {
-  categories: Category[] | null;
+  categories: ICategory[] | null;
   loading: boolean;
-  onEdit: (category: Category) => void;
+  onEdit: (category: ICategory) => void;
   onDelete: (id: string) => void;
 }
 
