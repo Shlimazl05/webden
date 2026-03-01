@@ -47,7 +47,7 @@ export const productApi = {
 
   // 3. Thêm sản phẩm mới (Nhận dữ liệu từ AddProductModal)
   createProduct: async (productData: Partial<IProduct>): Promise<IProduct> => {
-    const response = await axiosInstance.post("/products", productData);
+    const response = await axiosInstance.post("/products/add", productData);
     return response.data;
   },
 
