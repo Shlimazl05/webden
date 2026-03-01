@@ -1,3 +1,5 @@
+
+
 const categoryService = require('../services/categoryService');
 
 const createCategory = async (req, res) => {
@@ -11,8 +13,20 @@ const createCategory = async (req, res) => {
 
 const getAllCategories = async (req, res) => {
     try {
-        const categories = await categoryService.getAllCategories();
-        res.status(200).json({ success: true, data: categories });
+        // Lấy search, page, limit từ URL (VD: ?search=den&page=1)
+        const { search, page, limit } = req.query;
+        
+        const result = await categoryService.getAllCategories({
+            search: search || '',
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10
+        });
+
+        // Trả về đúng cấu trúc mà Frontend Hook đang đợi
+        res.status(200).json({ 
+            success: true, 
+            data: result 
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

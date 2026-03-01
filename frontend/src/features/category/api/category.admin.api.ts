@@ -1,24 +1,5 @@
-// import axiosInstance from "@/lib/axiosInstance";
-// import { Category, CreateCategoryPayload } from "../category.types";
 
-// export const categoryApi = {
-//   // Lấy danh sách danh mục
-//   getAll: async (): Promise<Category[]> => {
-//     const response = await axiosInstance.get('/categories');
-//     return response.data;
-//   },
 
-//   // Tạo mới danh mục
-//   create: async (data: CreateCategoryPayload): Promise<Category> => {
-//     const response = await axiosInstance.post('/categories', data);
-//     return response.data;
-//   },
-
-//   // Xóa danh mục
-//   delete: async (id: string): Promise<void> => {
-//     await axiosInstance.delete(`/categories/${id}`);
-//   }
-// };
 import axiosInstance from "@/lib/axiosInstance";
 import { ICategory, CreateCategoryPayload } from "../category.types";
 
@@ -34,15 +15,18 @@ export interface PaginatedCategory {
 }
 
 export const categoryApi = {
-  // 1. Cập nhật getAll để nhận tham số page và limit
-  getAll: async (page: number = 1, limit: number = 10): Promise<PaginatedCategory> => {
-    // Gọi API với query string: /categories?page=1&limit=10
+  // 1. CẬP NHẬT: Thêm tham số search vào getAll
+  getAll: async (page: number = 1, limit: number = 10, search: string = ''): Promise<PaginatedCategory> => {
+    // Axios sẽ tự động nối params thành query string: /categories?page=1&limit=10&search=...
     const response = await axiosInstance.get(`/categories`, {
-      params: { page, limit }
+      params: { 
+        page, 
+        limit, 
+        search: search.trim() // Gửi từ khóa tìm kiếm lên server
+      }
     });
 
-    // Cấu trúc trả về từ Backend nên là: 
-    // { success: true, data: { categories: [...], pagination: {...} } }
+    // Trả về dữ liệu từ Backend { success: true, data: { categories, pagination } }
     return response.data.data;
   },
 

@@ -6,7 +6,7 @@ interface CategorySearchProps {
   onSearch: (value: string) => void;
 }
 
-export const CategorySearch = ({ onSearch }: CategorySearchProps) => {
+export const CategorySearch = ({ onSearch }: { onSearch: (v: string) => void }) => {
   return (
     <div className="relative w-full max-w-[400px]">
       {/* Icon tìm kiếm sắc nét với strokeWidth 2.5 */}
