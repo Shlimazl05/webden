@@ -1,5 +1,6 @@
 // ĐỊNH NGHĨA KIỂU DỮ LIỆU
 export interface IProduct {
+  categoryId: any;
   _id: string;               // MongoDB tự sinh ra
   productCode: string;       // Mã sản phẩm
   productName: string;       // Tên sản phẩm

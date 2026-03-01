@@ -1,29 +1,3 @@
-// import React from "react";
-// import { IProduct } from "../product.types";
-
-// interface Props {
-//   product: IProduct;
-// }
-
-// export default function ProductCard({ product }: Props) {
-//   return (
-//     <div className="bg-white border border-gray-200 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-//       <div className="aspect-square w-full overflow-hidden rounded-lg mb-3">
-//         <img
-//           src={product.imageUrl || "/images/placeholder.png"}
-//           alt={product.productName}
-//           className="w-full h-full object-contain hover:scale-105 transition-transform"
-//         />
-//       </div>
-//       <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 h-10 mb-2">
-//         {product.productName}
-//       </h3>
-//       <p className="text-blue-600 font-medium text-sm text-right">
-//         {product.salePrice.toLocaleString("vi-VN")} đ
-//       </p>
-//     </div>
-//   );
-// }
 
 "use client";
 import React from 'react';

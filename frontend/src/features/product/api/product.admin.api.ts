@@ -15,6 +15,16 @@
 import axiosInstance from "@/lib/axiosInstance";
 import { IProduct } from "@/features/product/product.types";
 
+
+export interface PaginatedProduct {
+  products: IProduct[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalProducts: number;
+    limit: number;
+  };
+}
 /**
  * Định nghĩa các hàm gọi API cho sản phẩm
  * Sau này khi có Backend thật, bạn chỉ cần thay đổi các URL bên dưới
