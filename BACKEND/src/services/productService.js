@@ -48,8 +48,17 @@ const slugify = require('slugify');
 const createProduct = async (productData) => {
     // 1. Tự động sinh mã sản phẩm (SP-001) nếu chưa có
     if (!productData.productCode || productData.productCode === "HỆ THỐNG TỰ SINH") {
-        const count = await Product.countDocuments();
-        productData.productCode = `SP-${(count + 1).toString().padStart(3, '0')}`;
+        // Tìm sản phẩm cuối cùng dựa trên mã giảm dần
+        const lastProduct = await Product.findOne().sort({ productCode: -1 });
+        
+        let nextNumber = 1;
+        if (lastProduct && lastProduct.productCode.startsWith('SP-')) {
+            // Tách phần số ra khỏi 'SP-', ví dụ 'SP-005' -> 5
+            const lastNumber = parseInt(lastProduct.productCode.replace('SP-', ''));
+            nextNumber = lastNumber + 1;
+        }
+        
+        productData.productCode = `SP-${nextNumber.toString().padStart(3, '0')}`;
     }
 
     // 2. Kiểm tra trùng mã
@@ -57,7 +66,9 @@ const createProduct = async (productData) => {
     if (existingProduct) throw new Error("Mã sản phẩm đã tồn tại!");
 
     // 3. Tạo Slug từ tên sản phẩm (tốt cho SEO/AI sau này)
-    const slug = slugify(productData.productName, { lower: true, locale: 'vi', trim: true });
+    const slugName = slugify(productData.productName, { lower: true, locale: 'vi', trim: true });
+    const slugCode = slugify(productData.productCode, { lower: true });
+    const slug = `${slugName}-${slugCode}`;
 
     const newProduct = new Product({
         ...productData,
@@ -102,9 +113,22 @@ const getAllProducts = async (options = {}) => {
 };
 
 const updateProduct = async (id, data) => {
+    // 1. Nếu người dùng thay đổi tên sản phẩm, chúng ta phải tính lại Slug
     if (data.productName) {
-        data.slug = slugify(data.productName, { lower: true, locale: 'vi' });
+        // Tìm sản phẩm hiện tại để lấy mã productCode (nếu trong data gửi lên không có)
+        const currentProduct = await Product.findById(id);
+        if (!currentProduct) throw new Error("Sản phẩm không tồn tại!");
+
+        const code = data.productCode || currentProduct.productCode;
+        
+        // Tạo slug kết hợp Tên + Mã (Ví dụ: den-chum-sp-004)
+        const slugName = slugify(data.productName, { lower: true, locale: 'vi', trim: true });
+        const slugCode = slugify(code, { lower: true });
+        
+        data.slug = `${slugName}-${slugCode}`;
     }
+
+    // 2. Tiến hành cập nhật
     return await Product.findByIdAndUpdate(id, data, { new: true });
 };
 

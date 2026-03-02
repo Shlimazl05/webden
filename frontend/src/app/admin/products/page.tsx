@@ -22,17 +22,22 @@
 //   AdminPageHeader, 
 //   AdminInnerBox 
 // } from "@/components/layout/AdminPageContainer";
+// import { IProduct } from '@/features/product/product.types';
 
 // export default function ProductManagementPage() {
+//   // 1. Kiểm tra quyền truy cập Admin
 //   const { isAuthorized } = useAdminAuth();
   
+//   // 2. Lấy Logic điều khiển từ Hook sản phẩm
 //   const { 
 //     products, 
+//     categories, // Dữ liệu danh mục để truyền vào Modal
 //     loading, 
 //     currentPage,
 //     totalPages,
 //     handlePageChange,
 //     handleSearch, 
+//     refresh, // Hàm tải lại dữ liệu sau khi thêm/sửa
 //     isDeleteModalOpen, 
 //     openDeleteModal, 
 //     closeDeleteModal, 
@@ -40,49 +45,59 @@
 //     isModalOpen, 
 //     handleOpenAdd, 
 //     handleCloseModal, 
-//     selectedProduct 
+//     selectedProduct,
+//     handleToggleStatus,
+//     handleOpenDetail
 //   } = useProductFeature();
 
 //   if (!isAuthorized) return null;
 
+
 //   return (
 //     <div className="animate-in fade-in duration-500 pb-10">
 //       <AdminPageContainer>
-//         {/* Page Action Header */}
+//         {/* Header trang và nút thêm mới chuẩn Indigo */}
 //         <AdminPageHeader title="QUẢN LÝ SẢN PHẨM">
 //           <button 
 //             onClick={handleOpenAdd}
-//             className="flex items-center gap-2 px-8 h-11 bg-indigo-600 text-white rounded-xl font-bold shadow-md hover:bg-indigo-700 transition-all text-[14px] uppercase tracking-wider"
+//             className="flex items-center gap-2 px-8 h-11 bg-indigo-600 text-white rounded-xl font-bold shadow-md hover:bg-indigo-700 transition-all text-[14] uppercase tracking-wider"
 //           >
 //             <Plus size={20} strokeWidth={3} /> Thêm sản phẩm
 //           </button>
 //         </AdminPageHeader>
 
-//         {/* Search & Filter Section */}
+//         {/* Thanh tìm kiếm (Server-side Search) */}
 //         <div className="mb-10 max-w-sm">
 //           <ProductSearch onSearch={handleSearch} />
 //         </div>
 
-//         {/* Data Display Area */}
+//         {/* Khu vực hiển thị danh sách dạng lưới */}
 //         <div className="max-h-[620px] overflow-y-auto custom-scrollbar pr-2">
 //           <AdminInnerBox>
 //             {loading ? (
+//               // Trạng thái Loading Skeleton
 //               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 //                 {[...Array(10)].map((_, i) => (
 //                   <div key={i} className="aspect-[3/4.5] bg-slate-50 animate-pulse rounded-2xl border border-slate-100" />
 //                 ))}
 //               </div>
 //             ) : products && products.length > 0 ? (
+//               // Hiển thị danh sách sản phẩm
 //               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 //                 {products.map((product) => (
 //                   <ProductCard 
-//                     key={product._id} 
-//                     product={product} 
-//                     onDelete={openDeleteModal} 
-//                   />
+//                     key={product._id}
+//                     product={product}
+//                     onToggleStatus={handleToggleStatus} // Sử dụng hàm từ hook
+//                     onDelete={openDeleteModal} onEdit={function (product: IProduct): void {
+//                       throw new Error('Function not implemented.');
+//                     } } onView={function (product: IProduct): void {
+//                       throw new Error('Function not implemented.');
+//                     } }                  />
 //                 ))}
 //               </div>
 //             ) : (
+//               // Trạng thái trống (Empty State)
 //               <div className="flex flex-col items-center justify-center py-24 text-center">
 //                 <div className="p-6 bg-slate-50 rounded-full mb-4">
 //                   <PackageSearch size={48} className="text-slate-300" />
@@ -101,7 +116,7 @@
 //           </AdminInnerBox>
 //         </div>
 
-//         {/* Pagination Controller */}
+//         {/* Thanh phân trang (Server-side Pagination) */}
 //         <div className="mt-6 border-t border-slate-50">
 //           <Pagination 
 //             currentPage={currentPage}
@@ -111,19 +126,24 @@
 //         </div>
 //       </AdminPageContainer>
 
-//       {/* Forms & Dialogs */}
+//       {/* --- CÁC CỬA SỔ ĐIỀU KHIỂN --- */}
+
+//       {/* Modal Thêm/Sửa: Đã ráp categories và refreshData */}
 //       <AddProductModal 
 //         isOpen={isModalOpen} 
 //         onClose={handleCloseModal} 
-//         initialData={selectedProduct} 
+//         initialData={selectedProduct}
+//         categories={categories} // Truyền danh sách danh mục vào form
+//         refreshData={refresh}   // Truyền hàm reload để cập nhật bảng sau khi lưu
 //       />
 
+//       {/* Modal xác nhận xóa nhỏ gọn */}
 //       <ConfirmModal 
 //         isOpen={isDeleteModalOpen} 
 //         onClose={closeDeleteModal} 
 //         onConfirm={confirmDelete} 
-//         title="Xác nhận xóa sản phẩm" 
-//         message="Hành động này sẽ xóa vĩnh viễn sản phẩm khỏi hệ thống và không thể hoàn tác." 
+//         title="Xác nhận xóa" 
+//         message="Dữ liệu sản phẩm sẽ bị xóa vĩnh viễn khỏi hệ thống và không thể khôi phục." 
 //       />
 //     </div>
 //   );
@@ -132,7 +152,7 @@
 "use client";
 
 import React from 'react';
-import { Plus, PackageSearch } from "lucide-react";
+import { Plus, PackageSearch, Edit3 } from "lucide-react";
 
 // Business Logic & Hooks
 import { useAdminAuth } from "@/features/auth/auth.hooks";
@@ -143,6 +163,7 @@ import { ProductCard } from "@/features/product/components/admin/ProductCard";
 import { ProductSearch } from "@/features/product/components/admin/ProductSearch";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { AddProductModal } from "@/features/product/components/admin/AddProductModal";
+import { ProductDetailModal } from "@/features/product/components/ProductDetailModal";
 import { Pagination } from "@/components/ui/Pagination";
 
 // Layout Wrappers
@@ -159,21 +180,27 @@ export default function ProductManagementPage() {
   // 2. Lấy Logic điều khiển từ Hook sản phẩm
   const { 
     products, 
-    categories, // Dữ liệu danh mục để truyền vào Modal
+    categories, 
     loading, 
     currentPage,
     totalPages,
     handlePageChange,
     handleSearch, 
-    refresh, // Hàm tải lại dữ liệu sau khi thêm/sửa
+    refresh, 
     isDeleteModalOpen, 
     openDeleteModal, 
     closeDeleteModal, 
     confirmDelete,
     isModalOpen, 
     handleOpenAdd, 
+    handleOpenEdit,
     handleCloseModal, 
-    selectedProduct 
+    selectedProduct,
+    handleToggleStatus,
+    // Logic xem chi tiết
+    detailProduct,
+    handleOpenDetail,
+    handleCloseDetail
   } = useProductFeature();
 
   if (!isAuthorized) return null;
@@ -181,50 +208,47 @@ export default function ProductManagementPage() {
   return (
     <div className="animate-in fade-in duration-500 pb-10">
       <AdminPageContainer>
-        {/* Header trang và nút thêm mới chuẩn Indigo */}
         <AdminPageHeader title="QUẢN LÝ SẢN PHẨM">
           <button 
             onClick={handleOpenAdd}
-            className="flex items-center gap-2 px-8 h-11 bg-indigo-600 text-white rounded-xl font-bold shadow-md hover:bg-indigo-700 transition-all text-[13px] uppercase tracking-wider"
+            className="flex items-center gap-2 px-8 h-11 bg-indigo-600 text-white rounded-xl font-bold shadow-md hover:bg-indigo-700 transition-all text-[14px] uppercase tracking-wider"
           >
             <Plus size={20} strokeWidth={3} /> Thêm sản phẩm
           </button>
         </AdminPageHeader>
 
-        {/* Thanh tìm kiếm (Server-side Search) */}
         <div className="mb-10 max-w-sm">
           <ProductSearch onSearch={handleSearch} />
         </div>
 
-        {/* Khu vực hiển thị danh sách dạng lưới */}
         <div className="max-h-[620px] overflow-y-auto custom-scrollbar pr-2">
           <AdminInnerBox>
             {loading ? (
-              // Trạng thái Loading Skeleton
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {[...Array(10)].map((_, i) => (
                   <div key={i} className="aspect-[3/4.5] bg-slate-50 animate-pulse rounded-2xl border border-slate-100" />
                 ))}
               </div>
             ) : products && products.length > 0 ? (
-              // Hiển thị danh sách sản phẩm
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {products.map((product) => (
                   <ProductCard 
-                    key={product._id} 
-                    product={product} 
+                    key={product._id}
+                    product={product}
+                    onView={handleOpenDetail}    // Mở modal chi tiết
+                    onEdit={handleOpenEdit}      // Mở modal sửa
+                    onToggleStatus={handleToggleStatus} 
                     onDelete={openDeleteModal} 
                   />
                 ))}
               </div>
             ) : (
-              // Trạng thái trống (Empty State)
               <div className="flex flex-col items-center justify-center py-24 text-center">
                 <div className="p-6 bg-slate-50 rounded-full mb-4">
                   <PackageSearch size={48} className="text-slate-300" />
                 </div>
                 <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest">
-                  Chưa có sản phẩm nào trong danh sách
+                  Chưa có sản phẩm nào
                 </h3>
                 <button 
                   onClick={handleOpenAdd} 
@@ -237,7 +261,6 @@ export default function ProductManagementPage() {
           </AdminInnerBox>
         </div>
 
-        {/* Thanh phân trang (Server-side Pagination) */}
         <div className="mt-6 border-t border-slate-50">
           <Pagination 
             currentPage={currentPage}
@@ -247,24 +270,42 @@ export default function ProductManagementPage() {
         </div>
       </AdminPageContainer>
 
-      {/* --- CÁC CỬA SỔ ĐIỀU KHIỂN --- */}
+      {/* --- MODALS --- */}
 
-      {/* Modal Thêm/Sửa: Đã ráp categories và refreshData */}
+      {/* Modal Xem chi tiết: Tái sử dụng nội dung hiển thị */}
+      <ProductDetailModal 
+        isOpen={!!detailProduct}
+        onClose={handleCloseDetail}
+        product={detailProduct}
+        actions={
+          <button 
+            onClick={() => {
+              handleOpenEdit(detailProduct!);
+              handleCloseDetail();
+            }}
+            className="h-11 px-8 bg-indigo-600 text-white rounded-xl font-bold uppercase text-[12px] tracking-widest shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center gap-2"
+          >
+            <Edit3 size={18} /> Chỉnh sửa
+          </button>
+        }
+      />
+
+      {/* Modal Thêm/Sửa */}
       <AddProductModal 
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
         initialData={selectedProduct}
-        categories={categories} // Truyền danh sách danh mục vào form
-        refreshData={refresh}   // Truyền hàm reload để cập nhật bảng sau khi lưu
+        categories={categories} 
+        refreshData={refresh}   
       />
 
-      {/* Modal xác nhận xóa nhỏ gọn */}
+      {/* Modal xác nhận xóa */}
       <ConfirmModal 
         isOpen={isDeleteModalOpen} 
         onClose={closeDeleteModal} 
         onConfirm={confirmDelete} 
         title="Xác nhận xóa" 
-        message="Dữ liệu sản phẩm sẽ bị xóa vĩnh viễn khỏi hệ thống và không thể khôi phục." 
+        message="Hành động này sẽ xóa vĩnh viễn sản phẩm khỏi kho hàng." 
       />
     </div>
   );

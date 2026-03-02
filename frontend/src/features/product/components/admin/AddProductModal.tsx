@@ -82,12 +82,21 @@ export const AddProductModal = ({ isOpen, onClose, initialData, categories = [],
 
     setLoading(true);
 
-    const payload = {
-      ...formData,
+    const payload: any = {
+      productName: formData.productName,
       salePrice: Number(formData.salePrice),
       stockQuantity: Number(formData.stockQuantity),
+      categoryId: formData.categoryId,
+      status: formData.status,
+      imageUrl: formData.imageUrl,
+      images: formData.images,
       specifications: { description: formData.description }
     };
+
+    // CHỈ gửi productCode nếu là đang CHỈNH SỬA
+    if (isEdit) {
+      payload.productCode = formData.productCode;
+    }
 
     const promise = initialData 
       ? productApi.updateProduct(initialData._id, payload as any) 
