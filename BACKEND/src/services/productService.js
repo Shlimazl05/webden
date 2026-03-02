@@ -79,9 +79,13 @@ const createProduct = async (productData) => {
 };
 
 const getAllProducts = async (options = {}) => {
-    const { search = '', page = 1, limit = 10 } = options;
-    
-    // Logic tìm kiếm (Tên hoặc Mã SP)
+    // Chuẩn hóa dữ liệu đầu vào
+    const search = options.search ? options.search.trim() : '';
+    const page = Math.max(1, parseInt(options.page) || 1);
+    const limit = Math.max(1, parseInt(options.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    // Thiết lập bộ lọc tìm kiếm (Tên sản phẩm hoặc Mã SKU)
     const filter = {};
     if (search) {
         filter.$or = [
@@ -90,27 +94,36 @@ const getAllProducts = async (options = {}) => {
         ];
     }
 
-    const skip = (page - 1) * limit;
-
+    /**
+     * Thực hiện truy vấn song song để tối ưu thời gian phản hồi:
+     * 1. find: Lấy danh sách sản phẩm theo bộ lọc, phân trang và liên kết dữ liệu danh mục.
+     * 2. countDocuments: Đếm tổng số bản ghi khớp điều kiện để phục vụ tính toán phân trang.
+     */
     const [products, totalProducts] = await Promise.all([
         Product.find(filter)
-            .populate('categoryId', 'name')
+            .populate('categoryId', 'name status') // LẤY THÊM TRƯỜNG STATUS CỦA DANH MỤC
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit),
+            .limit(limit)
+            .lean(),
         Product.countDocuments(filter)
     ]);
+
+
+    // Tính toán thông tin phân trang tổng quát
+    const totalPages = Math.ceil(totalProducts / limit);
 
     return {
         products,
         pagination: {
             totalProducts,
-            totalPages: Math.ceil(totalProducts / limit),
-            currentPage: parseInt(page),
-            limit: parseInt(limit)
+            totalPages,
+            currentPage: page,
+            limit
         }
     };
 };
+
 
 const updateProduct = async (id, data) => {
     // 1. Nếu người dùng thay đổi tên sản phẩm, chúng ta phải tính lại Slug
