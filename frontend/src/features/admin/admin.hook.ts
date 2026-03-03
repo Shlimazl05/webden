@@ -1,13 +1,15 @@
-// // src/features/admin/admin.hooks.ts
+
 // import { useState, useEffect } from 'react';
 
 // export const useAdminStats = () => {
-//   const [stats, setStats] = useState<any>(null);
+//   const [stats, setStats] = useState<any>(null); // Khởi tạo là null
 //   const [loading, setLoading] = useState(true);
 
 //   useEffect(() => {
 //     const timer = setTimeout(() => {
-//       setStats({ revenue: "128M", products: "452", customers: "1,205", orders: "12" });
+//       // QUAN TRỌNG: Để hiện dấu --, bạn phải setStats(null) ở đây
+//       setStats(null); 
+      
 //       setLoading(false);
 //     }, 1500);
 //     return () => clearTimeout(timer);
@@ -15,22 +17,32 @@
 
 //   return { stats, loading };
 // };
-// src/features/admin/admin.hooks.ts
+
 import { useState, useEffect } from 'react';
+import axiosInstance from '@/lib/axiosInstance';
 
 export const useAdminStats = () => {
-  const [stats, setStats] = useState<any>(null); // Khởi tạo là null
+  const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      // QUAN TRỌNG: Để hiện dấu --, bạn phải setStats(null) ở đây
-      setStats(null); 
-      
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get('/admin/stats');
+      if (response.data.success) {
+        setStats(response.data.data);
+      }
+    } catch (error) {
+      console.error("Lỗi lấy thống kê:", error);
+      setStats(null);
+    } finally {
       setLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
   }, []);
 
-  return { stats, loading };
+  return { stats, loading, refresh: fetchStats };
 };
