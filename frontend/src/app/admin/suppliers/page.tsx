@@ -21,7 +21,7 @@ export default function SupplierPage() {
     <div className="animate-in fade-in duration-500">
       <AdminPageContainer>
         <AdminPageHeader title="QUẢN LÝ NHÀ CUNG CẤP">
-          <button onClick={f.handleOpenAdd} className="flex items-center gap-2 px-6 h-11 bg-indigo-600 text-white rounded-xl font-bold text-[13px] uppercase tracking-wider hover:bg-indigo-700 shadow-md transition-all active:scale-95">
+          <button onClick={f.handleOpenAdd} className="flex items-center gap-2 px-6 h-11 bg-indigo-600 text-white rounded-xl font-bold text-[14px] uppercase tracking-wider hover:bg-indigo-700 shadow-md transition-all active:scale-95">
             <Plus size={18} strokeWidth={3} /> Thêm nhà cung cấp
           </button>
         </AdminPageHeader>

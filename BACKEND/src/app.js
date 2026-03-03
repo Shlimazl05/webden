@@ -92,6 +92,7 @@ const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const vnpayRoutes = require('./routes/vnpayRoutes');
 
+const supplierRoutes = require('./routes/supplierRoutes');
 // Cổng chào API
 app.get('/', (req, res) => res.status(200).json({ 
     message: "Stellar Lights API is running..." 
@@ -105,6 +106,8 @@ app.use('/api/admin', adminRoutes); // Dùng cho thống kê Dashboard
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/vnpay', vnpayRoutes);
+
+app.use('/api/suppliers', supplierRoutes);
 
 // --- 4. ERROR HANDLING ---
 // Xử lý lỗi 404 (Không tìm thấy Route)

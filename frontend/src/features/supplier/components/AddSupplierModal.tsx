@@ -47,31 +47,43 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
   const handleLocalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate các trường bắt buộc
-    if (!nameSL.trim()) return toast.error("Vui lòng nhập tên nhà cung cấp!", { style: toastStyle });
-    if (!phone.trim()) return toast.error("Vui lòng nhập số điện thoại!", { style: toastStyle });
-    if (!address.trim()) return toast.error("Vui lòng nhập địa chỉ!", { style: toastStyle });
+    // 1. Validate - Chữ in hoa cho chuyên nghiệp
+    if (!nameSL.trim()) return toast.error("VUI LÒNG NHẬP TÊN NHÀ CUNG CẤP!", { style: toastStyle });
+    if (!phone.trim()) return toast.error("VUI LÒNG NHẬP SỐ ĐIỆN THOẠI!", { style: toastStyle });
+    if (!address.trim()) return toast.error("VUI LÒNG NHẬP ĐỊA CHỈ!", { style: toastStyle });
 
     setLoading(true);
-    const savePromise = onSubmit({
+
+    // 2. Chuẩn bị dữ liệu (Gửi trường 'name' cho Backend khớp với yêu cầu của bạn)
+    const payload = {
       name: nameSL.trim(),
       phone: phone.trim(),
       email: email.trim(),
       address: address.trim(),
       status: status
-    });
+    };
 
-    toast.promise(savePromise, {
-      loading: 'Đang lưu thông tin...',
-      success: () => {
-        onClose();
-        return "Thao tác thành công!";
-      },
-      error: (err) => err.response?.data?.message || "Lỗi hệ thống!",
-    }, { style: toastStyle });
+    const savePromise = onSubmit(payload as any);
 
-    try { await savePromise; } catch (err) {} finally { setLoading(false); }
-  };
+        // 3. Cập nhật thông báo dựa trên biến isEdit
+        toast.promise(savePromise, {
+        loading: 'Đang xử lý dữ liệu...',
+        success: () => {
+            // Trả về câu thông báo đúng với tác vụ đang làm
+            return isEdit ? "CẬP NHẬT THÀNH CÔNG!" : "THÊM THÀNH CÔNG!";
+        },
+        error: (err) => err.response?.data?.message || "LỖI HỆ THỐNG!",
+        }, { style: toastStyle });
+
+        try { 
+        await savePromise; 
+        // onClose(); // Lưu ý: Nếu trong Hook handleSubmit đã có onClose rồi thì ở đây không cần
+        } catch (err) {
+        console.error(err);
+        } finally { 
+        setLoading(false); 
+        }
+    };
 
   if (!isOpen) return null;
   const isEdit = !!initialData;
