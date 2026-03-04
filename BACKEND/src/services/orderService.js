@@ -1,67 +1,91 @@
 const Order = require('../models/Order');
+const OrderDetail = require('../models/OrderDetail');
 const Product = require('../models/Product');
-const Cart = require('../models/Cart');
-const CartDetail = require('../models/CartDetail');
 
-const createOrder = async (userId, orderData) => {
-    const { address, recipientName, phone, paymentMethod } = orderData;
+/**
+ * LẤY DANH SÁCH ĐƠN HÀNG CHO ADMIN (CÓ SEARCH & PHÂN TRANG)
+ */
+const getAllOrdersAdmin = async (options = {}) => {
+    const { search = '', status = '', page = 1, limit = 10 } = options;
+    const skip = (page - 1) * limit;
 
-    // 1. Lấy giỏ hàng hiện tại của khách
-    const cart = await Cart.findOne({ userId });
-    if (!cart) throw new Error("Giỏ hàng trống!");
+    // 1. Tạo bộ lọc (Filter)
+    const filter = {};
+    
+    // Lọc theo trạng thái (nếu có chọn Tab)
+    if (status && status !== 'all') {
+        filter.status = status;
+    }
 
-    const cartItems = await CartDetail.find({ cartId: cart._id }).populate('productId');
-    if (cartItems.length === 0) throw new Error("Giỏ hàng không có sản phẩm!");
+    // LOGIC TÌM KIẾM: Tìm theo Mã đơn, Tên người nhận hoặc Số điện thoại
+    if (search) {
+        filter.$or = [
+            { orderCode: { $regex: new RegExp(search, 'i') } },
+            { recipientName: { $regex: new RegExp(search, 'i') } },
+            { phone: { $regex: new RegExp(search, 'i') } }
+        ];
+    }
 
-    let subTotal = 0;
-    const orderItems = [];
+    // 2. Truy vấn dữ liệu
+    const [orders, totalOrders] = await Promise.all([
+        Order.find(filter)
+            .populate('customerId', 'username email') // Lấy thông tin tài khoản khách
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean(),
+        Order.countDocuments(filter)
+    ]);
 
-    // 2. Kiểm tra tồn kho & Chốt giá từng món đèn
-    for (let item of cartItems) {
-        if (item.productId.stockQuantity < item.quantity) {
-            throw new Error(`Mẫu ${item.productId.productName} đã hết hàng!`);
+    // 3. Lấy chi tiết sản phẩm cho từng đơn hàng (Để hiện ở phần xổ xuống)
+    const ordersWithDetails = await Promise.all(orders.map(async (order) => {
+        const details = await OrderDetail.find({ orderId: order._id })
+            .populate('productId', 'productName productCode imageUrl')
+            .lean();
+        return { ...order, orderDetails: details };
+    }));
+
+    return {
+        orders: ordersWithDetails,
+        pagination: {
+            totalOrders,
+            totalPages: Math.ceil(totalOrders / limit),
+            currentPage: parseInt(page),
+            limit: parseInt(limit)
         }
-        
-        subTotal += item.quantity * item.unitPrice;
-        
-        orderItems.push({
-            productId: item.productId._id,
-            productName: item.productId.productName,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice
-        });
-    }
-
-    // 3. Logic phí vận chuyển (Theo đúng luận văn: > 2 triệu Free Ship)
-    const shippingFee = subTotal >= 2000000 ? 0 : 50000;
-    const totalAmount = subTotal + shippingFee;
-
-    // 4. Tạo Đơn hàng mới
-    const newOrder = await Order.create({
-      userId,
-      orderCode: 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-      recipientName,
-      phone,
-      address,
-      shippingFee,
-      totalAmount,
-      paymentMethod,
-      items: orderItems,
-      // Nếu là COD thì "Chờ xác nhận", nếu là PayPal thì "Chờ thanh toán"
-      status: paymentMethod === 'COD' ? 'Chờ xác nhận' : 'Chờ thanh toán'
-    });
-
-    // 5. Cập nhật Tồn kho Sản phẩm (Trừ đi số lượng đã mua)
-    for (let item of orderItems) {
-        await Product.findByIdAndUpdate(item.productId, {
-            $inc: { stockQuantity: -item.quantity }
-        });
-    }
-
-    // 6. Xóa giỏ hàng sau khi đặt thành công
-    await CartDetail.deleteMany({ cartId: cart._id });
-
-    return newOrder;
+    };
 };
 
-module.exports = { createOrder };
+/**
+ * CẬP NHẬT TRẠNG THÁI & XỬ LÝ KHO HÀNG
+ */
+const updateOrderStatus = async (orderId, newStatus) => {
+    const order = await Order.findById(orderId);
+    if (!order) throw new Error("Không tìm thấy đơn hàng");
+
+    const oldStatus = order.status;
+
+    // LOGIC HOÀN KHO: Nếu đơn hàng bị Hủy (Cancelled)
+    if (newStatus === 'Cancelled' && oldStatus !== 'Cancelled') {
+        const details = await OrderDetail.find({ orderId });
+        for (const item of details) {
+            await Product.findByIdAndUpdate(item.productId, {
+                $inc: { stockQuantity: item.quantity } // Cộng lại vào kho
+            });
+        }
+    }
+
+    order.status = newStatus;
+    order.statusHistory.push({
+        status: newStatus,
+        updatedAt: new Date(),
+        note: `Trạng thái được cập nhật bởi Admin`
+    });
+
+    return await order.save();
+};
+
+module.exports = {
+    getAllOrdersAdmin,
+    updateOrderStatus
+};

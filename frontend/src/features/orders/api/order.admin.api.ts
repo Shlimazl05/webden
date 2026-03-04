@@ -1,30 +1,40 @@
+// // src/features/orders/api/order.admin.api.ts
+// import axiosInstance from "@/lib/axiosInstance";
+// import { IOrder, OrderStatus } from "../order.types";
+
+// export const orderAdminApi = {
+//   // Lấy toàn bộ đơn hàng (kèm phân trang, lọc trạng thái, tìm kiếm)
+//   getAll: async (page = 1, limit = 10, status = '', search = '') => {
+//     const res = await axiosInstance.get('/orders/admin/all', {
+//       params: { page, limit, status, search }
+//     });
+//     return res.data.data;
+//   },
+
+//   // Admin cập nhật trạng thái (Ví dụ: Từ Chờ xác nhận -> Đang xử lý)
+//   updateStatus: async (orderId: string, status: OrderStatus) => {
+//     const res = await axiosInstance.patch(`/orders/admin/${orderId}/status`, { status });
+//     return res.data.data;
+//   },
+
+//   // Xóa đơn hàng (Chỉ dùng khi đơn nháp hoặc lỗi dữ liệu)
+//   delete: async (id: string) => {
+//     await axiosInstance.delete(`/orders/admin/${id}`);
+//   }
+// };
+
 import axiosInstance from "@/lib/axiosInstance";
 
 export const orderAdminApi = {
-  /**
-   * Lấy toàn bộ danh sách đơn hàng toàn hệ thống
-   * @param params Bao gồm filter theo status, searchQuery, pagination
-   */
-  getAllOrders: async (params: any) => {
-    const response = await axiosInstance.get('/admin/orders', { params });
-    return response.data;
+  getAll: async (page = 1, limit = 10, status = '', search = '') => {
+    const res = await axiosInstance.get('/orders/admin/all', {
+      params: { page, limit, status, search }
+    });
+    return res.data.data;
   },
 
-  /**
-   * Cập nhật trạng thái đơn hàng (Xác nhận, Đang giao, Hủy...)
-   * @param id ID của đơn hàng
-   * @param status Trạng thái mới
-   */
-  updateStatus: async (id: string, status: string) => {
-    const response = await axiosInstance.patch(`/admin/orders/${id}`, { status });
-    return response.data;
-  },
-
-  /**
-   * Xem chi tiết một đơn hàng cụ thể kèm thông tin khách hàng
-   */
-  getOrderDetail: async (id: string) => {
-    const response = await axiosInstance.get(`/admin/orders/${id}`);
-    return response.data;
+  updateStatus: async (orderId: string, status: string) => {
+    const res = await axiosInstance.patch(`/orders/admin/${orderId}/status`, { status });
+    return res.data.data;
   }
 };
