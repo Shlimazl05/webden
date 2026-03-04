@@ -76,32 +76,101 @@ const createImportOrder = async (data) => {
  * @param {Object} options - Tùy chọn phân trang (page, limit)
  * @returns {Promise<Object>} Danh sách hóa đơn đã lồng chi tiết sản phẩm
  */
+/**
+ * Lấy danh sách hóa đơn nhập kèm tìm kiếm và phân trang
+ */
 const getAllOrders = async (options = {}) => {
+    const search = options.search ? options.search.trim() : '';
     const page = Math.max(1, parseInt(options.page) || 1);
     const limit = Math.max(1, parseInt(options.limit) || 10);
     const skip = (page - 1) * limit;
 
-    // 1. Lấy danh sách hóa đơn chính
-    const orders = await ImportOrder.find()
-        .populate('supplierId', 'name')
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean();
+    // Khởi tạo Pipeline cho Aggregation
+    const pipeline = [
+        {
+            // 1. Nối với bảng Nhà cung cấp để lấy thông tin tên
+            $lookup: {
+                from: 'suppliers',
+                localField: 'supplierId',
+                foreignField: '_id',
+                as: 'supplierId'
+            }
+        },
+        { $unwind: '$supplierId' }
+    ];
 
-    // 2. Với mỗi hóa đơn, truy vấn lấy thêm chi tiết hàng hóa và thông tin sản phẩm
-    const ordersWithDetails = await Promise.all(orders.map(async (order) => {
-        const details = await ImportDetail.find({ importOrderId: order._id })
-            .populate('productId', 'productName productCode') // Lấy tên và mã từ bảng Product
-            .lean();
-        
-        return { ...order, details };
-    }));
+    // 2. LOGIC TÌM KIẾM: Thêm bước $match vào pipeline nếu có từ khóa search
+    if (search) {
+        pipeline.push({
+            $match: {
+                $or: [
+                    { importCode: { $regex: new RegExp(search, 'i') } },      // Tìm theo mã phiếu
+                    { 'supplierId.name': { $regex: new RegExp(search, 'i') } } // Tìm theo tên nhà cung cấp
+                ]
+            }
+        });
+    }
 
-    const totalOrders = await ImportOrder.countDocuments();
+    // 3. Nối với bảng chi tiết và sản phẩm
+    pipeline.push(
+        {
+            $lookup: {
+                from: 'importdetails',
+                localField: '_id',
+                foreignField: 'importOrderId',
+                as: 'details'
+            }
+        },
+        {
+            $lookup: {
+                from: 'products',
+                localField: 'details.productId',
+                foreignField: '_id',
+                as: 'productInfo'
+            }
+        },
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit }
+    );
+
+    // Thực thi Aggregation
+    const orders = await ImportOrder.aggregate(pipeline);
+
+    // 4. Xử lý format lại dữ liệu sản phẩm cho chi tiết (như cũ)
+    const formattedOrders = orders.map(order => {
+        const detailsWithProduct = order.details.map(detail => {
+            const product = order.productInfo.find(p => p._id.toString() === detail.productId.toString());
+            return { ...detail, productId: product };
+        });
+        return { ...order, details: detailsWithProduct };
+    });
+
+    // 5. Tính toán tổng số bản ghi để phân trang (phải tính dựa trên search)
+    let totalOrders;
+    if (search) {
+        // Nếu có search, phải đếm số lượng sau khi lọc
+        const countPipeline = [
+            { $lookup: { from: 'suppliers', localField: 'supplierId', foreignField: '_id', as: 'sup' } },
+            { $unwind: '$sup' },
+            { 
+                $match: { 
+                    $or: [
+                        { importCode: { $regex: new RegExp(search, 'i') } },
+                        { 'sup.name': { $regex: new RegExp(search, 'i') } }
+                    ] 
+                } 
+            },
+            { $count: "total" }
+        ];
+        const countRes = await ImportOrder.aggregate(countPipeline);
+        totalOrders = countRes.length > 0 ? countRes[0].total : 0;
+    } else {
+        totalOrders = await ImportOrder.countDocuments();
+    }
 
     return {
-        orders: ordersWithDetails,
+        orders: formattedOrders,
         pagination: {
             totalOrders,
             totalPages: Math.ceil(totalOrders / limit),
