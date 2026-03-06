@@ -37,10 +37,11 @@
 // }
 
 
+import { ReactNode } from "react";
 import { IProduct } from "../product/product.types";
 
 export type OrderStatus = 'Pending' | 'Processing' | 'Shipping' | 'Completed' | 'Cancelled';
-export type PaymentMethod = 'COD' | 'SEPAY';
+export type PaymentMethod = 'COD' | 'SePAY';
 
 export interface IOrderDetail {
   _id: string;
@@ -50,6 +51,8 @@ export interface IOrderDetail {
 }
 
 export interface IOrder {
+  recipientName: ReactNode;
+  note: string;
   _id: string;
   orderCode: string;           // Mã đơn: STL-1234
   customerId: any;             // Thông tin khách hàng

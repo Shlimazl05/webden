@@ -1,7 +1,7 @@
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 const Product = require('../models/Product');
-
+const mongoose = require('mongoose');
 /**
  * LẤY DANH SÁCH ĐƠN HÀNG CHO ADMIN (CÓ SEARCH & PHÂN TRANG)
  */
@@ -65,16 +65,57 @@ const updateOrderStatus = async (orderId, newStatus) => {
 
     const oldStatus = order.status;
 
-    // LOGIC HOÀN KHO: Nếu đơn hàng bị Hủy (Cancelled)
-    if (newStatus === 'Cancelled' && oldStatus !== 'Cancelled') {
-        const details = await OrderDetail.find({ orderId });
-        for (const item of details) {
-            await Product.findByIdAndUpdate(item.productId, {
-                $inc: { stockQuantity: item.quantity } // Cộng lại vào kho
-            });
+    // --- LOGIC TRỪ KHO (Khi xác nhận đơn: Pending -> Processing) ---
+    if (oldStatus === 'Pending' && newStatus === 'Processing') {
+        const details = await OrderDetail.find({ 
+            orderId: new mongoose.Types.ObjectId(orderId) 
+        });
+
+        if (!details || details.length === 0) {
+            throw new Error("Đơn hàng không có chi tiết sản phẩm, không thể xử lý");
         }
+
+        // BƯỚC 1: KIỂM TRA TOÀN BỘ KHO (Verify Phase)
+        // Chúng ta phải kiểm tra trước tất cả, nếu một món thiếu là dừng cả đơn
+        for (const item of details) {
+            const product = await Product.findById(item.productId);
+            
+            if (!product) {
+                throw new Error(`Sản phẩm với ID ${item.productId} không còn tồn tại trên hệ thống`);
+            }
+
+            if (product.stockQuantity < item.quantity) {
+                // Trả về thông báo lỗi cụ thể để Frontend hiển thị toast
+                throw new Error(`Sản phẩm "${product.productName}" hiện không đủ số lượng trong kho. (Hiện có: ${Math.max(0, product.stockQuantity)}, Cần: ${item.quantity})`);
+            }
+        }
+
+        // BƯỚC 2: THỰC HIỆN TRỪ KHO (Update Phase)
+        // Khi đã đi đến đây nghĩa là tất cả mặt hàng đều đủ số lượng
+        const updatePromises = details.map(item => 
+            Product.findByIdAndUpdate(item.productId, {
+                $inc: { stockQuantity: -item.quantity }
+            })
+        );
+        await Promise.all(updatePromises);
     }
 
+    // --- LOGIC HOÀN KHO (Khi hủy đơn: Cancelled) ---
+    const statusesThatDeductedStock = ['Processing', 'Shipping', 'Completed'];
+    if (newStatus === 'Cancelled' && statusesThatDeductedStock.includes(oldStatus)) {
+        const details = await OrderDetail.find({ 
+            orderId: new mongoose.Types.ObjectId(orderId) 
+        });
+
+        const returnPromises = details.map(item => 
+            Product.findByIdAndUpdate(item.productId, {
+                $inc: { stockQuantity: item.quantity }
+            })
+        );
+        await Promise.all(returnPromises);
+    }
+
+    // Cập nhật thông tin đơn hàng
     order.status = newStatus;
     order.statusHistory.push({
         status: newStatus,

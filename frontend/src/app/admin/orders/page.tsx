@@ -11,7 +11,7 @@ import { OrderTabs } from "@/features/orders/components/OrderTabs";
 import { EmptyOrderState } from "@/features/orders/components/EmptyOrderState"; // Import nó vào đây
 import { SearchBar } from "@/components/ui/SearchBar";
 import { Pagination } from "@/components/ui/Pagination";
-
+import { AdminOrderCard } from "@/features/orders/components/admin/AdminOrderCard";
 // Layout Wrappers
 import { 
   AdminPageContainer, 
@@ -45,10 +45,15 @@ export default function AdminOrdersPage() {
           ) : f.orders.length > 0 ? (
             // Nếu có đơn hàng -> Hiện bảng
             <>
-              <OrderTable 
-                orders={f.orders} 
-                onUpdateStatus={f.handleUpdateStatus} 
-              />
+              <div className="space-y-2">
+                {f.orders.map((order: any) => (
+                  <AdminOrderCard 
+                    key={order._id} 
+                    order={order} 
+                    onUpdateStatus={f.handleUpdateStatus} 
+                  />
+                ))}
+              </div>
               {/* Phân trang chỉ hiện khi có dữ liệu */}
               <div className="mt-8 border-t border-slate-50 pt-4">
                 <Pagination 
