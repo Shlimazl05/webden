@@ -9,6 +9,6 @@ export const registerApi = async (data: RegisterInput): Promise<AuthResponse> =>
 };
 
 export const loginApi = async (data: LoginInput) => {
-  const response = await axiosInstance.post("/auth/login", data);
+  const response = await axiosInstance.post(AUTH_ENDPOINTS.LOGIN, data);
   return response.data; // Trả về { message, data: { token, user } }
 };
