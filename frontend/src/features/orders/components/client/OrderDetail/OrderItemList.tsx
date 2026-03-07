@@ -14,12 +14,12 @@ export const OrderItemList = ({ details }: { details: IOrderDetail[] }) => (
       {details.map((item) => (
         <div key={item._id} className="p-6 flex gap-4 hover:bg-slate-50/30 transition-colors">
           <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 flex-shrink-0">
-            <Image src={item.product.imageUrl || "/placeholder-product.png"} alt={item.product.productName} fill className="object-cover" />
+            <Image src={item.productId.imageUrl || "/placeholder-product.png"} alt={item.product.productName} fill className="object-cover" />
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="text-sm font-bold text-slate-800 truncate">{item.product.productName}</h4>
             <p className="text-[11px] text-slate-400 mt-1 uppercase font-medium">
-                {item.product.specifications?.power} | {item.product.specifications?.size}
+                {item.productId.specifications?.power} | {item.product.specifications?.size}
             </p>
             <div className="flex justify-between items-end mt-2">
               <p className="text-xs text-slate-500 font-medium tracking-widest">x{item.quantity}</p>

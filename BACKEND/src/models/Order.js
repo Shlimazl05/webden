@@ -1,24 +1,3 @@
-// const mongoose = require('mongoose');
-
-// const OrderSchema = new mongoose.Schema({
-//   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-//   recipientName: String,
-//   phone: String,
-//   address: String,
-//   items: [{
-//     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-//     quantity: Number,
-//     unitPrice: Number
-//   }],
-//   shippingFee: Number,
-//   totalAmount: Number,
-//   paymentMethod: { type: String, enum: ['VNPay', 'COD'] },
-//   transactionId: { type: String, unique: true, sparse: true  //Cho phép những đơn COD (không có mã này) vẫn được lưu mà không bị lỗi trùng lặp null
-//   },
-//   status: { type: String, default: 'Chờ xử lý' }
-// }, { timestamps: true });
-
-// module.exports = mongoose.model('Order', OrderSchema);
 
 const mongoose = require('mongoose');
 
@@ -41,6 +20,7 @@ const OrderSchema = new mongoose.Schema({
   recipientName: { type: String, required: true },
   phone: { type: String, required: true },
   address: { type: String, required: true },
+  node: {type: String, default: ""},
 
   // Tài chính
   shippingFee: { type: Number, default: 0 },
@@ -55,7 +35,7 @@ const OrderSchema = new mongoose.Schema({
   },
   paymentStatus: {
     type: String,
-    enum: ['Pending', 'Paid', 'Failed'],
+    enum: ['Pending', 'Paid', 'Failed', 'Partially_Paid'],
     default: 'Pending'
   },
   transactionId: { 
@@ -64,7 +44,7 @@ const OrderSchema = new mongoose.Schema({
     sparse: true 
   },
 
-  // Trạng thái đơn hàng (Khớp với Frontend Tab)
+  // Trạng thái đơn hàng 
   status: { 
     type: String, 
     enum: ['Pending', 'Processing', 'Shipping', 'Completed', 'Cancelled'],

@@ -90,7 +90,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const adminRoutes = require('./routes/adminRoutes'); // Tuyến đường cho Dashboard
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-const vnpayRoutes = require('./routes/vnpayRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 const supplierRoutes = require('./routes/supplierRoutes');
 const importOrderRoutes = require('./routes/importOrderRoutes');
@@ -107,7 +107,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/admin', adminRoutes); // Dùng cho thống kê Dashboard
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/vnpay', vnpayRoutes);
+app.use('/api/payments', paymentRoutes);
 
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/import-orders', importOrderRoutes);

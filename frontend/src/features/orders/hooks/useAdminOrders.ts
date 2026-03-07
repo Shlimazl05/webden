@@ -28,9 +28,21 @@ export const useAdminOrder = () => {
         activeTab === 'all' ? '' : activeTab, 
         debouncedSearch
       );
-      setOrders(res.orders || []);
-      setTotalPages(res.pagination?.totalPages || 1);
+      
+      console.log("Dữ liệu nhận được từ API:", res); // DEBUG TẠI ĐÂY
+
+      // Kiểm tra xem res có đúng cấu trúc { orders, pagination } không
+      if (res && res.orders) {
+        setOrders(res.orders);
+        setTotalPages(res.pagination?.totalPages || 1);
+      } else if (Array.isArray(res)) {
+        // Trường hợp API trả về thẳng mảng
+        setOrders(res);
+      } else {
+        setOrders([]);
+      }
     } catch (err) {
+      console.error("Lỗi khi lấy đơn hàng:", err); // PHẢI CÓ DÒNG NÀY ĐỂ DEBUG
       setOrders([]);
     } finally {
       setLoading(false);

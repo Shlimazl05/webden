@@ -6,7 +6,6 @@ import { useAdminAuth } from "@/features/auth/auth.hooks";
 import { useAdminOrder } from "@/features/orders/hooks/useAdminOrders";
 
 // UI Components
-import { OrderTable } from "@/features/orders/components/admin/OrderTable";
 import { OrderTabs } from "@/features/orders/components/OrderTabs";
 import { EmptyOrderState } from "@/features/orders/components/EmptyOrderState"; // Import nó vào đây
 import { SearchBar } from "@/components/ui/SearchBar";
