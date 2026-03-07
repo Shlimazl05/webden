@@ -24,3 +24,29 @@ exports.updateStatus = async (req, res) => {
         res.status(400).json({ success: false, message: error.message });
     }
 };
+
+
+
+// TAO DON HANG
+
+exports.createNewOrder = async (req, res) => {
+    try {
+        // req.user._id lấy từ middleware xác thực của bạn
+        const customerId = req.user._id; 
+        
+        // Gọi Service xử lý logic
+        const result = await orderService.createOrder(req.body, customerId);
+
+        res.status(201).json({
+            success: true,
+            message: "Đặt hàng thành công",
+            data: result
+        });
+    } catch (error) {
+        console.error("Lỗi Controller tạo đơn:", error.message);
+        res.status(400).json({ 
+            success: false, 
+            message: error.message 
+        });
+    }
+};

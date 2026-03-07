@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cartController = require('../controllers/cartController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');   //KT ĐĂNG NHẬP
 
 // Bắt buộc phải đăng nhập mới được thêm vào giỏ
 router.post('/add', protect, cartController.addItem);

@@ -33,10 +33,11 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
-router.get('/', productController.getProducts);
-router.post('/add', productController.addProduct);
-router.patch('/:id', productController.updateProduct); // Dùng Patch để update một phần
-router.delete('/:id', productController.deleteProduct);
+router.get('/', adminOnly,productController.getProducts);
+router.post('/add',adminOnly, productController.addProduct);
+router.patch('/:id', adminOnly, productController.updateProduct); // Dùng Patch để update một phần
+router.delete('/:id',adminOnly, productController.deleteProduct);
 
 module.exports = router;
