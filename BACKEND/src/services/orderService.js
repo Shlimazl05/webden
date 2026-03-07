@@ -216,3 +216,30 @@ exports.updateOrderStatus = async (orderId, newStatus, customNote = null) => {
 
     return await order.save();
 };
+
+/**
+ * Tự động hủy các đơn hàng Pending/SePay quá 24h mà chưa thanh toán đủ
+ * Bạn có thể dùng thư viện 'node-cron' để gọi hàm này mỗi giờ
+ */
+exports.autoCancelExpiredOrders = async () => {
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    // Tìm các đơn: Pending + Phương thức SePay + Đặt trước 24h trước + Chưa thanh toán đủ
+    const expiredOrders = await Order.find({
+        status: 'Pending',
+        paymentMethod: 'SePay',
+        paymentStatus: { $ne: 'Paid' },
+        createdAt: { $lt: twentyFourHoursAgo }
+    });
+
+    for (let order of expiredOrders) {
+        order.status = 'Cancelled';
+        order.statusHistory.push({
+            status: 'Cancelled',
+            updatedAt: new Date(),
+            note: 'Hệ thống: Tự động hủy đơn hàng do quá hạn thanh toán 24 giờ.'
+        });
+        await order.save();
+        console.log(`[Auto-Cancel] Đã hủy đơn: ${order.orderCode}`);
+    }
+};
