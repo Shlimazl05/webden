@@ -74,7 +74,7 @@ const app = express();
 
 // --- 2. MIDDLEWARES ---
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3001',
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
     credentials: true
 }));
 app.use(express.json({ limit: '10mb' })); // Tăng giới hạn để nhận được ảnh Base64 từ Frontend
@@ -94,7 +94,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 
 const supplierRoutes = require('./routes/supplierRoutes');
 const importOrderRoutes = require('./routes/importOrderRoutes');
-
+const customerRoutes = require('./routes/customerRoutes');
 // Cổng chào API
 app.get('/', (req, res) => res.status(200).json({ 
     message: "Stellar Lights API is running..." 
@@ -111,6 +111,7 @@ app.use('/api/payments', paymentRoutes);
 
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/import-orders', importOrderRoutes);
+app.use('/api/customers', customerRoutes);
 
 // --- 4. ERROR HANDLING ---
 // Xử lý lỗi 404 (Không tìm thấy Route)

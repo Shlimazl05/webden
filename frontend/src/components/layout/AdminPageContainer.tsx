@@ -4,7 +4,7 @@ export const AdminPageContainer = ({ children }: { children: React.ReactNode }) 
   </div>
 );
 
-export const AdminPageHeader = ({ title, children }: { title: string, children?: React.ReactNode }) => (
+export const AdminPageHeader = ({ title, children }: { title: React.ReactNode, children?: React.ReactNode }) => (
   <div className="flex justify-between items-center mb-8">
     <h1 className="text-2xl font-black text-[#001529] tracking-tight uppercase">
       {title}

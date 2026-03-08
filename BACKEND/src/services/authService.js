@@ -2,29 +2,64 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const registerUser = async (userData) => {
-  const { username, phone, password } = userData;
+// const registerUser = async (userData) => {
+//   const { username, phone, password, email, address, role } = userData;
 
-  // 1. Kiểm tra người dùng đã tồn tại chưa
-  const existingUser = await User.findOne({ $or: [{ username }, { phone }] });
+//   // 1. Kiểm tra người dùng đã tồn tại chưa
+//   const existingUser = await User.findOne({ $or: [{ username }, { phone }, (email ? [{ email }] : []) ] });
+//   if (existingUser) {
+//     throw new Error('Tên đăng nhập hoặc số điện thoại đã tồn tại');
+//   }
+
+//   // 2. Mã hóa mật khẩu
+//   const hashedPassword = await bcrypt.hash(password, 10);
+
+//   // 3. Lưu vào DB
+//   const newUser = await User.create({
+//     username,
+//     phone,
+//     password: hashedPassword
+//   });
+
+//   // Tối ưu: Loại bỏ password trước khi trả về
+//   const userResponse = newUser.toObject();
+//   delete userResponse.password;
+
+//   return userResponse;
+// };
+
+const registerUser = async (userData) => {
+  // 1. Lấy thêm email, address và role từ userData
+  const { username, phone, password, email, address, role } = userData;
+
+  // 2. Kiểm tra tồn tại (username, phone hoặc email)
+  const existingUser = await User.findOne({ 
+    $or: [
+      { username }, 
+      { phone }, 
+      ...(email ? [{ email }] : []) // Chỉ kiểm tra email nếu có gửi lên
+    ] 
+  });
+
   if (existingUser) {
-    throw new Error('Tên đăng nhập hoặc số điện thoại đã tồn tại');
+    throw new Error('Tên đăng nhập, số điện thoại hoặc email đã tồn tại');
   }
 
-  // 2. Mã hóa mật khẩu
+  // 3. Mã hóa mật khẩu
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // 3. Lưu vào DB
+  // 4. Lưu vào DB (Bổ sung email, address, role)
   const newUser = await User.create({
     username,
     phone,
-    password: hashedPassword
+    password: hashedPassword,
+    email: email || null,
+    address: address || '',
+    role: role || 'Customer' // Nếu không truyền lên thì mặc định là Customer
   });
 
-  // Tối ưu: Loại bỏ password trước khi trả về
   const userResponse = newUser.toObject();
   delete userResponse.password;
-
   return userResponse;
 };
 
@@ -56,5 +91,8 @@ const loginUser = async (identifier, password) => {
 
     return { token, user: userResponse };
 };
+
+
+
 
 module.exports = { registerUser, loginUser };

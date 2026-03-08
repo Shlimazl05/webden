@@ -35,6 +35,7 @@ const adminOnly = (req, res, next) => {
   if (req.user && req.user.role === 'Admin') {
     next();
   } else {
+    onsole.log("Bị chặn 403 vì role là:", req.user?.role);
     res.status(403).json({ message: "Truy cập bị từ chối. Chỉ dành cho Admin!" });
   }
 };

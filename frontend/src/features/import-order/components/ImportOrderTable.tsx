@@ -93,8 +93,8 @@ export const ImportOrderTable = ({ orders, loading, onDelete }: any) => {
                                 {order.details?.map((item: any, idx: number) => (
                                   <tr key={idx} className="text-[14px] font-bold text-slate-700">
                                     <td className="p-5 pl-10">
-                                      <p className="text-slate-950 font-black leading-tight uppercase tracking-tight">{(item.productId as any)?.productName}</p>
-                                      <p className="text-[10px] text-indigo-500 font-bold mt-1 uppercase">MÃ SP: {(item.productId as any)?.productCode}</p>
+                                      <p className="text-slate-800 font-black leading-tight  tracking-tight">{(item.productId as any)?.productName}</p>
+                                      <p className="text-[10px] text-indigo-500 font-bold mt-1 ">MÃ SP: {(item.productId as any)?.productCode}</p>
                                     </td>
                                     <td className="p-5 text-center">
                                       <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-lg font-black text-[15px]">{item.quantity}</span>

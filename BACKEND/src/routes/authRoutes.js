@@ -4,7 +4,7 @@ const authController = require('../controllers/authController');
 const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 router.post('/register', authController.register);
-router.post('/login',protect, authController.login);
+router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 
 // router.delete('/:id', protect, adminOnly, productController.deleteProduct);

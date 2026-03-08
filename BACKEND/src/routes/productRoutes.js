@@ -35,9 +35,9 @@ const router = express.Router();
 const productController = require('../controllers/productController');
 const { protect, adminOnly } = require('../middleware/authMiddleware');
 
-router.get('/', adminOnly,productController.getProducts);
-router.post('/add',adminOnly, productController.addProduct);
-router.patch('/:id', adminOnly, productController.updateProduct); // Dùng Patch để update một phần
-router.delete('/:id',adminOnly, productController.deleteProduct);
+router.get('/', protect, adminOnly,productController.getProducts);
+router.post('/add',protect, adminOnly, productController.addProduct);
+router.patch('/:id',protect,  adminOnly, productController.updateProduct); // Dùng Patch để update một phần
+router.delete('/:id',protect, adminOnly, productController.deleteProduct);
 
 module.exports = router;
