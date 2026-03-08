@@ -49,6 +49,7 @@
 //     </div>
 //   );
 // }
+
 "use client";
 import React, { useState } from 'react';
 import { useAdminAuth } from "@/features/auth/auth.hooks";
@@ -95,7 +96,7 @@ export default function CustomerPage() {
               <div className="w-10 h-10 bg-cyan-50 text-cyan-500 rounded-xl flex items-center justify-center shadow-sm border border-cyan-100">
                 <Users2 size={22} strokeWidth={2.5} />
               </div>
-              <span className="tracking-widest uppercase font-black">QUẢN LÝ KHÁCH HÀNG</span>
+              <span >QUẢN LÝ KHÁCH HÀNG</span>
             </div>
           }
         />

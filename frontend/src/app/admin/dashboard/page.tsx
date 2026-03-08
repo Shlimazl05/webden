@@ -121,8 +121,8 @@
 "use client";
 import React from 'react';
 import { useAdminAuth } from '@/features/auth/auth.hooks';
-import { useAdminStats } from '@/features/admin/admin.hook'; 
-import { StatCard } from '@/features/admin/components/StatCard';
+import { useAdminStats } from '@/features/dashboard/admin.hook'; 
+import { StatCard } from '@/features/dashboard/components/StatCard';
 import { 
   BarChart3, 
   Box, 
