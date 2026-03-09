@@ -106,8 +106,8 @@ export const CustomerTable = ({ customers, loading, onStatusChange,onResetPage }
     return (
      <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
         <EmptyState 
-          title="Trang này đang trống"
-          description="Có vẻ như không có khách hàng nào ở đây. Thử quay lại trang 1 hoặc kiểm tra từ khóa tìm kiếm."
+          title="Không tìm thấy khách hàng"
+          
           onBack={onResetPage} // 3. Truyền trực tiếp hàm từ Props vào đây
         />
       </div>

@@ -60,7 +60,11 @@ export const useCustomerManagement = (page: number = 1) => {
   const [totalPages, setTotalPages] = useState(0); 
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-
+  
+  // Hàm để xóa tìm kiếm về rỗng
+  const clearSearch = useCallback(() => {
+    setSearchTerm('');
+  }, []);
   // 1. Hàm fetch dữ liệu: Nhận từ khóa tìm kiếm và số trang
   const fetchCustomers = useCallback(async (search: string, p: number) => {
     try {
@@ -124,6 +128,7 @@ export const useCustomerManagement = (page: number = 1) => {
     loading, 
     handleToggleStatus, 
     setSearchTerm,
+    clearSearch,
     refresh: () => fetchCustomers(searchTerm, page)
   };
 };

@@ -1,55 +1,4 @@
 
-
-// "use client";
-// import React from 'react';
-// import { useAdminAuth } from "@/features/auth/auth.hooks";
-// import { useCustomerManagement } from "@/features/customer/hooks/useAdminCustomer";
-// import { CustomerTable } from "@/features/customer/components/CustomerTable";
-// import { CustomerSearch } from "@/features/customer/components/CustomerSearch";
-// import { Users2 } from "lucide-react";
-
-// // Import các Layout Components dùng chung
-// import { 
-//   AdminPageContainer, 
-//   AdminPageHeader 
-// } from "@/components/layout/AdminPageContainer";
-
-// export default function CustomerPage() {
-//   const { isAuthorized } = useAdminAuth();
-//   const { customers, loading, handleToggleStatus } = useCustomerManagement();
-
-//   if (!isAuthorized) return null;
-
-//   return (
-//     <div className="animate-in fade-in duration-500">
-      
-//       {/* LỚP BAO TRẮNG TOÀN TRANG */}
-//       <AdminPageContainer>
-        
-//         {/* TIÊU ĐỀ TRANG & THỐNG KÊ NHANH */}
-//         <AdminPageHeader title="QUẢN LÝ KHÁCH HÀNG">
-
-//         </AdminPageHeader>
-
-//         {/* THANH TÌM KIẾM */}
-//         <div className="mb-10 max-w-sm">
-//           <CustomerSearch onSearch={(val) => console.log("Tìm kiếm:", val)} />
-//         </div>
-
-//         {/* VÙNG CHỨA BẢNG CÓ THANH KÉO (Scrollable Table) */}
-//         <div className="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 mt-6">
-//           <CustomerTable 
-//             customers={customers} 
-//             loading={loading} 
-//             onStatusChange={handleToggleStatus} 
-//           />
-//         </div>
-
-//       </AdminPageContainer>
-//     </div>
-//   );
-// }
-
 "use client";
 import React, { useState } from 'react';
 import { useAdminAuth } from "@/features/auth/auth.hooks";
@@ -76,12 +25,18 @@ export default function CustomerPage() {
     totalPages, // Lấy tổng số trang thực tế từ Backend trả về
     loading, 
     handleToggleStatus, 
-    setSearchTerm 
+    setSearchTerm,
+    clearSearch
   } = useCustomerManagement(currentPage); 
 
   const handleSearch = (val: string) => {
     setSearchTerm(val);
     setCurrentPage(1); // Tìm kiếm mới luôn về trang 1
+  };
+  // Tạo hàm xử lý khi nhấn nút "Quay lại"
+  const handleResetAll = () => {
+    setCurrentPage(1); // Đưa trang về 1
+    clearSearch();    // Xóa trắng ô tìm kiếm
   };
 
   if (!isAuthorized) return null;
@@ -115,6 +70,7 @@ export default function CustomerPage() {
               customers={customers} 
               loading={loading} 
               onStatusChange={handleToggleStatus} 
+              
               onResetPage={() => setCurrentPage(1)} 
             />
           </div>
