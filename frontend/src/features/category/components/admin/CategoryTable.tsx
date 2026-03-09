@@ -38,8 +38,8 @@ export const CategoryTable = ({ categories, loading, onEdit, onDelete, onToggleS
   return (
     <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden font-sans">
       <table className="w-full text-left border-collapse">
-        <thead className="bg-slate-50/80 border-b border-slate-100">
-          <tr className="text-slate-700 font-bold text-[14px] uppercase tracking-widest">
+        <thead className="bg-slate-100 border-b border-slate-200">
+          <tr className="text-[#001529] font-black text-[15px] ">
             <th className="p-6">Tên danh mục</th>
             <th className="p-6 text-center">Trạng thái</th>
             <th className="p-6 text-center">Số lượng</th>
@@ -56,12 +56,12 @@ export const CategoryTable = ({ categories, loading, onEdit, onDelete, onToggleS
                 </td>
                 
                 <td className="p-6 text-center">
-                  <button
-                    onClick={() => handleQuickToggle(cat)}
-                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-sm ${
+                  <div
+                    
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-[12px]  transition-all shadow-sm ${
                       cat.status === 'Active' 
-                      ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-100" 
-                      : "bg-amber-50 text-amber-600 hover:bg-amber-100 border border-amber-100"
+                      ? "bg-emerald-50 text-emerald-600  border border-emerald-100" 
+                      : "bg-amber-50 text-amber-600  border border-amber-100"
                     }`}
                   >
                     {cat.status === 'Active' ? (
@@ -69,17 +69,32 @@ export const CategoryTable = ({ categories, loading, onEdit, onDelete, onToggleS
                     ) : (
                       <><EyeOff size={14} strokeWidth={3} /> Đang ẩn</>
                     )}
-                  </button>
+                  </div>
                 </td>
 
                 <td className="p-6 text-center">
-                  <span className="bg-indigo-50 text-indigo-600 px-4 py-1.5 rounded-lg text-[12px] font-bold border border-indigo-100">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-[12px]  bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm">
                     {cat.productCount || 0} sản phẩm
-                  </span>
+                  </div>
                 </td>
 
                 <td className="p-6 text-center">
                   <div className="flex justify-center gap-3">
+                    <button
+                      onClick={() => handleQuickToggle(cat)}
+                      className={`p-2.5 bg-white border border-slate-100 rounded-xl transition-all active:scale-90 hover:shadow-md ${
+                        cat.status === 'Active' 
+                        ? "text-emerald-500 hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50" 
+                        : "text-amber-500 hover:text-amber-600 hover:border-amber-200 hover:bg-amber-50"
+                      }`}
+                      title={cat.status === 'Active' ? "Ẩn danh mục" : "Hiện danh mục"}
+                    >
+                      {cat.status === 'Active' ? (
+                        <EyeOff size={18} strokeWidth={2.5} />
+                      ) : (
+                        <Eye size={18} strokeWidth={2.5} />
+                      )}
+                    </button>                                                   
                     {/* NÚT SỬA: Màu Indigo - Sắc nét */}
                     <button 
                       onClick={() => onEdit(cat)}
@@ -88,15 +103,7 @@ export const CategoryTable = ({ categories, loading, onEdit, onDelete, onToggleS
                     >
                       <Edit3 size={18} strokeWidth={2.5} />
                     </button>
-
-                    {/* NÚT XÓA: Màu Rose - Cảnh báo */}
-                    <button 
-                      onClick={() => onDelete(cat._id)}
-                      className="p-2.5 text-rose-500 bg-white border border-slate-100 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 hover:shadow-md rounded-xl transition-all active:scale-90"
-                      title="Xóa danh mục"
-                    >
-                      <Trash2 size={18} strokeWidth={2.5} />
-                    </button>
+  
                   </div>
                 </td>
               </tr>
