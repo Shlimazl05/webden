@@ -10,11 +10,10 @@ interface CategoryTableProps {
   categories: ICategory[] | null;
   loading: boolean;
   onEdit: (category: ICategory) => void;
-  onDelete: (id: string) => void;
   onToggleStatus: (category: ICategory) => Promise<void>;
 }
 
-export const CategoryTable = ({ categories, loading, onEdit, onDelete, onToggleStatus }: CategoryTableProps) => {
+export const CategoryTable = ({ categories, loading, onEdit,  onToggleStatus }: CategoryTableProps) => {
   if (loading) return <div className="w-full h-64 bg-slate-50 animate-pulse rounded-[2rem] border border-slate-100" />;
 
   const handleQuickToggle = async (cat: ICategory) => {

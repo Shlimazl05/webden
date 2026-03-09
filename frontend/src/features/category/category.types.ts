@@ -19,6 +19,7 @@
  * Interface đại diện cho một danh mục sản phẩm trong hệ thống
  */
 export interface ICategory {
+  image?: string;
   _id: string;
   name: string;
   slug: string;
@@ -34,6 +35,7 @@ export interface ICategory {
  */
 export interface CreateCategoryPayload {
   name: string;
+  image?: string;
   description?: string;
   iconName?: string;
   status?: 'Active' | 'Hidden';

@@ -21,7 +21,8 @@ const CategorySchema = new mongoose.Schema({
     type: String 
     
   },
-
+  // Ảnh đại diện
+  image: { type: String, default: "" }, 
   // Trạng thái hiển thị
   status: { 
     type: String, 
