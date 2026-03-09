@@ -2,60 +2,57 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// const registerUser = async (userData) => {
-//   const { username, phone, password, email, address, role } = userData;
-
-//   // 1. Kiểm tra người dùng đã tồn tại chưa
-//   const existingUser = await User.findOne({ $or: [{ username }, { phone }, (email ? [{ email }] : []) ] });
-//   if (existingUser) {
-//     throw new Error('Tên đăng nhập hoặc số điện thoại đã tồn tại');
-//   }
-
-//   // 2. Mã hóa mật khẩu
-//   const hashedPassword = await bcrypt.hash(password, 10);
-
-//   // 3. Lưu vào DB
-//   const newUser = await User.create({
-//     username,
-//     phone,
-//     password: hashedPassword
-//   });
-
-//   // Tối ưu: Loại bỏ password trước khi trả về
-//   const userResponse = newUser.toObject();
-//   delete userResponse.password;
-
-//   return userResponse;
-// };
+// ---- HÀM ĐĂNG KÝ ------// 
 
 const registerUser = async (userData) => {
-  // 1. Lấy thêm email, address và role từ userData
-  const { username, phone, password, email, address, role } = userData;
+  
+  const { username, phone, password, email, address, role, confirmPassword } = userData;
 
-  // 2. Kiểm tra tồn tại (username, phone hoặc email)
-  const existingUser = await User.findOne({ 
-    $or: [
-      { username }, 
-      { phone }, 
-      ...(email ? [{ email }] : []) // Chỉ kiểm tra email nếu có gửi lên
-    ] 
-  });
-
-  if (existingUser) {
-    throw new Error('Tên đăng nhập, số điện thoại hoặc email đã tồn tại');
+  // 1. Kiểm tra tên đăng nhập
+  const usernameRegex = /^[a-zA-Z0-9_]{6,20}$/;
+  if (!username) throw new Error('Vui lòng nhập tên đăng nhập');
+  if (!usernameRegex.test(username)) {
+    throw new Error('Tên đăng nhập từ 6-20 ký tự, không chứa dấu hoặc ký tự đặc biệt');
   }
 
-  // 3. Mã hóa mật khẩu
-  const hashedPassword = await bcrypt.hash(password, 10);
+  // 2. Kiem tra so dien thoai
+  const phoneRegex = /^0[0-9]{9}$/;
+  if (!phone) throw new Error('Vui lòng nhập số điện thoại');
+  if (!phoneRegex.test(phone)) {
+    throw new Error('Số điện thoại không hợp lệ');
+  }
 
-  // 4. Lưu vào DB (Bổ sung email, address, role)
+  // 3. Kiểm tra Mật khẩu
+  if (!password || password.length < 6) {
+    throw new Error('Mật khẩu phải có ít nhất 6 ký tự');
+  }
+
+  // 4. Kiểm tra Xác nhận mật khẩu
+  if (password !== confirmPassword) {
+    throw new Error('Mật khẩu xác nhận không khớp');
+  }
+
+  // 5. Kiểm tra trùng lặp trong Database (Báo lỗi riêng từng trường)
+  const isUsernameExist = await User.findOne({ username });
+  if (isUsernameExist) throw new Error('Tên đăng nhập này đã được sử dụng');
+
+  const isPhoneExist = await User.findOne({ phone });
+  if (isPhoneExist) throw new Error('Số điện thoại này đã được đăng ký');
+
+  if (email) {
+    const isEmailExist = await User.findOne({ email });
+    if (isEmailExist) throw new Error('Email này đã được sử dụng');
+  }
+  
+  // 6. Mã hóa và lưu
+  const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await User.create({
     username,
     phone,
     password: hashedPassword,
     email: email || null,
     address: address || '',
-    role: role || 'Customer' // Nếu không truyền lên thì mặc định là Customer
+    role: role || 'Customer'
   });
 
   const userResponse = newUser.toObject();
@@ -63,6 +60,8 @@ const registerUser = async (userData) => {
   return userResponse;
 };
 
+
+// --- HAM DANG NHAP ------//
 const loginUser = async (identifier, password) => {
     // 1. Tìm user theo username HOẶC phone
     const user = await User.findOne({
@@ -91,8 +90,6 @@ const loginUser = async (identifier, password) => {
 
     return { token, user: userResponse };
 };
-
-
 
 
 module.exports = { registerUser, loginUser };

@@ -43,4 +43,5 @@ export interface RegisterInput {
   username: string;
   phone: string;
   password: string;
+  confirmPassword: string;
 }
