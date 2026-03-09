@@ -15,7 +15,7 @@ const registerUser = async (userData) => {
     throw new Error('Tên đăng nhập từ 6-20 ký tự, không chứa dấu hoặc ký tự đặc biệt');
   }
 
-  // 2. Kiem tra so dien thoai
+  // 2. Kiem tra so dien thoai 
   const phoneRegex = /^0[0-9]{9}$/;
   if (!phone) throw new Error('Vui lòng nhập số điện thoại');
   if (!phoneRegex.test(phone)) {
@@ -63,18 +63,43 @@ const registerUser = async (userData) => {
 
 // --- HAM DANG NHAP ------//
 const loginUser = async (identifier, password) => {
-    // 1. Tìm user theo username HOẶC phone
+    // 1. Kiểm tra xem có để trống không
+    if (!identifier) {
+        throw new Error("Vui lòng nhập tên đăng nhập hoặc số điện thoại!");
+    }
+    if (!password) {
+        throw new Error("Vui lòng nhập mật khẩu!");
+    }
+
+    // 2. Kiểm tra định dạng của identifier
+    const usernameRegex = /^[a-zA-Z0-9_]{6,20}$/; // Định dạng giống lúc đăng ký
+    const phoneRegex = /^0[0-9]{9}$/;           // Định dạng giống lúc đăng ký
+    
+    const isPhone = phoneRegex.test(identifier);
+    const isUsername = usernameRegex.test(identifier);
+
+    
+    if (!isPhone && !isUsername) {
+        throw new Error("Tài khoản không đúng định dạng (Tên đăng nhập hoặc Số điện thoại)!");
+    }
+
+    // 3. Kiểm tra độ dài mật khẩu tối thiểu (để tránh gửi pass quá ngắn lên DB)
+    if (password.length < 6) {
+        throw new Error("Mật khẩu không chính xác!"); // Báo chung chung để bảo mật
+    }
+    // ----- TIM TAI KHOAN TRONG DB --------//
+
     const user = await User.findOne({
         $or: [{ username: identifier }, { phone: identifier }]
     });
     
     if (!user) throw new Error("Tài khoản không tồn tại!");
-
-    // 2. Kiểm tra mật khẩu
+    
+    // 5. Kiểm tra mật khẩu
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error("Mật khẩu không chính xác!");
 
-    // 3. Kiểm tra trạng thái (Nếu bạn có trường status trong Model)
+    // 6. Kiểm tra trạng thái (Nếu bạn có trường status trong Model)
     if (user.status === 0) throw new Error("Tài khoản đã bị khóa!");
 
     // 4. Tạo JWT
