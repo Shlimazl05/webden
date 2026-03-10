@@ -53,6 +53,7 @@ const createCategory = async (data) => {
 
 const getAllCategories = async (options = {}) => {
     const search = options.search ? options.search.trim() : '';
+    const status = options.status || '';
     const page = Math.max(1, parseInt(options.page) || 1);
     const limit = Math.max(1, parseInt(options.limit) || 10);
     const skip = (page - 1) * limit;
@@ -61,6 +62,10 @@ const getAllCategories = async (options = {}) => {
     const matchQuery = {};
     if (search) {
         matchQuery.name = { $regex: new RegExp(search, 'i') };
+    }
+
+    if (status && status !== 'All') {
+        matchQuery.status = status; // Ví dụ: "Active" hoặc "Hidden"
     }
 
     /**

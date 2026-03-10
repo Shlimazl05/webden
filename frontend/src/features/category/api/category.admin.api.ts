@@ -68,12 +68,13 @@ export const categoryApi = {
   /**
    * 1. Lấy danh sách danh mục (có Phân trang + Tìm kiếm)
    */
-  getAll: async (page: number = 1, limit: number = 10, search: string = ''): Promise<PaginatedCategory> => {
+  getAll: async (page: number = 1, limit: number = 10, search: string = '', status: string = ''): Promise<PaginatedCategory> => {
     const response = await axiosInstance.get(`/categories`, {
-      params: { 
-        page, 
-        limit, 
-        search: search.trim() 
+      params: {
+        page,
+        limit,
+        search: search.trim(),
+        status: status === 'All' ? '' : status
       }
     });
     // Trả về dữ liệu từ Backend { success: true, data: { categories, pagination } }

@@ -14,10 +14,11 @@ const createCategory = async (req, res) => {
 const getAllCategories = async (req, res) => {
     try {
         // Lấy search, page, limit từ URL (VD: ?search=den&page=1)
-        const { search, page, limit } = req.query;
+        const { search, page, limit, status } = req.query;
         
         const result = await categoryService.getAllCategories({
             search: search || '',
+            status: status || '',
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10
         });
