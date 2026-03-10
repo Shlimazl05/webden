@@ -313,26 +313,60 @@ export const AddCategoryModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
             <div className="w-full sm:w-64 space-y-2">
               <label className="text-[13px] font-bold text-slate-700 uppercase tracking-wide">Trạng thái</label>
               <div className="grid grid-cols-2 gap-2">
+                {/* NÚT HIỂN THỊ */}
                 <button
                   type="button"
+                  disabled={loading}
+                  // Cập nhật formData.status
                   onClick={() => setFormData({ ...formData, status: "Active" })}
-                  className={`h-11 rounded-xl flex items-center justify-center gap-2 font-bold text-[11px] border transition-all ${status === "Active" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-white text-slate-400 border-slate-200"}`}
+                  className={`h-11 rounded-xl flex items-center justify-center gap-2 font-bold text-[11px] border transition-all ${formData.status === "Active"
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm"
+                      : "bg-white text-slate-400 border-slate-200"
+                    }`}
                 >
-                  <Check size={16} strokeWidth={3} className={status === "Active" ? "block" : "hidden"} /> HIỂN THỊ
+                  <Check
+                    size={16}
+                    strokeWidth={3}
+                    className={formData.status === "Active" ? "block" : "hidden"}
+                  />
+                  HIỂN THỊ
                 </button>
+
+                {/* NÚT TẠM ẨN */}
                 <button
                   type="button"
+                  disabled={loading}
+                  // Cập nhật formData.status
                   onClick={() => setFormData({ ...formData, status: "Hidden" })}
-                  className={`h-11 rounded-xl flex items-center justify-center gap-2 font-bold text-[11px] border transition-all ${status === "Hidden" ? "bg-slate-100 text-slate-700 border-slate-300" : "bg-white text-slate-400 border-slate-200"}`}
+                  className={`h-11 rounded-xl flex items-center justify-center gap-2 font-bold text-[11px] border transition-all ${formData.status === "Hidden"
+                      ? "bg-slate-100 text-slate-700 border-slate-400 shadow-sm"
+                      : "bg-white text-slate-400 border-slate-200"
+                    }`}
                 >
-                  <EyeOff size={16} strokeWidth={3} className={status === "Hidden" ? "block" : "hidden"} /> TẠM ẨN
+                  <EyeOff
+                    size={16}
+                    strokeWidth={3}
+                    className={formData.status === "Hidden" ? "block" : "hidden"}
+                  />
+                  TẠM ẨN
                 </button>
               </div>
             </div>
 
             <div className="flex gap-3 w-full sm:w-auto">
-              <button type="button" onClick={onClose} disabled={loading} className="flex-1 sm:px-6 h-12 text-slate-400 font-bold text-[13px] hover:text-slate-600 transition-all">HỦY BỎ</button>
-              <button type="submit" disabled={loading} className="flex-[1.5] sm:px-10 h-12 bg-indigo-600 text-white rounded-xl font-bold text-[13px] shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={loading}
+                className="flex-1 sm:px-6 h-12 text-slate-400 font-bold text-[13px] hover:text-slate-600 transition-all"
+              >
+                HỦY BỎ
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-[1.5] sm:px-10 h-12 bg-indigo-600 text-white rounded-xl font-bold text-[13px] shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2"
+              >
                 {loading ? <Loader2 className="animate-spin" size={18} /> : (isEdit ? "CẬP NHẬT" : "LƯU")}
               </button>
             </div>

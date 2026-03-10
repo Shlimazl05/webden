@@ -41,7 +41,7 @@ export const CategoryItem = ({ category, fallbackIcon }: CategoryItemProps) => {
       </div>
       
       {/* Tên danh mục: Sử dụng text-sm font-black để đồng bộ với UI cao cấp */}
-      <span className="text-[13px] font-black text-[#001529] text-center leading-tight group-hover:text-indigo-600 transition-colors px-2 uppercase tracking-tighter">
+      <span className="text-[15px] font-semibold text-[#001529] text-center leading-tight  transition-colors px-2  tracking-tighter">
         {category.name}
       </span>
     </Link>
