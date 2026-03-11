@@ -45,14 +45,22 @@ const getAllProducts = async (options = {}) => {
     const page = Math.max(1, parseInt(options.page) || 1);
     const limit = Math.max(1, parseInt(options.limit) || 20);
     const skip = (page - 1) * limit;
-    const { categoryId, status, minPrice, maxPrice } = options;
+    const { categoryId, status, minPrice, maxPrice, isAdmin } = options;
 
 
     // Thiết lập bộ lọc tìm kiếm (Tên sản phẩm hoặc Mã SKU)
     const filter = {};
+
     // --- CẬP NHẬT: Lọc theo trạng thái (Active/Hidden) ---
-    if (status) {
-        filter.status = status;
+    if (isAdmin) {
+        // Nếu là Admin: chỉ lọc status nếu Admin truyền vào cụ thể (Active hoặc Hidden)
+        // Nếu Admin không truyền status, filter.status sẽ undefined (nghĩa là lấy tất cả)
+        if (status) {
+            filter.status = status;
+        }
+    } else {
+        // Nếu là Khách: Bắt buộc chỉ lấy sản phẩm Active
+        filter.status = 'Active';
     }
 
     // --- CẬP NHẬT: Lọc theo danh mục (Sửa lỗi dính sản phẩm khác) ---

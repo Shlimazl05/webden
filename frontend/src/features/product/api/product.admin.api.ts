@@ -34,8 +34,13 @@ export const productApi = {
   // 1. Lấy tất cả danh sách sản phẩm (Admin thường lấy hết cả Inactive)
   // Có hỗ trợ truyền params để tìm kiếm hoặc lọc sau này
   getAllProducts: async (params?: any): Promise<IProduct[]> => {
-    const response = await axiosInstance.get("/products", { params });
-    // Tùy vào cấu trúc Backend của bạn, thường là response.data hoặc response.data.data
+    const response = await axiosInstance.get("/products", {
+      params: {
+        ...params,
+        isAdmin: true // Luôn gửi isAdmin: true từ phía Admin API
+      }
+    });
+    // Trả về dữ liệu theo cấu trúc backend (response.data.data cho axios chuẩn)
     return response.data.data || response.data;
   },
 

@@ -15,15 +15,15 @@ exports.addProduct = async (req, res) => {
 exports.getProducts = async (req, res) => {
     try {
         // 1. Lấy TẤT CẢ tham số từ req.query (bao gồm cả minPrice, maxPrice)
-        const { search, page, limit, categoryId, status, minPrice, maxPrice } = req.query;
-
+        const { search, page, limit, categoryId, status, minPrice, maxPrice, isAdmin: queryIsAdmin } = req.query;
+        const isAdmin = queryIsAdmin === 'true' || (req.user && req.user.role === 'Admin');
         // 2. Chuẩn hóa dữ liệu đầu vào vào một object 'options' duy nhất
         const options = {
             search: search || '',
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 20,
-            status: status || 'Active',
-
+            status: status || undefined,
+            isAdmin: isAdmin,
             // Xử lý CategoryId: Nếu là chuỗi "null" hoặc "undefined" thì biến thành null thật
             categoryId: (categoryId && categoryId !== 'undefined' && categoryId !== 'null') ? categoryId : null,
 
@@ -52,7 +52,7 @@ exports.getProducts = async (req, res) => {
     }
 };
 
-// D:\webden\backend\src\controllers\productController.js
+
 
 exports.getProductById = async (req, res) => {
     try {
