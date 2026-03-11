@@ -2,8 +2,10 @@
 const Product = require('../models/Product');
 const slugify = require('slugify');
 const mongoose = require('mongoose');
-// ------ TẠO SẢN PHẨM ----- //
+
+// ------ TẠO SẢN PHẨM -----stockQuantity //
 const createProduct = async (productData) => {
+
     // 1. Tự động sinh mã sản phẩm (SP-001) nếu chưa có
     if (!productData.productCode || productData.productCode === "HỆ THỐNG TỰ SINH") {
         // Tìm sản phẩm cuối cùng dựa trên mã giảm dần

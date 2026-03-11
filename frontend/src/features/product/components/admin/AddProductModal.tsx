@@ -208,6 +208,7 @@ export const AddProductModal = ({ isOpen, onClose, initialData, categories = [],
                   <label className="text-[13px] font-black text-slate-950 uppercase tracking-widest mb-1.5 block">Giá bán (VNĐ)</label>
                   <input 
                     type="number" 
+                    min="0"
                     value={formData.salePrice === 0 ? "" : formData.salePrice}
                     onChange={(e) => setFormData({...formData, salePrice: e.target.value === "" ? 0 : Number(e.target.value)})}
                     placeholder="Nhập giá bán..."
@@ -219,6 +220,7 @@ export const AddProductModal = ({ isOpen, onClose, initialData, categories = [],
                   <label className="text-[13px] font-black text-slate-950 uppercase tracking-widest mb-1.5 block">Số lượng kho</label>
                   <input 
                     type="number" 
+                    min="0" 
                     value={formData.stockQuantity} // Luôn giữ 0 nếu không nhập gì
                     onChange={(e) => setFormData({...formData, stockQuantity: Number(e.target.value)})}
                     className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-indigo-700 text-sm"
