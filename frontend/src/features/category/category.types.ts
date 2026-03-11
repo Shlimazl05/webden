@@ -40,3 +40,41 @@ export interface CreateCategoryPayload {
   iconName?: string;
   status?: 'Active' | 'Hidden';
 }
+
+export interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+
+/**
+ * Cấu trúc dữ liệu trả về từ API có phân trang
+ */
+export interface IPaginatedCategoryResponse {
+  categories: ICategory[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalCategories: number;
+    limit: number;
+  };
+}
+
+
+/**
+ * Dữ liệu cho các thẻ thống kê (Stats Cards)
+ */
+export interface ICategoryStats {
+  total: number;
+  active: number;
+  hidden: number;
+}
+
+
+/**
+ * Type dành cho các trang động trong Next.js 15(Dynamic Routes)
+  * Ví dụ: app / categories / [slug] / page.tsx
+    */
+export interface PageProps {
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}

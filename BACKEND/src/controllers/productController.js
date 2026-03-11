@@ -1,57 +1,5 @@
 
 
-// const productService = require('../services/productService');
-
-// // THÊM MỚI SẢN PHẨM
-// exports.addProduct = async (req, res) => {
-//     try {
-//         // req.body sẽ chứa các trường: productCode, productName, salePrice, categoryId, specifications...
-//         const product = await productService.createProduct(req.body);
-        
-//         res.status(201).json({
-//             success: true,
-//             message: "Nhập hàng vào kho thành công!",
-//             data: product
-//         });
-//     } catch (error) {
-//         // Xử lý lỗi trùng mã sản phẩm (productCode) - lỗi 11000 của MongoDB
-//         if (error.code === 11000 || error.message.includes("tồn tại")) {
-//             return res.status(400).json({ 
-//                 success: false, 
-//                 message: "Mã sản phẩm (SKU) này đã tồn tại trong kho!" 
-//             });
-//         }
-
-//         res.status(400).json({ 
-//             success: false, 
-//             message: error.message || "Không thể thêm sản phẩm" 
-//         });
-//     }
-// };
-
-// // HIỂN THỊ DANH SÁCH SẢN PHẨM
-// exports.getProducts = async (req, res) => {
-//     try {
-//         const products = await productService.getAllProducts();
-        
-//         // Luôn đảm bảo trả về một mảng [] nếu database trống
-//         // giúp Frontend map() không bao giờ bị lỗi undefined
-//         res.status(200).json({
-//             success: true,
-//             count: products ? products.length : 0,
-//             data: products || [] 
-//         });
-//     } catch (error) {
-//         // Nếu lỗi hệ thống, vẫn trả về mảng rỗng trong trường data để an toàn cho UI
-//         res.status(500).json({ 
-//             success: false, 
-//             message: "Lỗi hệ thống khi lấy danh sách sản phẩm",
-//             error: error.message,
-//             data: [] 
-//         });
-//     }
-// };
-
 const productService = require('../services/productService');
 
 exports.addProduct = async (req, res) => {
@@ -62,14 +10,62 @@ exports.addProduct = async (req, res) => {
         res.status(400).json({ success: false, message: error.message });
     }
 };
+// D:\webden\backend\src\controllers\productController.js
 
 exports.getProducts = async (req, res) => {
     try {
-        const { search, page, limit } = req.query;
-        const result = await productService.getAllProducts({ search, page, limit });
-        res.status(200).json({ success: true, data: result });
+        // 1. Lấy TẤT CẢ tham số từ req.query (bao gồm cả minPrice, maxPrice)
+        const { search, page, limit, categoryId, status, minPrice, maxPrice } = req.query;
+
+        // 2. Chuẩn hóa dữ liệu đầu vào vào một object 'options' duy nhất
+        const options = {
+            search: search || '',
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 20,
+            status: status || 'Active',
+
+            // Xử lý CategoryId: Nếu là chuỗi "null" hoặc "undefined" thì biến thành null thật
+            categoryId: (categoryId && categoryId !== 'undefined' && categoryId !== 'null') ? categoryId : null,
+
+            // Ép kiểu giá về số (Float) để Service xử lý dễ hơn
+            minPrice: (minPrice !== undefined && minPrice !== '') ? parseFloat(minPrice) : undefined,
+            maxPrice: (maxPrice !== undefined && maxPrice !== '' && maxPrice !== 'up') ? parseFloat(maxPrice) : undefined
+        };
+
+        // 3. Gọi Service duy nhất một lần với object options đã chuẩn hóa
+        const result = await productService.getAllProducts(options);
+
+        // 4. Trả về kết quả cho Frontend
+        res.status(200).json({
+            success: true,
+            data: result
+        });
+
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        // Log lỗi chi tiết ra màn hình console của Backend để theo dõi
+        console.error("LỖI TẠI PRODUCT CONTROLLER:", error.message);
+
+        res.status(500).json({
+            success: false,
+            message: "Lỗi hệ thống khi tải sản phẩm: " + error.message
+        });
+    }
+};
+
+// D:\webden\backend\src\controllers\productController.js
+
+exports.getProductById = async (req, res) => {
+    try {
+        const { id } = req.params; // Lấy ID từ URL
+        const product = await productService.getProductById(id);
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Sản phẩm không tồn tại" });
+        }
+
+        res.status(200).json({ success: true, data: product });
+    } catch (error) {
+        res.status(400).json({ success: false, message: "ID sản phẩm không hợp lệ" });
     }
 };
 

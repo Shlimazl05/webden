@@ -48,7 +48,7 @@ export const ProductCard = ({ product, onDelete, onToggleStatus, onEdit, onView 
 
       {/* 2. Thông tin Tên & Giá */}
       <div className="flex-1 flex flex-col px-1">
-        <h3 className={`text-[13px] font-bold leading-snug line-clamp-2 min-h-[38px] mb-2 ${
+        <h3 className={`text-[#001529] font-bold text-[15px] leading-snug line-clamp-2 min-h-[38px] mb-2 ${
           !isVisibleOnClient ? 'text-slate-400' : 'text-slate-800'
         }`}>
           {product.productName}

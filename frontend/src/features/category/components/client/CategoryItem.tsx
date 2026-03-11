@@ -17,7 +17,7 @@ interface CategoryItemProps {
 export const CategoryItem = ({ category, fallbackIcon }: CategoryItemProps) => {
   return (
     <Link 
-      href={`/?category=${category.slug}`}
+      href={`/categories/${category.slug}`}
       className="group flex flex-col items-center justify-center p-5 hover:bg-indigo-50/20 transition-all duration-500 border-b lg:border-b-0 border-slate-50 min-h-[192px]"
     >
       {/* 
