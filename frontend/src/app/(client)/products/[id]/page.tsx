@@ -37,7 +37,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     );
 
     return (
-        <main className="max-w-[1300px] mx-auto px-6 py-12 lg:py-20 min-h-screen bg-white">
+        <main className="max-w-[1300px] mx-auto px-6 py-0 min-h-screen bg-white">
             <ProductDetailContent product={product} />
         </main>
     );
