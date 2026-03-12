@@ -1,13 +1,13 @@
 
 
-
 // "use client";
 // import React from 'react';
 // import Link from 'next/link';
 // import { usePathname } from 'next/navigation';
 // import { 
 //   LayoutDashboard, Package, Layers, Users, 
-//   ShoppingBag, ChevronLeft, ChevronRight, FileText 
+//   ShoppingBag, ChevronLeft, ChevronRight, FileText,
+//   Truck, MapPin // Import thêm icon Truck cho Nhà cung cấp
 // } from 'lucide-react';
 
 // interface SidebarProps {
@@ -22,6 +22,8 @@
 //     { name: 'Tổng quan', href: '/admin/dashboard', icon: LayoutDashboard, color: 'text-blue-500' },
 //     { name: 'Sản phẩm', href: '/admin/products', icon: Package, color: 'text-emerald-500' },
 //     { name: 'Danh mục', href: '/admin/categories', icon: Layers, color: 'text-amber-500' },
+//     // THÊM MỚI: Nhà cung cấp
+//     { name: 'Nhà cung cấp', href: '/admin/suppliers', icon: Truck, color: 'text-teal-500' },
 //     { name: 'Hóa đơn nhập', href: '/admin/incoming-invoices', icon: FileText, color: 'text-indigo-500' },
 //     { name: 'Khách hàng', href: '/admin/customers', icon: Users, color: 'text-cyan-500' },
 //     { name: 'Đơn hàng', href: '/admin/orders', icon: ShoppingBag, color: 'text-rose-500' },
@@ -38,7 +40,7 @@
 //         {isExpanded ? <ChevronLeft size={16} strokeWidth={3} /> : <ChevronRight size={16} strokeWidth={3} />}
 //       </button>
 
-//       {/* Logo Area: Sử dụng nền trắng để nổi bật trên Sidebar xám */}
+//       {/* Logo Area */}
 //       <div className="p-6 mb-4 flex justify-center">
 //         <div className={`bg-white border border-slate-200 shadow-sm rounded-2xl flex items-center justify-center transition-all duration-500 ${isExpanded ? "w-full h-16" : "w-12 h-12"}`}>
 //            <span className={`font-black text-slate-900 tracking-tighter transition-all ${isExpanded ? "text-2xl" : "text-sm"}`}>
@@ -57,7 +59,7 @@
 //               href={item.href} 
 //               className={`flex items-center gap-4 p-4 transition-all duration-200 group relative rounded-2xl ${
 //                 isActive 
-//                 ? "bg-white text-slate-950 shadow-md border border-slate-200/50" // "Cái bao" trắng nổi bật trên nền xám
+//                 ? "bg-white text-slate-950 shadow-md border border-slate-200/50" 
 //                 : "text-slate-600 hover:bg-slate-200/60"
 //               } ${!isExpanded && "justify-center"}`}
 //             >
@@ -91,14 +93,15 @@
 //   );
 // };
 
+
 "use client";
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, Package, Layers, Users, 
+import {
+  LayoutDashboard, Package, Layers, Users,
   ShoppingBag, ChevronLeft, ChevronRight, FileText,
-  Truck // Import thêm icon Truck cho Nhà cung cấp
+  Truck, Building2 // Import MapPin cho Phí ship
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -113,30 +116,38 @@ export const AdminSidebar = ({ isExpanded, setIsExpanded }: SidebarProps) => {
     { name: 'Tổng quan', href: '/admin/dashboard', icon: LayoutDashboard, color: 'text-blue-500' },
     { name: 'Sản phẩm', href: '/admin/products', icon: Package, color: 'text-emerald-500' },
     { name: 'Danh mục', href: '/admin/categories', icon: Layers, color: 'text-amber-500' },
-    // THÊM MỚI: Nhà cung cấp
-    { name: 'Nhà cung cấp', href: '/admin/suppliers', icon: Truck, color: 'text-teal-500' },
+    { name: 'Nhà cung cấp', href: '/admin/suppliers', icon: Building2, color: 'text-teal-500' },
     { name: 'Hóa đơn nhập', href: '/admin/incoming-invoices', icon: FileText, color: 'text-indigo-500' },
     { name: 'Khách hàng', href: '/admin/customers', icon: Users, color: 'text-cyan-500' },
     { name: 'Đơn hàng', href: '/admin/orders', icon: ShoppingBag, color: 'text-rose-500' },
+    // THÊM MỚI: Phí ship
+    { name: 'Phí ship', href: '/admin/shipping', icon: Truck, color: 'text-orange-500' },
   ];
 
   return (
     <aside className={`fixed left-0 top-0 h-screen bg-slate-100 border-r border-slate-200 transition-all duration-300 z-50 ${isExpanded ? "w-[280px]" : "w-[80px]"} shadow-sm`}>
       {/* Nút đóng/mở Sidebar */}
-      <button 
+      <button
         type="button"
-        onClick={() => setIsExpanded(!isExpanded)} 
+        onClick={() => setIsExpanded(!isExpanded)}
         className="absolute -right-3 top-12 bg-white border border-slate-200 rounded-full p-1 shadow-md hover:text-indigo-600 transition-all z-[60]"
       >
         {isExpanded ? <ChevronLeft size={16} strokeWidth={3} /> : <ChevronRight size={16} strokeWidth={3} />}
       </button>
 
-      {/* Logo Area */}
+      {/* Logo Area - Chuyển thành hình tròn & Gắn hình ảnh */}
       <div className="p-6 mb-4 flex justify-center">
-        <div className={`bg-white border border-slate-200 shadow-sm rounded-2xl flex items-center justify-center transition-all duration-500 ${isExpanded ? "w-full h-16" : "w-12 h-12"}`}>
-           <span className={`font-black text-slate-900 tracking-tighter transition-all ${isExpanded ? "text-2xl" : "text-sm"}`}>
-              {isExpanded ? "STELLAR" : "S"}
-           </span>
+        <div className={`bg-white border border-slate-200 shadow-sm rounded-full overflow-hidden flex items-center justify-center transition-all duration-500 ${isExpanded ? "w-20 h-20" : "w-12 h-12"}`}>
+          {/* Thay src bằng đường dẫn logo của bạn */}
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              // Fallback nếu không có ảnh
+              e.currentTarget.src = "https://ui-avatars.com/api/?name=Stellar&background=random";
+            }}
+          />
         </div>
       </div>
 
@@ -145,31 +156,29 @@ export const AdminSidebar = ({ isExpanded, setIsExpanded }: SidebarProps) => {
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <Link 
-              key={item.href} 
-              href={item.href} 
-              className={`flex items-center gap-4 p-4 transition-all duration-200 group relative rounded-2xl ${
-                isActive 
-                ? "bg-white text-slate-950 shadow-md border border-slate-200/50" 
-                : "text-slate-600 hover:bg-slate-200/60"
-              } ${!isExpanded && "justify-center"}`}
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-4 p-4 transition-all duration-200 group relative rounded-2xl ${isActive
+                  ? "bg-white text-slate-950 shadow-md border border-slate-200/50"
+                  : "text-slate-600 hover:bg-slate-200/60"
+                } ${!isExpanded && "justify-center"}`}
             >
-              {/* Icon */}
-              <item.icon 
-                size={24} 
-                strokeWidth={isActive ? 2.8 : 2} 
-                className={`${isActive ? item.color : "text-slate-500 group-hover:text-slate-700"}`} 
+              {/* Icon - Luôn hiện màu dựa trên item.color */}
+              <item.icon
+                size={24}
+                strokeWidth={isActive ? 2.8 : 2}
+                className={`${item.color} transition-colors`}
               />
-              
+
               {/* Chữ: Font-Black khi Active */}
               {isExpanded && (
-                <span className={`text-[15px] whitespace-nowrap tracking-tight transition-all ${
-                  isActive ? "font-black" : "font-bold"
-                }`}>
+                <span className={`text-[15px] whitespace-nowrap tracking-tight transition-all ${isActive ? "font-black" : "font-bold"
+                  }`}>
                   {item.name}
                 </span>
               )}
-              
+
               {/* Tooltip khi thu nhỏ */}
               {!isExpanded && (
                 <div className="absolute left-full ml-4 px-3 py-2 bg-slate-900 text-white text-[12px] font-black rounded-xl opacity-0 group-hover:opacity-100 whitespace-nowrap z-50 pointer-events-none shadow-2xl transition-all uppercase tracking-widest">
