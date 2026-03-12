@@ -402,7 +402,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
 
                         {/* Tên sản phẩm */}
                         <div className="border-l-4 border-indigo-500 pl-5">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Tên sản phẩm</p>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Tên sản phẩm</p>
                             <h2 className="text-xl lg:text-3xl font-black text-slate-900 leading-tight ">
                                 {product.productName}
                             </h2>
@@ -410,7 +410,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
 
                         {/* Giá */}
                         <div className="border-l-4 border-rose-500 pl-5">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Giá bán</p>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Giá bán</p>
                             <div className="flex items-baseline gap-1">
                                 <span className="text-3xl lg:text-4xl font-black text-rose-600 tracking-tighter">
                                     {product.salePrice?.toLocaleString('vi-VN')}
@@ -422,7 +422,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
                         {/* Số lượng & Tồn kho */}
                         <div className="space-y-4 pt-2">
                             <div className="space-y-2">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Số lượng mua</p>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Số lượng mua</p>
                                 <div className="flex items-center bg-slate-50 rounded-2xl p-1 border border-slate-100 shadow-sm w-fit h-11">
                                     <button
                                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -442,7 +442,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
 
                             <div className="flex items-center gap-2 px-1">
                                 <Box size={14} className="text-indigo-600" />
-                                <p className="text-[12px] font-bold text-slate-500">
+                                <p className="text-[14px] font-bold text-slate-500">
                                     Tồn kho: <span className="text-slate-950 font-black">{product.stockQuantity}</span>
                                 </p>
                             </div>
@@ -470,7 +470,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
             <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden p-8 mt-6">
                 <div className="flex items-center gap-2 border-l-4 border-indigo-500 pl-5 mb-6">
                     <FileText size={18} className="text-indigo-500" strokeWidth={2.5} />
-                    <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Thông tin chi tiết</h3>
+                    <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">Thông tin chi tiết</h3>
                 </div>
                 <div className="pl-5">
                     <p className="text-[14px] text-slate-600 leading-relaxed font-medium whitespace-pre-wrap">
