@@ -17,3 +17,19 @@ exports.getOrders = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+exports.deleteImportOrder = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await importOrderService.deleteImportOrder(id);
+        res.status(200).json({
+            success: true,
+            message: "Xóa phiếu nhập và hoàn trả kho thành công"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};

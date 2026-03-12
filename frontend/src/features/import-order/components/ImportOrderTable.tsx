@@ -26,14 +26,14 @@ export const ImportOrderTable = ({ orders, loading, onDelete }: any) => {
             <th className="p-6 text-center">Thao tác</th>
           </tr>
         </thead>
-        
+
         <tbody className="divide-y divide-slate-50">
           {orders.length > 0 ? (
             orders.map((order: any) => {
               const isExpanded = expandedRow === order._id;
               return (
                 <React.Fragment key={order._id}>
-                  <tr 
+                  <tr
                     onClick={() => toggleRow(order._id)}
                     className={`hover:bg-slate-50/50 transition-all cursor-pointer group ${isExpanded ? 'bg-indigo-50/30' : ''}`}
                   >
@@ -60,7 +60,7 @@ export const ImportOrderTable = ({ orders, loading, onDelete }: any) => {
                       <span className="text-[12px] font-bold text-rose-600 ml-1 underline">đ</span>
                     </td>
                     <td className="p-6 text-center" onClick={(e) => e.stopPropagation()}>
-                      <button 
+                      <button
                         onClick={() => onDelete(order._id)}
                         className="p-2.5 text-rose-400 bg-white border border-slate-100 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 rounded-xl transition-all active:scale-90 shadow-sm"
                       >
@@ -93,7 +93,7 @@ export const ImportOrderTable = ({ orders, loading, onDelete }: any) => {
                                 {order.details?.map((item: any, idx: number) => (
                                   <tr key={idx} className="text-[14px] font-bold text-slate-700">
                                     <td className="p-5 pl-10">
-                                      <p className="text-slate-800 font-black leading-tight  tracking-tight">{(item.productId as any)?.productName}</p>
+                                      <p className="text-slate-800 font-bold leading-tight  tracking-tight">{(item.productId as any)?.productName}</p>
                                       <p className="text-[10px] text-indigo-500 font-bold mt-1 ">MÃ SP: {(item.productId as any)?.productCode}</p>
                                     </td>
                                     <td className="p-5 text-center">
