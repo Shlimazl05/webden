@@ -72,7 +72,7 @@ const loginUser = async (identifier, password) => {
     }
 
     // 2. Kiểm tra định dạng của identifier
-    const usernameRegex = /^[a-zA-Z0-9_]{6,20}$/; // Định dạng giống lúc đăng ký
+    const usernameRegex = /^[a-zA-Z0-9_]{5,20}$/; // Định dạng giống lúc đăng ký
     const phoneRegex = /^0[0-9]{9}$/;           // Định dạng giống lúc đăng ký
     
     const isPhone = phoneRegex.test(identifier);

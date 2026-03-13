@@ -30,7 +30,8 @@ export const addToCartApi = async (payload: { productId: string; quantity: numbe
  * Sử dụng PATCH để cập nhật một phần dữ liệu
  */
 export const updateCartItemApi = async (cartDetailId: string, quantity: number) => {
-  const response = await axiosInstance.patch(`/cart/item/${cartDetailId}`, {
+  const response = await axiosInstance.patch("/cart/update", {
+    cartDetailId,
     quantity,
   });
   return response.data;

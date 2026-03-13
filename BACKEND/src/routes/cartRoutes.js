@@ -6,6 +6,6 @@ const { protect } = require('../middleware/authMiddleware');   //KT ĐĂNG NHẬ
 // Bắt buộc phải đăng nhập mới được thêm vào giỏ
 router.post('/add', protect, cartController.addItem);
 router.get('/', protect, cartController.getCart); 
-router.put('/update', protect, cartController.updateQuantity); // Dùng PUT để cập nhật
-router.delete('/remove/:id', protect, cartController.deleteItem); // Dùng DELETE để xóa
+router.patch('/update', protect, cartController.updateQuantity); // Dùng PUT để cập nhật
+router.delete('/item/:id', protect, cartController.deleteItem); // Dùng DELETE để xóa
 module.exports = router;
