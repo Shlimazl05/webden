@@ -20,7 +20,7 @@ const OrderSchema = new mongoose.Schema({
   recipientName: { type: String, required: true },
   phone: { type: String, required: true },
   address: { type: String, required: true },
-  node: {type: String, default: ""},
+  note: {type: String, default: ""},
 
   // Tài chính
   shippingFee: { type: Number, default: 0 },

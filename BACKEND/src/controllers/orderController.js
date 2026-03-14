@@ -32,8 +32,13 @@ exports.updateStatus = async (req, res) => {
 exports.createNewOrder = async (req, res) => {
     try {
         // req.user._id lấy từ middleware xác thực của bạn
-        const customerId = req.user._id; 
-        
+        const customerId = req.user._id || req.user?.id; 
+        if (!customerId) {
+            return res.status(401).json({
+                success: false,
+                message: "Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại!"
+            });
+        }
         // Gọi Service xử lý logic
         const result = await orderService.createOrder(req.body, customerId);
 

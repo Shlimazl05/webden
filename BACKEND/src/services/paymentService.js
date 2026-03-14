@@ -99,30 +99,61 @@ const axios = require('axios'); // Thêm axios để gọi API SePay
  * HÀM 1: TẠO LINK THANH TOÁN (CHECKOUT PAGE)
  * Gọi hàm này khi khách bấm nút "Đặt hàng & Thanh toán"
  */
+
+// exports.createSePayPaymentLink = async (order) => {
+//     try {
+//         // Thông tin cấu hình SePay (Lấy từ Dashboard -> Cấu hình API)
+//         const API_TOKEN = process.env.SEPAY_API_TOKEN; 
+//         const PAY_URL = "https://my.sepay.vn/checkout/create";
+
+//         const data = {
+//             "amount": order.finalAmount,
+//             "description": `Thanh toán đơn hàng ${order.orderCode}`,
+//             "order_id": order.orderCode, // Gắn mã đơn vào để SePay trả về đúng
+//             "return_url": `${process.env.CLIENT_URL}/payment-success`, // Link khách quay về sau khi trả tiền
+//             "cancel_url": `${process.env.CLIENT_URL}/payment-failed`,
+//         };
+
+//         const response = await axios.post(PAY_URL, data, {
+//             headers: {
+//                 'Authorization': `Bearer ${API_TOKEN}`,
+//                 'Content-Type': 'application/json',
+//                 // THÊM CÁC DÒNG DƯỚI ĐÂY ĐỂ VƯỢT CLOUDFLARE
+//                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+//                 'Accept': 'application/json',
+//             }
+//         });
+
+//         // Trả về link trang thanh toán (cái form tím tím bạn gửi ảnh)
+//         return response.data.checkout_url; 
+//     } catch (error) {
+//         console.error("Lỗi tạo link thanh toán SePay:", error.response?.data || error.message);
+//         // Nếu lỗi API, có thể fallback về link ảnh QR tĩnh như cũ
+//         return `https://qr.sepay.vn/img?acc=${process.env.BANK_NUMBER}&bank=${process.env.BANK_NAME}&amount=${order.finalAmount}&des=${order.orderCode}`;
+//     }
+// };
+/**
+ * Dành cho gói FREE: Trả về link QR tĩnh nhanh gọn, không bị Cloudflare chặn.
+ */
 exports.createSePayPaymentLink = async (order) => {
     try {
-        // Thông tin cấu hình SePay (Lấy từ Dashboard -> Cấu hình API)
-        const API_TOKEN = process.env.SEPAY_API_TOKEN; 
-        const PAY_URL = "https://api.sepay.vn/checkout/create";
+        // Lấy thông tin từ .env
+        const bankAcc = process.env.BANK_NUMBER; // Số tài khoản MB của bạn
+        const bankName = process.env.BANK_NAME;     // MBBank
 
-        const data = {
-            "amount": order.finalAmount,
-            "description": `Thanh toán đơn hàng ${order.orderCode}`,
-            "order_id": order.orderCode, // Gắn mã đơn vào để SePay trả về đúng
-            "return_url": `${process.env.CLIENT_URL}/payment-success`, // Link khách quay về sau khi trả tiền
-            "cancel_url": `${process.env.CLIENT_URL}/payment-failed`,
-        };
+        // Tạo link QR của SePay (Link này cực kỳ ổn định và miễn phí)
+        // acc: Số tài khoản
+        // bank: Mã ngân hàng
+        // amount: Số tiền (finalAmount)
+        // des: Nội dung chuyển khoản (Mã đơn hàng - Rất quan trọng để Webhook khớp đơn)
+        const checkoutUrl = `https://qr.sepay.vn/img?acc=${bankAcc}&bank=${bankName}&amount=${Math.round(order.finalAmount)}&des=${order.orderCode}`;
 
-        const response = await axios.post(PAY_URL, data, {
-            headers: { 'Authorization': `Bearer ${API_TOKEN}` }
-        });
+        console.log("==> Đã tạo link QR thanh toán cho đơn:", order.orderCode);
 
-        // Trả về link trang thanh toán (cái form tím tím bạn gửi ảnh)
-        return response.data.checkout_url; 
+        return checkoutUrl;
     } catch (error) {
-        console.error("Lỗi tạo link thanh toán SePay:", error.message);
-        // Nếu lỗi API, có thể fallback về link ảnh QR tĩnh như cũ
-        return `https://qr.sepay.vn/img?acc=${process.env.BANK_NUMBER}&bank=${process.env.BANK_NAME}&amount=${order.finalAmount}&des=${order.orderCode}`;
+        console.error("Lỗi khi tạo link QR:", error.message);
+        return null;
     }
 };
 

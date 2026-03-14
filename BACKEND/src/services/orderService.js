@@ -2,8 +2,10 @@
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 const Product = require('../models/Product');
+const Cart = require('../models/Cart'); 
+const CartDetail = require('../models/CartDetail');
 const mongoose = require('mongoose');
-
+const paymentService = require('./paymentService');
 /**
  * LẤY DANH SÁCH ĐƠN HÀNG (ADMIN)
  */
@@ -117,6 +119,46 @@ exports.autoCancelExpiredOrders = async () => {
 /**
  * TẠO ĐƠN HÀNG MỚI & LẤY LINK THANH TOÁN
  */
+
+// exports.createOrder = async (orderData, customerId) => {
+//     // 1. Tạo mã đơn hàng duy nhất
+//     const orderCode = `STL-${Date.now().toString().slice(-6)}`;
+
+//     // 2. Tạo đơn hàng chính trong DB
+//     const newOrder = await Order.create({
+//         ...orderData,
+//         orderCode,
+//         customerId,
+//         paymentStatus: 'Pending',
+//         status: 'Pending'
+//     });
+
+//     // 3. Lưu chi tiết sản phẩm (OrderDetails)
+//     if (orderData.items && orderData.items.length > 0) {
+//         const detailRecords = orderData.items.map(item => ({
+//             orderId: newOrder._id,
+//             productId: item.productId,
+//             quantity: item.quantity,
+//             unitPrice: item.price // Giá chốt tại thời điểm mua
+//         }));
+//         await OrderDetail.insertMany(detailRecords);
+
+//         // --- XÓA SẢN PHẨM TRONG GIỎ HÀNG SAU KHI ĐẶT ---//
+
+//     }
+
+//     // 4. LOGIC CHUYỂN LINK: Nếu thanh toán qua SePay thì gọi lấy link
+//     let checkoutUrl = null;
+//     if (orderData.paymentMethod === 'SePay') {
+//         checkoutUrl = await paymentService.createSePayPaymentLink(newOrder);
+//     }
+
+//     return {
+//         order: newOrder,
+//         checkoutUrl: checkoutUrl // Link này sẽ được gửi về Frontend
+//     };
+// };
+
 exports.createOrder = async (orderData, customerId) => {
     // 1. Tạo mã đơn hàng duy nhất
     const orderCode = `STL-${Date.now().toString().slice(-6)}`;
@@ -136,19 +178,43 @@ exports.createOrder = async (orderData, customerId) => {
             orderId: newOrder._id,
             productId: item.productId,
             quantity: item.quantity,
-            unitPrice: item.price // Giá chốt tại thời điểm mua
+            unitPrice: item.price
         }));
         await OrderDetail.insertMany(detailRecords);
+
+        // --- XỬ LÝ XÓA GIỎ HÀNG SAU KHI ĐẶT ---
+        try {
+            // Lấy ra danh sách các ID của bản ghi trong bảng CartDetail
+            const cartDetailIds = orderData.items
+                .map(item => item.cartDetailId)
+                .filter(id => id); // Lọc bỏ các giá trị null/undefined
+
+            if (cartDetailIds.length > 0) {
+                // Xóa TRỰC TIẾP các bản ghi trong CartDetail dựa trên _id
+                // Vì cartDetailId là khóa chính (_id) nên ta không cần tìm CartId vòng vo nữa
+                const deleteResult = await CartDetail.deleteMany({
+                    _id: { $in: cartDetailIds }
+                });
+
+                console.log(`[Cart Success] Đã xóa ${deleteResult.deletedCount} sản phẩm đã mua khỏi giỏ hàng.`);
+            } else {
+                console.warn("[Cart Warning] Payload không chứa cartDetailId nên không thể xóa giỏ hàng.");
+            }
+        } catch (cartError) {
+            console.error("Lỗi khi xử lý xóa giỏ hàng:", cartError.message);
+            // Không throw lỗi ở đây để khách hàng vẫn thấy đặt hàng thành công
+        }
     }
 
-    // 4. LOGIC CHUYỂN LINK: Nếu thanh toán qua SePay thì gọi lấy link
-    let checkoutUrl = null;
-    if (orderData.paymentMethod === 'SePay') {
-        checkoutUrl = await paymentService.createSePayPaymentLink(newOrder);
-    }
+    // 4. LOGIC CHUYỂN LINK THANH TOÁN (Gói Free dùng QR tĩnh)
+    const bankAcc = process.env.BANK_NUMBER;
+    const bankName = process.env.BANK_NAME;
+    const checkoutUrl = orderData.paymentMethod === 'SePay'
+        ? `https://qr.sepay.vn/img?acc=${bankAcc}&bank=${bankName}&amount=${Math.round(newOrder.finalAmount)}&des=${newOrder.orderCode}`
+        : null;
 
     return {
         order: newOrder,
-        checkoutUrl: checkoutUrl // Link này sẽ được gửi về Frontend
+        checkoutUrl: checkoutUrl
     };
 };

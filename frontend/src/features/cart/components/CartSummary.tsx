@@ -2,6 +2,7 @@
 "use client";
 import Link from 'next/link';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 interface CartSummaryProps {
   subTotal: number;
@@ -10,9 +11,16 @@ interface CartSummaryProps {
 }
 
 export const CartSummary = ({ subTotal, selectedCount, shippingFee = 0 }: CartSummaryProps) => {
+  const router = useRouter(); 
   const total = subTotal + shippingFee;
   // Nút thanh toán sẽ bị khóa nếu không có sản phẩm nào được chọn
   const isDisabled = selectedCount === 0;
+  const handleCheckout = () => {
+    if (!isDisabled) {
+      // Chuyển hướng đến trang nhập thông tin giao hàng
+      router.push('/checkout');
+    }
+  };
 
   return (
     <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm sticky top-[110px]">
@@ -50,13 +58,14 @@ export const CartSummary = ({ subTotal, selectedCount, shippingFee = 0 }: CartSu
 
       <button 
         disabled={isDisabled}
+        onClick={handleCheckout}
         className={`w-full py-4 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 group
-          ${isDisabled 
-            ? 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none' 
+          ${isDisabled
+            ? 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'
             : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-100'
           }`}
       >
-        {isDisabled ? "VUI LÒNG CHỌN SẢN PHẨM" : "TIẾN HÀNH THANH TOÁN"}
+        {isDisabled ? "VUI LÒNG CHỌN SẢN PHẨM" : "MUA HÀNG"}
         {!isDisabled && <span className="group-hover:translate-x-1 transition-transform">→</span>}
       </button>
 
