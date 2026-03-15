@@ -6,9 +6,11 @@ const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/db');
 
+
 // --- 1. CONFIGURATIONS ---
 dotenv.config(); // Tự động tìm .env ở gốc project
 connectDB();
+
 
 const app = express();
 
@@ -37,6 +39,8 @@ const importOrderRoutes = require('./routes/importOrderRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const shippingRoutes = require('./routes/shippingRoutes');
 
+const orderService = require('./services/orderService');
+
 // Cổng chào API
 app.get('/', (req, res) => res.status(200).json({ 
     message: "Stellar Lights API is running..." 
@@ -55,7 +59,10 @@ app.use('/api/suppliers', supplierRoutes);
 app.use('/api/import-orders', importOrderRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/shipping', shippingRoutes);
-// --- 4. ERROR HANDLING ---
+
+// --- KÍCH HOẠT QUÉT ĐƠN HÀNG HẾT HẠN ---//
+orderService.startOrderCleanupTask();
+// --- 4. ERROR HANDLING ---//
 // Xử lý lỗi 404 (Không tìm thấy Route)
 app.use((req, res, next) => {
     const error = new Error(`Not Found - ${req.originalUrl}`);

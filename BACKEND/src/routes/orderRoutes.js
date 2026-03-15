@@ -27,5 +27,5 @@ router.patch('/admin/:id/status', protect, adminOnly, orderController.updateStat
 // --- TUYẾN ĐƯỜNG DÀNH CHO KHÁCH HÀNG ---
 // Chỉ cần đăng nhập (protect) là có thể đặt hàng
 router.post('/create', protect, orderController.createNewOrder);
-
+router.get('/status/:orderCode', protect, orderController.checkOrderStatus);
 module.exports = router;

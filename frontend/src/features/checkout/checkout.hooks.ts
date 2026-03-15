@@ -1,19 +1,27 @@
 
 
-
 // "use client";
-// import { useState } from 'react';
+// import { useState, useMemo } from 'react';
 // import { useRouter } from 'next/navigation';
 // import { toast } from 'react-hot-toast';
 // import { createOrderApi } from '../checkout/checkout.api';
 // import { ICheckoutForm } from '../checkout/checkout.types';
 // import { useCart } from '@/features/cart/hooks/cart';
 
-// export const useCheckout = () => {
+// export const useCheckout = (items: any[], refreshCart: () => void) => {
 //     const router = useRouter();
-//     const { items, totals, refreshCart } = useCart();
-
 //     const [isSubmitting, setIsSubmitting] = useState(false);
+
+//     // 1. Lọc sản phẩm đã chọn (Dùng useMemo để tối ưu và tránh lỗi gạch đỏ)
+//     const selectedItems = useMemo(() => {
+//         return items.filter(item => item.selected === true);
+//     }, [items]);
+
+//     // 2. Tính tổng tiền CHỈ cho những món đã chọn
+//     const calculatedTotal = useMemo(() => {
+//         return selectedItems.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+//     }, [selectedItems]);
+
 //     const [formData, setFormData] = useState<ICheckoutForm>({
 //         recipientName: '',
 //         phone: '',
@@ -28,31 +36,19 @@
 
 //     const submitOrder = async (e: React.FormEvent) => {
 //         e.preventDefault();
-
-//         // Ngăn chặn bấm nút nhiều lần nếu đang trong quá trình xử lý
 //         if (isSubmitting) return;
 
-//         const selectedItems = items.filter(item => item.selected === true);
-//         console.log("Danh sách sản phẩm được chọn để mua:", selectedItems);
-
 //         if (selectedItems.length === 0) {
-//             toast.error("Giỏ hàng của bạn đang trống hoặc chưa chọn sản phẩm nào!");
+//             toast.error("Vui lòng chọn sản phẩm trong giỏ hàng trước!");
 //             return;
 //         }
-
-//         const calculatedTotal = selectedItems.reduce((sum, item) => {
-//             return sum + (item.unitPrice * item.quantity);
-//         }, 0);
-
-//         console.log("Tổng tiền tự tính toán lại:", calculatedTotal);
 
 //         if (!formData.recipientName || !formData.phone || !formData.address) {
-//             toast.error("Vui lòng nhập đầy đủ Họ tên, Số điện thoại và Địa chỉ!");
+//             toast.error("Vui lòng nhập đầy đủ thông tin giao hàng!");
 //             return;
 //         }
 
-//         const phoneRegex = /^0[0-9]{9}$/;
-//         if (!phoneRegex.test(formData.phone)) {
+//         if (!/^0[0-9]{9}$/.test(formData.phone)) {
 //             toast.error("Số điện thoại không hợp lệ!");
 //             return;
 //         }
@@ -60,47 +56,48 @@
 //         try {
 //             setIsSubmitting(true);
 
+//             // BƯỚC QUAN TRỌNG: Đóng gói payload đúng
 //             const payload = {
 //                 recipientName: formData.recipientName,
 //                 phone: formData.phone,
 //                 address: formData.address,
 //                 note: formData.note,
 //                 paymentMethod: formData.paymentMethod,
+
+//                 // --- SỬA TẠI ĐÂY: PHẢI DÙNG calculatedTotal ---
 //                 totalAmount: calculatedTotal,
-//                 finalAmount: calculatedTotal, 
+//                 finalAmount: calculatedTotal,
+
 //                 items: selectedItems.map(item => ({
 //                     cartDetailId: item._id,
-//                     productId: item.productId?._id || item.productId,
+//                     // Lấy ID sản phẩm linh hoạt (để tránh lỗi đỏ TypeScript)
+//                     productId: item.productId?._id || item.product?._id || item.productId,
 //                     quantity: item.quantity,
 //                     price: item.unitPrice
 //                 }))
 //             };
+
 //             console.log("DỮ LIỆU GỬI ĐI:", payload);
 
 //             const res = await createOrderApi(payload as any);
 
 //             if (res.success) {
-//                 // --- ĐIỂM SỬA 1: GỌI REFRESH GIỎ HÀNG TẠI ĐÂY ---
-//                 // Gọi ngay sau khi thành công để UI xóa giỏ hàng trước khi chuyển trang/đi thanh toán
 //                 await refreshCart();
-
-//                 if (formData.paymentMethod === 'SePay' && res.data.checkoutUrl) {
-//                     toast.success("Đang tạo mã thanh toán...");
-//                     // Chuyển hướng ngay lập tức
-//                     window.location.href = res.data.checkoutUrl;
+//                 if (formData.paymentMethod === 'SePay') {
+//                     // Trả về dữ liệu để hiện Modal
+//                     return {
+//                         showQR: true,
+//                         qrUrl: res.data.checkoutUrl,
+//                         orderCode: res.data.order.orderCode
+//                     };
 //                 } else {
 //                     toast.success("Đặt hàng thành công!");
 //                     router.push('/order-success');
 //                 }
 //             }
 //         } catch (error: any) {
-//             const errorMsg = error.response?.data?.message || "Có lỗi xảy ra khi đặt hàng";
-//             toast.error(errorMsg);
-//             console.error("Checkout Error:", error);
-//             // Nếu lỗi thì cho phép bấm nút lại
+//             toast.error(error.response?.data?.message || "Có lỗi xảy ra");
 //             setIsSubmitting(false);
-//         } finally {
-//             // Không set isSubmitting(false) nếu thành công để nút bấm vẫn bị khóa trong khi chuyển trang
 //         }
 //     };
 
@@ -109,10 +106,11 @@
 //         isSubmitting,
 //         updateField,
 //         submitOrder,
-//         totals,
-//         selectedItems: items.filter(i => i.selected)
+//         selectedItems,
+//         calculatedTotal // Trả về để hiện thị ở UI cho đúng
 //     };
 // };
+
 "use client";
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -125,12 +123,12 @@ export const useCheckout = (items: any[], refreshCart: () => void) => {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // 1. Lọc sản phẩm đã chọn (Dùng useMemo để tối ưu và tránh lỗi gạch đỏ)
+    // 1. Lọc sản phẩm đã chọn
     const selectedItems = useMemo(() => {
         return items.filter(item => item.selected === true);
     }, [items]);
 
-    // 2. Tính tổng tiền CHỈ cho những món đã chọn
+    // 2. Tính tổng tiền thực tế dựa trên các món đã tích chọn
     const calculatedTotal = useMemo(() => {
         return selectedItems.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
     }, [selectedItems]);
@@ -149,10 +147,12 @@ export const useCheckout = (items: any[], refreshCart: () => void) => {
 
     const submitOrder = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Chống spam click
         if (isSubmitting) return;
 
         if (selectedItems.length === 0) {
-            toast.error("Vui lòng chọn sản phẩm trong giỏ hàng trước!");
+            toast.error("Vui lòng tích chọn sản phẩm muốn mua trong giỏ hàng!");
             return;
         }
 
@@ -161,6 +161,7 @@ export const useCheckout = (items: any[], refreshCart: () => void) => {
             return;
         }
 
+        // Validate số điện thoại VN (10 số, bắt đầu bằng 0)
         if (!/^0[0-9]{9}$/.test(formData.phone)) {
             toast.error("Số điện thoại không hợp lệ!");
             return;
@@ -169,43 +170,46 @@ export const useCheckout = (items: any[], refreshCart: () => void) => {
         try {
             setIsSubmitting(true);
 
-            // BƯỚC QUAN TRỌNG: Đóng gói payload đúng
             const payload = {
                 recipientName: formData.recipientName,
                 phone: formData.phone,
                 address: formData.address,
                 note: formData.note,
                 paymentMethod: formData.paymentMethod,
-
-                // --- SỬA TẠI ĐÂY: PHẢI DÙNG calculatedTotal ---
                 totalAmount: calculatedTotal,
                 finalAmount: calculatedTotal,
-
                 items: selectedItems.map(item => ({
-                    cartDetailId: item._id,
-                    // Lấy ID sản phẩm linh hoạt (để tránh lỗi đỏ TypeScript)
+                    cartDetailId: item._id, // Quan trọng để xóa đúng giỏ hàng ở Backend
                     productId: item.productId?._id || item.product?._id || item.productId,
                     quantity: item.quantity,
                     price: item.unitPrice
                 }))
             };
 
-            console.log("DỮ LIỆU GỬI ĐI:", payload);
-
             const res = await createOrderApi(payload as any);
 
             if (res.success) {
+                // Xóa các món đã mua khỏi giỏ hàng ngay lập tức
                 await refreshCart();
-                if (formData.paymentMethod === 'SePay' && res.data.checkoutUrl) {
-                    window.location.href = res.data.checkoutUrl;
+
+                if (formData.paymentMethod === 'SePay') {
+                    // TRẢ VỀ DỮ LIỆU ĐỂ GIAO DIỆN HIỆN MODAL QR
+                    return {
+                        showQR: true,
+                        qrUrl: res.data.checkoutUrl,
+                        orderCode: res.data.order.orderCode
+                    };
                 } else {
+                    // Thanh toán khi nhận hàng
                     toast.success("Đặt hàng thành công!");
                     router.push('/order-success');
                 }
             }
         } catch (error: any) {
-            toast.error(error.response?.data?.message || "Có lỗi xảy ra");
-            setIsSubmitting(false);
+            const errorMsg = error.response?.data?.message || "Có lỗi xảy ra khi đặt hàng";
+            toast.error(errorMsg);
+            console.error("Checkout Error:", error);
+            setIsSubmitting(false); // Chỉ reset nếu có lỗi để user bấm lại
         }
     };
 
@@ -215,6 +219,6 @@ export const useCheckout = (items: any[], refreshCart: () => void) => {
         updateField,
         submitOrder,
         selectedItems,
-        calculatedTotal // Trả về để hiện thị ở UI cho đúng
+        calculatedTotal
     };
 };

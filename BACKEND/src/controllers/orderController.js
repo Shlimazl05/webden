@@ -1,4 +1,5 @@
 const orderService = require('../services/orderService');
+const Order = require('../models/Order');
 
 exports.getAdminOrders = async (req, res) => {
     try {
@@ -53,5 +54,23 @@ exports.createNewOrder = async (req, res) => {
             success: false, 
             message: error.message 
         });
+    }
+};
+
+
+// ------ API kiểm tra trạng thái đơn hàng ------//
+exports.checkOrderStatus = async (req, res) => {
+    try {
+        const { orderCode } = req.params;
+        // Tìm đơn hàng và chỉ lấy trường status
+        const order = await Order.findOne({ orderCode }).select('status');
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Không tìm thấy đơn hàng" });
+        }
+
+        res.status(200).json({ success: true, status: order.status });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
 };
