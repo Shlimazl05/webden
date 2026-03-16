@@ -7,9 +7,57 @@ const CartDetail = require('../models/CartDetail');
 const mongoose = require('mongoose');
 const paymentService = require('./paymentService');
 const cron = require('node-cron');
+
+
+
+const generateQrUrl = (finalAmount, orderCode) => {
+    const bankAcc = process.env.BANK_NUMBER;
+    const bankName = process.env.BANK_NAME;
+    // Math.round để đảm bảo số tiền là số nguyên
+    const amount = Math.round(finalAmount || 0);
+    return `https://qr.sepay.vn/img?acc=${bankAcc}&bank=${bankName}&amount=${amount}&des=${orderCode}`;
+};
+
 /**
  * LẤY DANH SÁCH ĐƠN HÀNG (ADMIN)
  */
+// exports.getAllOrdersAdmin = async (options = {}) => {
+//     const { search = '', status = '', page = 1, limit = 10, customerId = null } = options;
+//     const skip = (page - 1) * limit;
+
+//     const filter = {};
+//     if (status && status !== 'all') filter.status = status;
+//     if (customerId) filter.customerId = customerId;
+//     if (search) {
+//         filter.$or = [
+//             { orderCode: { $regex: new RegExp(search, 'i') } },
+//             { recipientName: { $regex: new RegExp(search, 'i') } },
+//             { phone: { $regex: new RegExp(search, 'i') } },
+//             { note: { $regex: new RegExp(search, 'i') } }
+//         ];
+//     }
+
+//     const [orders, totalOrders] = await Promise.all([
+//         Order.find(filter)
+//             .populate('customerId', 'username email')
+//             .sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+//         Order.countDocuments(filter)
+//     ]);
+
+//     const ordersWithDetails = await Promise.all(orders.map(async (order) => {
+//         const details = await OrderDetail.find({ orderId: order._id })
+//             .populate('productId', 'productName productCode imageUrl').lean();
+
+//         let checkoutUrl = null;
+//         if (order.paymentMethod === 'SePay' && order.status === 'Pending' && order.paymentStatus !== 'Paid') {
+//             checkoutUrl = generateQrUrl(order.finalAmount, order.orderCode);
+//         }
+
+//         return { ...order, orderDetails: details, checkoutUrl };
+//     }));
+
+//     return { orders: ordersWithDetails, pagination: { totalOrders, totalPages: Math.ceil(totalOrders / limit), currentPage: parseInt(page) } };
+// };
 
 exports.getAllOrdersAdmin = async (options = {}) => {
     const { search = '', status = '', page = 1, limit = 10, customerId = null } = options;
@@ -27,28 +75,42 @@ exports.getAllOrdersAdmin = async (options = {}) => {
         ];
     }
 
-    const [orders, totalOrders] = await Promise.all([
-        Order.find(filter)
-            .populate('customerId', 'username email')
-            .sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
-        Order.countDocuments(filter)
-    ]);
+    // Sử dụng try-catch để bắt lỗi truy vấn
+    try {
+        const [orders, totalOrders] = await Promise.all([
+            Order.find(filter)
+                .populate('customerId', 'username email')
+                .sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+            Order.countDocuments(filter)
+        ]);
 
-    const ordersWithDetails = await Promise.all(orders.map(async (order) => {
-        const details = await OrderDetail.find({ orderId: order._id })
-            .populate('productId', 'productName productCode imageUrl').lean();
+        const ordersWithDetails = await Promise.all(orders.map(async (order) => {
+            const details = await OrderDetail.find({ orderId: order._id })
+                .populate('productId', 'productName productCode imageUrl').lean();
 
-        let checkoutUrl = null;
-        if (order.paymentMethod === 'SePay' && order.status === 'Pending' && order.paymentStatus !== 'Paid') {
-            checkoutUrl = generateQrUrl(order.finalAmount, order.orderCode);
-        }
+            let checkoutUrl = null;
+            // Logic tạo link thanh toán cho đơn hàng SePay chưa trả tiền
+            if (order.paymentMethod === 'SePay' && order.status === 'Pending' && order.paymentStatus !== 'Paid') {
+                // Gọi hàm helper đã định nghĩa ở trên
+                checkoutUrl = generateQrUrl(order.finalAmount, order.orderCode);
+            }
 
-        return { ...order, orderDetails: details, checkoutUrl };
-    }));
+            return { ...order, orderDetails: details, checkoutUrl };
+        }));
 
-    return { orders: ordersWithDetails, pagination: { totalOrders, totalPages: Math.ceil(totalOrders / limit), currentPage: parseInt(page) } };
+        return {
+            orders: ordersWithDetails,
+            pagination: {
+                totalOrders,
+                totalPages: Math.ceil(totalOrders / limit),
+                currentPage: parseInt(page)
+            }
+        };
+    } catch (error) {
+        console.error("Lỗi tại getAllOrdersAdmin:", error.message);
+        throw error; // Đẩy lỗi ra để Controller bắt được
+    }
 };
-
 
 
 /**

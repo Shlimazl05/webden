@@ -12,7 +12,8 @@ export const orderClientApi = {
 
     // Khách hàng thường chỉ có quyền Hủy đơn khi đơn chưa được xác nhận
     cancelMyOrder: async (orderId: string) => {
-        const res = await axiosInstance.patch(`/orders/mine${orderId}/cancel`);
+        // Gọi thẳng vào ID/cancel (Vì ở app.js bạn đã có /api/orders rồi)
+        const res = await axiosInstance.patch(`/orders/${orderId}/cancel`);
         return res.data;
     }
 };

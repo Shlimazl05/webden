@@ -95,3 +95,39 @@ exports.getMyOrders = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+exports.cancelMyOrder = async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        const customerId = req.user._id || req.user.id;
+
+        console.log("===> SERVER NHẬN LỆNH HỦY ĐƠN:", orderId);
+
+        // 1. Tìm đơn hàng và kiểm tra quyền sở hữu
+        const order = await Order.findOne({ _id: orderId, customerId: customerId });
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Không tìm thấy đơn hàng" });
+        }
+
+        // 2. Chỉ cho phép hủy khi đơn đang ở trạng thái Pending
+        if (order.status !== 'Pending') {
+            return res.status(400).json({
+                success: false,
+                message: "Không thể hủy đơn hàng đã được xử lý hoặc đã giao"
+            });
+        }
+
+        // 3. Gọi service để cập nhật trạng thái thành Cancelled
+        // Hàm updateOrderStatus bạn đã có trong orderService rồi
+        const updatedOrder = await orderService.updateOrderStatus(
+            orderId,
+            'Cancelled',
+            'Khách hàng tự hủy đơn'
+        );
+
+        res.status(200).json({ success: true, data: updatedOrder });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

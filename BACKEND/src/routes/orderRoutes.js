@@ -25,8 +25,12 @@ router.get('/admin/all', protect, adminOnly, orderController.getAdminOrders);
 router.patch('/admin/:id/status', protect, adminOnly, orderController.updateStatus);
 
 // --- TUYẾN ĐƯỜNG DÀNH CHO KHÁCH HÀNG ---
-// Chỉ cần đăng nhập (protect) là có thể đặt hàng
+
+// Đường dẫn: PATCH /api/orders/mine/:id/cancel
+router.patch('/:id/cancel', protect, orderController.cancelMyOrder);
+router.get('/mine', protect, orderController.getMyOrders);
 router.post('/create', protect, orderController.createNewOrder);
 router.get('/status/:orderCode', protect, orderController.checkOrderStatus);
-router.get('/mine', protect, orderController.getMyOrders);
+
+
 module.exports = router;
