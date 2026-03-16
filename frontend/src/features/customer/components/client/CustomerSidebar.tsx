@@ -22,9 +22,9 @@ export const CustomerSidebar = () => {
     },
     {
       label: 'Đơn hàng',
-      href: '/profile/orders',
+      href: '/orders',
       icon: <ClipboardList size={18} />,
-      active: pathname === '/profile/orders'
+      active: pathname === '/orders'
     }
   ];
 

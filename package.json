@@ -1,5 +1,28 @@
 {
   "dependencies": {
     "axios": "^1.13.6"
-  }
+  },
+  "name": "webden",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "scripts": {
+    "dev": "concurrently \"cd frontend && npm run dev\" \"cd BACKEND && npm run dev\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shlimazl05/webden.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Shlimazl05/webden/issues"
+  },
+  "homepage": "https://github.com/Shlimazl05/webden#readme"
 }

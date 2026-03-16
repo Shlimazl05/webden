@@ -74,3 +74,24 @@ exports.checkOrderStatus = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
+// Lấy danh sách đơn hàng của chính người dùng đang đăng nhập
+exports.getMyOrders = async (req, res) => {
+    try {
+        const { page, limit, status } = req.query;
+        const customerId = req.user._id; // Lấy ID từ middleware xác thực
+
+        const result = await orderService.getAllOrdersAdmin({
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10,
+            status: status,
+            customerId: customerId // Truyền thêm customerId để lọc
+        });
+        console.log("Số lượng đơn hàng tìm thấy:", result.orders.length);
+
+        res.status(200).json({ success: true, data: result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

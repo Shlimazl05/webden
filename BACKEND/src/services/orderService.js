@@ -10,13 +10,14 @@ const cron = require('node-cron');
 /**
  * LẤY DANH SÁCH ĐƠN HÀNG (ADMIN)
  */
+
 exports.getAllOrdersAdmin = async (options = {}) => {
-    const { search = '', status = '', page = 1, limit = 10 } = options;
+    const { search = '', status = '', page = 1, limit = 10, customerId = null } = options;
     const skip = (page - 1) * limit;
 
     const filter = {};
     if (status && status !== 'all') filter.status = status;
-
+    if (customerId) filter.customerId = customerId;
     if (search) {
         filter.$or = [
             { orderCode: { $regex: new RegExp(search, 'i') } },
@@ -36,11 +37,19 @@ exports.getAllOrdersAdmin = async (options = {}) => {
     const ordersWithDetails = await Promise.all(orders.map(async (order) => {
         const details = await OrderDetail.find({ orderId: order._id })
             .populate('productId', 'productName productCode imageUrl').lean();
-        return { ...order, orderDetails: details };
+
+        let checkoutUrl = null;
+        if (order.paymentMethod === 'SePay' && order.status === 'Pending' && order.paymentStatus !== 'Paid') {
+            checkoutUrl = generateQrUrl(order.finalAmount, order.orderCode);
+        }
+
+        return { ...order, orderDetails: details, checkoutUrl };
     }));
 
     return { orders: ordersWithDetails, pagination: { totalOrders, totalPages: Math.ceil(totalOrders / limit), currentPage: parseInt(page) } };
 };
+
+
 
 /**
  * CẬP NHẬT TRẠNG THÁI & XỬ LÝ KHO (Dùng chung cho cả Admin và PaymentService)
@@ -132,44 +141,6 @@ exports.startOrderCleanupTask = () => {
  * TẠO ĐƠN HÀNG MỚI & LẤY LINK THANH TOÁN
  */
 
-// exports.createOrder = async (orderData, customerId) => {
-//     // 1. Tạo mã đơn hàng duy nhất
-//     const orderCode = `STL-${Date.now().toString().slice(-6)}`;
-
-//     // 2. Tạo đơn hàng chính trong DB
-//     const newOrder = await Order.create({
-//         ...orderData,
-//         orderCode,
-//         customerId,
-//         paymentStatus: 'Pending',
-//         status: 'Pending'
-//     });
-
-//     // 3. Lưu chi tiết sản phẩm (OrderDetails)
-//     if (orderData.items && orderData.items.length > 0) {
-//         const detailRecords = orderData.items.map(item => ({
-//             orderId: newOrder._id,
-//             productId: item.productId,
-//             quantity: item.quantity,
-//             unitPrice: item.price // Giá chốt tại thời điểm mua
-//         }));
-//         await OrderDetail.insertMany(detailRecords);
-
-//         // --- XÓA SẢN PHẨM TRONG GIỎ HÀNG SAU KHI ĐẶT ---//
-
-//     }
-
-//     // 4. LOGIC CHUYỂN LINK: Nếu thanh toán qua SePay thì gọi lấy link
-//     let checkoutUrl = null;
-//     if (orderData.paymentMethod === 'SePay') {
-//         checkoutUrl = await paymentService.createSePayPaymentLink(newOrder);
-//     }
-
-//     return {
-//         order: newOrder,
-//         checkoutUrl: checkoutUrl // Link này sẽ được gửi về Frontend
-//     };
-// };
 
 exports.createOrder = async (orderData, customerId) => {
     // 1. Tạo mã đơn hàng duy nhất

@@ -52,6 +52,7 @@ export interface IOrderDetail {
 }
 
 export interface IOrder {
+  checkoutUrl: any;
   recipientName: ReactNode;
   note?: string;
   _id: string;

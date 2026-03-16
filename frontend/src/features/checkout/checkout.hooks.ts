@@ -1,116 +1,4 @@
 
-
-// "use client";
-// import { useState, useMemo } from 'react';
-// import { useRouter } from 'next/navigation';
-// import { toast } from 'react-hot-toast';
-// import { createOrderApi } from '../checkout/checkout.api';
-// import { ICheckoutForm } from '../checkout/checkout.types';
-// import { useCart } from '@/features/cart/hooks/cart';
-
-// export const useCheckout = (items: any[], refreshCart: () => void) => {
-//     const router = useRouter();
-//     const [isSubmitting, setIsSubmitting] = useState(false);
-
-//     // 1. Lọc sản phẩm đã chọn (Dùng useMemo để tối ưu và tránh lỗi gạch đỏ)
-//     const selectedItems = useMemo(() => {
-//         return items.filter(item => item.selected === true);
-//     }, [items]);
-
-//     // 2. Tính tổng tiền CHỈ cho những món đã chọn
-//     const calculatedTotal = useMemo(() => {
-//         return selectedItems.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
-//     }, [selectedItems]);
-
-//     const [formData, setFormData] = useState<ICheckoutForm>({
-//         recipientName: '',
-//         phone: '',
-//         address: '',
-//         note: '',
-//         paymentMethod: 'COD'
-//     });
-
-//     const updateField = (field: keyof ICheckoutForm, value: string) => {
-//         setFormData(prev => ({ ...prev, [field]: value }));
-//     };
-
-//     const submitOrder = async (e: React.FormEvent) => {
-//         e.preventDefault();
-//         if (isSubmitting) return;
-
-//         if (selectedItems.length === 0) {
-//             toast.error("Vui lòng chọn sản phẩm trong giỏ hàng trước!");
-//             return;
-//         }
-
-//         if (!formData.recipientName || !formData.phone || !formData.address) {
-//             toast.error("Vui lòng nhập đầy đủ thông tin giao hàng!");
-//             return;
-//         }
-
-//         if (!/^0[0-9]{9}$/.test(formData.phone)) {
-//             toast.error("Số điện thoại không hợp lệ!");
-//             return;
-//         }
-
-//         try {
-//             setIsSubmitting(true);
-
-//             // BƯỚC QUAN TRỌNG: Đóng gói payload đúng
-//             const payload = {
-//                 recipientName: formData.recipientName,
-//                 phone: formData.phone,
-//                 address: formData.address,
-//                 note: formData.note,
-//                 paymentMethod: formData.paymentMethod,
-
-//                 // --- SỬA TẠI ĐÂY: PHẢI DÙNG calculatedTotal ---
-//                 totalAmount: calculatedTotal,
-//                 finalAmount: calculatedTotal,
-
-//                 items: selectedItems.map(item => ({
-//                     cartDetailId: item._id,
-//                     // Lấy ID sản phẩm linh hoạt (để tránh lỗi đỏ TypeScript)
-//                     productId: item.productId?._id || item.product?._id || item.productId,
-//                     quantity: item.quantity,
-//                     price: item.unitPrice
-//                 }))
-//             };
-
-//             console.log("DỮ LIỆU GỬI ĐI:", payload);
-
-//             const res = await createOrderApi(payload as any);
-
-//             if (res.success) {
-//                 await refreshCart();
-//                 if (formData.paymentMethod === 'SePay') {
-//                     // Trả về dữ liệu để hiện Modal
-//                     return {
-//                         showQR: true,
-//                         qrUrl: res.data.checkoutUrl,
-//                         orderCode: res.data.order.orderCode
-//                     };
-//                 } else {
-//                     toast.success("Đặt hàng thành công!");
-//                     router.push('/order-success');
-//                 }
-//             }
-//         } catch (error: any) {
-//             toast.error(error.response?.data?.message || "Có lỗi xảy ra");
-//             setIsSubmitting(false);
-//         }
-//     };
-
-//     return {
-//         formData,
-//         isSubmitting,
-//         updateField,
-//         submitOrder,
-//         selectedItems,
-//         calculatedTotal // Trả về để hiện thị ở UI cho đúng
-//     };
-// };
-
 "use client";
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -202,7 +90,7 @@ export const useCheckout = (items: any[], refreshCart: () => void) => {
                 } else {
                     // Thanh toán khi nhận hàng
                     toast.success("Đặt hàng thành công!");
-                    router.push('/order-success');
+                    router.push('/orders');
                 }
             }
         } catch (error: any) {
