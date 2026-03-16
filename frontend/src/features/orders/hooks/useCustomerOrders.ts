@@ -116,7 +116,7 @@ export const useCustomerOrders = () => {
         try {
             const res = await orderClientApi.cancelMyOrder(cancelModal.orderId);
             if (res.success) {
-                toast.success("Đã hủy đơn hàng thành công", { id: toastId });
+                toast.success("Đã hủy đơn hàng", { id: toastId });
                 fetchOrders(); // Load lại danh sách
             }
         } catch (error: any) {

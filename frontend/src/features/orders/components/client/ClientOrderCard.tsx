@@ -90,7 +90,7 @@ export const ClientOrderCard = ({ order, onCancel, onPay }: Props) => {
                             <CreditCard size={14} strokeWidth={2.5} /> THANH TOÁN
                         </button>
                     )}
-                    
+
                     {order.status === 'Pending' && (
                         <button
                             onClick={(e) => { e.stopPropagation(); onCancel(order._id); }}
@@ -113,7 +113,7 @@ export const ClientOrderCard = ({ order, onCancel, onPay }: Props) => {
                     <div className="flex items-center gap-2">
                         <CreditCard size={14} strokeWidth={2.5} className="text-emerald-500" />
                         <span className="text-slate-600 font-black text-[11px] uppercase tracking-wide">
-                            {order.paymentMethod === 'COD' ? 'Thanh toán khi nhận hàng (COD)' : 'Chuyển khoản SePay'}
+                            {order.paymentMethod === 'COD' ? 'Thanh toán khi nhận hàng (COD)' : 'Chuyển khoản (QR)'}
                         </span>
                     </div>
 
