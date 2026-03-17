@@ -2,7 +2,18 @@ import React from 'react';
 import { PieChart as PieChartIcon, Loader2 } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const COLORS = ['#D4AF37', '#F59E0B', '#334155', '#10B981', '#94A3B8'];
+const COLORS = [
+    '#6366f1', // Indigo (Xanh tím)
+    '#10b981', // Emerald (Xanh lá)
+    '#f59e0b', // Amber (Vàng cam)
+    '#ef4444', // Rose (Đỏ hồng)
+    '#06b6d4', // Cyan (Xanh thiên thanh)
+    '#8b5cf6', // Violet (Tím)
+    '#f97316', // Orange (Cam)
+    '#ec4899', // Pink (Hồng)
+    '#84cc16', // Lime (Xanh chanh)
+    '#64748b', // Slate (Xám xanh)
+];
 
 interface CategoryPieChartProps {
     data: any[];
@@ -33,16 +44,26 @@ export const CategoryPieChart = ({ data, loading }: CategoryPieChartProps) => {
                                 nameKey="name"
                                 cx="50%"
                                 cy="50%"
-                                innerRadius={70}
-                                outerRadius={100}
-                                paddingAngle={5}
+                                innerRadius={60}
+                                outerRadius={80}
+                                paddingAngle={2}
                             >
                                 {data.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Pie>
-                            <Tooltip formatter={(value: any) => [`${value}%`, "Tỷ trọng"]} />
-                            <Legend verticalAlign="bottom" height={36} iconType="circle" />
+                                <Tooltip
+                                    formatter={(value: any) => [
+                                        new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value),
+                                        "Doanh thu"
+                                    ]}
+                                />
+                                <Legend
+                                    layout="vertical"
+                                    verticalAlign="middle"
+                                    align="right"
+                                    iconType="circle"
+                                />
                         </PieChart>
                     </ResponsiveContainer>
                 ) : (

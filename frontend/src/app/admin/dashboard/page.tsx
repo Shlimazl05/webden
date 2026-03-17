@@ -2,106 +2,82 @@
 
 
 // "use client";
-// import React from 'react';
 // import { useAdminAuth } from '@/features/auth/auth.hooks';
-// import { useAdminStats } from '@/features/dashboard/admin.hook'; 
-// import { StatCard } from '@/features/dashboard/components/StatCard';
-// import { 
-//   BarChart3, 
-//   Box, 
-//   Users2, 
-//   ClipboardList, 
-//   LayoutDashboard, 
-//   Trophy,
-//   RefreshCcw 
-// } from 'lucide-react';
+// import { useAdminStats } from '@/features/dashboard/admin.hook';
+// import { AdminPageContainer, AdminPageHeader } from "@/components/layout/AdminPageContainer";
 
-// import { 
-//   AdminPageContainer, 
-//   AdminPageHeader 
-// } from "@/components/layout/AdminPageContainer";
+// // Import các component đã tách
+// import { StatsGrid } from '@/features/dashboard/components/StatsGird'; // Lưu ý: file bạn đang đặt tên là Gird thay vì Grid
+// import { RevenueChart } from '@/features/dashboard/components/RevenueChart';
+// import { CategoryPieChart } from '@/features/dashboard/components/CategoryPieChart';
+// // import { TopProductsList } from '@/features/dashboard/components/TopProductsList';
 // import { BestSellersList } from '@/features/dashboard/components/BestSellersList';
+// const formatVND = (value: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 
 // export default function DashboardPage() {
 //   const { isAuthorized } = useAdminAuth();
-//   const { stats, loading } = useAdminStats();
-  
+
+//   // 1. Lấy thêm range và setRange từ hook
+//   const { stats, loading, range, setRange } = useAdminStats();
+
 //   if (!isAuthorized) return null;
+
+//   // Mapping dữ liệu tại đây để giữ logic tập trung
+//   const topProductsData = stats?.bestSellers?.map((item: any) => ({
+//     name: item.name || item.productName || 'Tên sản phẩm',
+//     revenue: item.revenue || item.totalSales || 0
+//   })) || [];
 
 //   return (
 //     <div className="animate-in fade-in duration-500">
 //       <AdminPageContainer>
-        
-//         <AdminPageHeader title="BẢN ĐIỀU KHIỂN" />
 
-//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-//           <StatCard 
-//             label="DOANH THU" 
-//             value={stats?.revenue !== undefined ? `${stats.revenue.toLocaleString('vi-VN')} đ` : null} 
-//             loading={loading} 
-//             colorClass="text-indigo-600" 
-//             bgColorClass="bg-indigo-50"
-//             icon={<BarChart3 size={20} strokeWidth={2.5} />} 
-//           />
-//           <StatCard 
-//             label="SẢN PHẨM" 
-//             value={stats?.products} 
-//             loading={loading} 
-//             colorClass="text-emerald-600" 
-//             bgColorClass="bg-emerald-50"
-//             icon={<Box size={20} strokeWidth={2.5} />} 
-//           />
-//           <StatCard 
-//             label="KHÁCH HÀNG" 
-//             value={stats?.customers} 
-//             loading={loading} 
-//             colorClass="text-amber-600" 
-//             bgColorClass="bg-amber-50"
-//             icon={<Users2 size={20} strokeWidth={2.5} />} 
-//           />
-//           <StatCard 
-//             label="ĐƠN HÀNG" 
-//             value={stats?.orders} 
-//             loading={loading} 
-//             colorClass="text-rose-600" 
-//             bgColorClass="bg-rose-50"
-//             icon={<ClipboardList size={20} strokeWidth={2.5} />} 
-//           />
-//         </div>
+//         {/* 2. Header Dashboard với Bộ lọc */}
+//         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+//           <AdminPageHeader title="BẢN ĐIỀU KHIỂN" />
 
-//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-//           {/* cot bieu do */}
-//           <div className="lg:col-span-2">
-//             <div className="bg-[#f8fafc] border-2 border-dashed border-slate-200 rounded-[2.5rem] h-[450px] flex flex-col items-center justify-center text-center p-6">
-//               <div className="p-4 bg-white rounded-2xl shadow-sm mb-4">
-//                 <LayoutDashboard size={40} className="text-slate-200" strokeWidth={1.5} />
-//               </div>
-//               <p className="text-slate-400 font-black text-sm uppercase tracking-widest">
-//                 Biểu đồ
-//               </p>
-//             </div>
-//           </div>
-
-//           <div className="lg:col-span-1">
-//             <div className="bg-white border border-slate-100 rounded-[2.5rem] shadow-sm h-[450px] flex flex-col overflow-hidden">
-//               <div className="p-6 border-b border-slate-50 flex items-center gap-3">
-//                 <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-//                   <Trophy size={20} strokeWidth={2.5} />
-//                 </div>
-//                 <h3 className="font-black text-slate-900 text-sm uppercase tracking-tight">
-//                   Sản phẩm bán chạy
-//                 </h3>
-//               </div>
-//               <BestSellersList items={stats?.bestSellers} loading={loading} />
-              
-//             </div>
+//           <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+//             <span className="text-[10px] font-black text-slate-400 uppercase pl-3 tracking-wider">Hiển thị:</span>
+//             <select
+//               value={range}
+//               onChange={(e) => setRange(Number(e.target.value))}
+//               className="bg-slate-50 border-none rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer min-w-[140px]"
+//             >
+//               <option value={7}>7 ngày qua</option>
+//               <option value={30}>30 ngày qua</option>
+//               <option value={90}>90 ngày qua</option>
+//             </select>
 //           </div>
 //         </div>
 
+//         {/* 3. Các thẻ thống kê (Sẽ tự động cập nhật số liệu theo range) */}
+//         <StatsGrid stats={stats} loading={loading} />
+
+//         <div className="flex flex-col gap-8">
+//           {/* 4. Biểu đồ doanh thu (Sẽ co giãn số lượng cột theo range) */}
+//           <RevenueChart
+//             data={stats?.revenueChart || []}
+//             loading={loading}
+//             formatVND={formatVND}
+//           />
+
+//           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+//             <CategoryPieChart
+//               data={stats?.categoryChart || []}
+//               loading={loading}
+//             />
+//             <BestSellersList
+//               data={topProductsData}
+//               loading={loading}
+//               formatVND={formatVND}
+//             />
+//           </div>
+//         </div>
 //       </AdminPageContainer>
 //     </div>
 //   );
 // }
+
 
 "use client";
 import { useAdminAuth } from '@/features/auth/auth.hooks';
@@ -112,30 +88,44 @@ import { AdminPageContainer, AdminPageHeader } from "@/components/layout/AdminPa
 import { StatsGrid } from '@/features/dashboard/components/StatsGird';
 import { RevenueChart } from '@/features/dashboard/components/RevenueChart';
 import { CategoryPieChart } from '@/features/dashboard/components/CategoryPieChart';
-import { TopProductsChart } from '@/features/dashboard/components/TopProductsChart';
+import { BestSellersList } from '@/features/dashboard/components/BestSellersList';
+import { Award } from 'lucide-react'; // Import thêm icon cho tiêu đề danh sách
 
 const formatVND = (value: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 
 export default function DashboardPage() {
   const { isAuthorized } = useAdminAuth();
-  const { stats, loading } = useAdminStats();
+  const { stats, loading, range, setRange } = useAdminStats();
 
   if (!isAuthorized) return null;
-
-  // Mapping dữ liệu tại đây để giữ logic tập trung
-  const topProductsData = stats?.bestSellers?.map((item: any) => ({
-    name: item.name || item.productName || 'Tên sản phẩm',
-    revenue: item.revenue || item.totalSales || 0
-  })) || [];
 
   return (
     <div className="animate-in fade-in duration-500">
       <AdminPageContainer>
-        <AdminPageHeader title="BẢN ĐIỀU KHIỂN" />
 
+        {/* 1. Header & Bộ lọc */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <AdminPageHeader title="BẢN ĐIỀU KHIỂN" />
+
+          <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+            <span className="text-[10px] font-black text-slate-400 uppercase pl-3 tracking-wider">Hiển thị:</span>
+            <select
+              value={range}
+              onChange={(e) => setRange(Number(e.target.value))}
+              className="bg-slate-50 border-none rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer min-w-[140px]"
+            >
+              <option value={7}>7 ngày qua</option>
+              <option value={30}>30 ngày qua</option>
+              <option value={90}>90 ngày qua</option>
+            </select>
+          </div>
+        </div>
+
+        {/* 2. Thẻ thống kê */}
         <StatsGrid stats={stats} loading={loading} />
 
         <div className="flex flex-col gap-8">
+          {/* 3. Biểu đồ doanh thu */}
           <RevenueChart
             data={stats?.revenueChart || []}
             loading={loading}
@@ -143,15 +133,28 @@ export default function DashboardPage() {
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+            {/* 4A. Biểu đồ Tỷ trọng danh mục */}
             <CategoryPieChart
               data={stats?.categoryChart || []}
               loading={loading}
             />
-            <TopProductsChart
-              data={topProductsData}
-              loading={loading}
-              formatVND={formatVND}
-            />
+
+            {/* 4B. Danh sách sản phẩm bán chạy (Được bọc trong Card cho đẹp) */}
+            <div className="bg-white border border-slate-100 rounded-[2rem] shadow-sm p-6 flex flex-col h-[400px]">
+              <div className="flex items-center gap-3 mb-4 px-2">
+                <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+                  <Award size={20} strokeWidth={2.5} />
+                </div>
+                <h3 className="font-black text-slate-900 text-sm uppercase tracking-tight">
+                  Top Đèn bán chạy nhất
+                </h3>
+              </div>
+
+              <BestSellersList
+                items={stats?.bestSellers || []} // Truyền prop 'items' thay vì 'data'
+                loading={loading}
+              />
+            </div>
           </div>
         </div>
       </AdminPageContainer>

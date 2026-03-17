@@ -26,10 +26,11 @@ const dashboardService = require('../services/dashboardService');
 
 exports.getDashboardStats = async (req, res) => {
     try {
+        const days = parseInt(req.query.range) || 30;
         // Sử dụng Promise.all để chạy 2 truy vấn song song (giúp API chạy nhanh hơn)
         const [stats, bestSellers] = await Promise.all([
-            dashboardService.getStats(),
-            dashboardService.getBestSellers(5) // Lấy top 5 sản phẩm
+            dashboardService.getStats(days),
+            dashboardService.getBestSellers(5, days) // Lấy top 5 sản phẩm
         ]);
 
         // Gộp bestSellers vào chung với cục stats
