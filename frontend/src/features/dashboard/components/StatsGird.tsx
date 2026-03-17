@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { StatCard } from './StatCard';
-import { BarChart3, Box, Users2, ClipboardList } from 'lucide-react';
+import { BarChart3, Package, Users2, ShoppingBag } from 'lucide-react';
 
 interface StatsGridProps {
     stats: any;
@@ -29,7 +29,7 @@ export const StatsGrid = ({ stats, loading }: StatsGridProps) => {
                 loading={loading}
                 colorClass="text-emerald-600"
                 bgColorClass="bg-emerald-50"
-                icon={<Box size={20} strokeWidth={2.5} />}
+                icon={<Package size={20} strokeWidth={2.5} />}
             />
 
             {/* 3. KHÁCH HÀNG */}
@@ -37,8 +37,8 @@ export const StatsGrid = ({ stats, loading }: StatsGridProps) => {
                 label="KHÁCH HÀNG"
                 value={stats?.customers}
                 loading={loading}
-                colorClass="text-amber-600"
-                bgColorClass="bg-amber-50"
+                colorClass="text-cyan-600"
+                bgColorClass="bg-cyan-50"
                 icon={<Users2 size={20} strokeWidth={2.5} />}
             />
 
@@ -49,7 +49,7 @@ export const StatsGrid = ({ stats, loading }: StatsGridProps) => {
                 loading={loading}
                 colorClass="text-rose-600"
                 bgColorClass="bg-rose-50"
-                icon={<ClipboardList size={20} strokeWidth={2.5} />}
+                icon={<ShoppingBag size={20} strokeWidth={2.5} />}
             />
         </div>
     );
