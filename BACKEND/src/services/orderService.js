@@ -153,7 +153,7 @@ exports.updateOrderStatus = async (orderId, newStatus, customNote = null) => {
     order.statusHistory.push({
         status: newStatus,
         updatedAt: new Date(),
-        note: customNote || `Cập nhật bởi hệ thống/Admin`
+        note: customNote || `Cập nhật bởi Admin`
     });
 
     return await order.save();
@@ -184,7 +184,7 @@ exports.startOrderCleanupTask = () => {
                     order.statusHistory.push({
                         status: 'Cancelled',
                         updatedAt: new Date(),
-                        note: 'Hệ thống: Tự động hủy đơn do quá hạn thanh toán 10 phút.'
+                        note: 'Tự động hủy đơn do quá hạn thanh toán 10 phút.'
                     });
                     await order.save();
                     console.log(`[Auto-Cancel] Đã hủy đơn: ${order.orderCode}`);

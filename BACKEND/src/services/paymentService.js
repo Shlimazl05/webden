@@ -32,33 +32,35 @@ exports.createSePayPaymentLink = async (order) => {
     }
 };
 
+
 /**
  * HÀM 2: XỬ LÝ KHI CÓ TIỀN VỀ (WEBHOOK)
- * (Đã cập nhật: Không in hoa, chặn 24h, logic cộng dồn)
+ * Cập nhật: Mốc thời gian 10 phút, khớp với Cron Job tự động hủy.
  */
+
 // exports.processSePayWebhook = async (webhookData) => {
 //     const { content, transferAmount, referenceNumber, transactionDate } = webhookData;
 
-//     // 1. Lọc mã đơn hàng
+//     // 1. Lọc mã đơn hàng (không phân biệt hoa thường)
 //     const match = content.match(/STL-\d+/i);
 //     const orderCode = match ? match[0].toUpperCase() : null;
 
-//     if (!orderCode) return { success: false, message: "Không tìm thấy mã đơn hàng" };
-    
+//     if (!orderCode) return { success: false, message: "Không tìm thấy mã đơn hàng trong nội dung" };
+
 //     const order = await Order.findOne({ orderCode });
 //     if (!order) return { success: false, message: `Đơn hàng ${orderCode} không tồn tại` };
 
-//     // 2. Chống trùng giao dịch
+//     // 2. Chống trùng giao dịch (Tránh SePay bắn Webhook lại nhiều lần cho 1 mã GD)
 //     const existingPayment = await Payment.findOne({ transactionId: referenceNumber });
-//     if (existingPayment) return { success: true, message: "Giao dịch đã được xử lý" };
+//     if (existingPayment) return { success: true, message: "Giao dịch này đã được xử lý trước đó" };
 
-//     // 3. Kiểm tra thời hạn 24h kể từ lúc đặt đơn
+//     // 3. Kiểm tra thời hạn 10 PHÚT kể từ lúc đặt đơn
 //     const orderTime = new Date(order.createdAt).getTime();
 //     const currentTime = Date.now();
-//     const twentyFourHours = 24 * 60 * 60 * 1000;
-//     const isExpired = (currentTime - orderTime) > twentyFourHours;
+//     const tenMinutes = 10 * 60 * 1000; // Đổi thành 10 phút
+//     const isExpired = (currentTime - orderTime) > tenMinutes;
 
-//     // 4. Ghi nhận giao dịch vào bảng Payment
+//     // 4. Ghi nhận giao dịch vào bảng Payment (Lưu vết tiền về)
 //     await Payment.create({
 //         orderId: order._id,
 //         transactionId: referenceNumber,
@@ -68,143 +70,102 @@ exports.createSePayPaymentLink = async (order) => {
 //         gatewayRawData: webhookData
 //     });
 
-//     // Tính tổng tiền đã nhận được cho đơn này
+//     // Tính tổng tiền đã nhận được cho đơn này (để xử lý khách chuyển nhiều lần)
 //     const allPayments = await Payment.find({ orderId: order._id });
 //     const totalPaid = allPayments.reduce((sum, p) => sum + p.amount, 0);
 
-//     // 5. Logic xử lý trạng thái đơn hàng
-    
-//     // TRƯỜNG HỢP 1: Đơn đã quá 24h (Dù khách vừa chuyển tiền cũng hủy)
-//     if (isExpired && order.paymentStatus !== 'Paid') {
-//         order.status = 'Cancelled';
-//         order.paymentStatus = 'Partially_Paid';
-//         order.statusHistory.push({
-//             status: 'Cancelled',
-//             note: `Hệ thống: Đơn hàng tự động hủy do quá hạn 24h. Tổng tiền đã nhận: ${totalPaid.toLocaleString()}đ.`
-//         });
-//         await order.save();
-//         return { success: true, message: "Đơn hàng đã quá hạn thanh toán" };
-//     }
+//     // 5. Logic cập nhật trạng thái đơn hàng
 
-//     // TRƯỜNG HỢP 2: Đã thanh toán đủ (hoặc dư)
+//     // TRƯỜNG HỢP 1: Thanh toán đủ (hoặc dư)
 //     if (totalPaid >= order.finalAmount) {
 //         order.paymentStatus = 'Paid';
-        
+
+//         // Nếu đơn vẫn đang Pending (Chưa bị Cron Job hủy)
 //         if (order.status === 'Pending') {
 //             try {
+//                 // Gọi orderService để chuyển sang Processing (và trừ kho)
 //                 await orderService.updateOrderStatus(
-//                     order._id, 
-//                     'Processing', 
-//                     `Hệ thống: Xác nhận đủ tiền ${totalPaid.toLocaleString()}đ. Đơn hàng bắt đầu được xử lý.`
+//                     order._id,
+//                     'Processing',
+//                     `Hệ thống: Nhận đủ tiền ${totalPaid.toLocaleString()}đ qua SePay.`
 //                 );
+//                 console.log(`[Webhook Success] Đơn hàng ${orderCode} đã thanh toán thành công.`);
 //             } catch (error) {
 //                 order.statusHistory.push({
 //                     status: 'Pending',
-//                     note: `Hệ thống: Đã nhận đủ tiền nhưng gặp lỗi kho: ${error.message}`
+//                     note: `Hệ thống: Nhận đủ tiền nhưng lỗi khi cập nhật trạng thái: ${error.message}`
 //                 });
 //             }
-//         } else if (order.status === 'Cancelled') {
+//         }
+//         // Nếu đơn đã bị Cancelled (do quá 10 phút hoặc admin hủy)
+//         else if (order.status === 'Cancelled') {
 //             order.statusHistory.push({
 //                 status: 'Cancelled',
-//                 note: `Lưu ý: Khách thanh toán ${totalPaid.toLocaleString()}đ cho đơn đã đóng. Cần liên hệ hoàn tiền.`
+//                 note: `CẢNH BÁO: Khách thanh toán đủ ${totalPaid.toLocaleString()}đ nhưng đơn ĐÃ BỊ HỦY trước đó (thanh toán muộn). Cần hoàn tiền hoặc xác nhận thủ công.`
 //             });
+//             console.warn(`[Webhook Warning] Đơn ${orderCode} đã hủy nhưng khách vẫn chuyển tiền.`);
 //         }
-//     } 
-//     // TRƯỜNG HỢP 3: Thanh toán thiếu
+//     }
+//     // TRƯỜNG HỢP 2: Thanh toán thiếu
 //     else {
 //         order.paymentStatus = 'Partially_Paid';
 //         order.statusHistory.push({
 //             status: order.status,
-//             note: `Hệ thống: Nhận thêm ${Number(transferAmount).toLocaleString()}đ. Đã có: ${totalPaid.toLocaleString()}/${order.finalAmount.toLocaleString()}đ. Chờ chuyển thêm để hoàn tất.`
+//             note: `Hệ thống: Nhận thêm ${Number(transferAmount).toLocaleString()}đ. Đã nhận: ${totalPaid.toLocaleString()}/${order.finalAmount.toLocaleString()}đ. Chờ thanh toán thêm.`
 //         });
 //     }
 
 //     await order.save();
-//     return { success: true, totalReceived: totalPaid };
+//     return { success: true, orderCode, totalReceived: totalPaid };
 // };
 
-
-/**
- * HÀM 2: XỬ LÝ KHI CÓ TIỀN VỀ (WEBHOOK)
- * Cập nhật: Mốc thời gian 10 phút, khớp với Cron Job tự động hủy.
- */
 exports.processSePayWebhook = async (webhookData) => {
-    const { content, transferAmount, referenceNumber, transactionDate } = webhookData;
+    const { content, transferAmount, referenceNumber, transactionDate, id } = webhookData;
 
-    // 1. Lọc mã đơn hàng (không phân biệt hoa thường)
-    const match = content.match(/STL-\d+/i);
-    const orderCode = match ? match[0].toUpperCase() : null;
+    // 1. Tách mã đơn hàng (Bắt được cả STL-123456 và STL123456)
+    const match = content.match(/STL-?(\d+)/i);
+    const orderCode = match ? `STL-${match[1]}` : null;
 
     if (!orderCode) return { success: false, message: "Không tìm thấy mã đơn hàng trong nội dung" };
 
+    // 2. Tìm đơn hàng
     const order = await Order.findOne({ orderCode });
     if (!order) return { success: false, message: `Đơn hàng ${orderCode} không tồn tại` };
 
-    // 2. Chống trùng giao dịch (Tránh SePay bắn Webhook lại nhiều lần cho 1 mã GD)
-    const existingPayment = await Payment.findOne({ transactionId: referenceNumber });
+    // 3. Chống trùng giao dịch (Idempotency)
+    const transactionId = id || referenceNumber;
+    const existingPayment = await Payment.findOne({ transactionId });
     if (existingPayment) return { success: true, message: "Giao dịch này đã được xử lý trước đó" };
 
-    // 3. Kiểm tra thời hạn 10 PHÚT kể từ lúc đặt đơn
-    const orderTime = new Date(order.createdAt).getTime();
-    const currentTime = Date.now();
-    const tenMinutes = 10 * 60 * 1000; // Đổi thành 10 phút
-    const isExpired = (currentTime - orderTime) > tenMinutes;
-
-    // 4. Ghi nhận giao dịch vào bảng Payment (Lưu vết tiền về)
+    // 4. Ghi nhận lịch sử giao dịch vào bảng Payment
     await Payment.create({
         orderId: order._id,
-        transactionId: referenceNumber,
+        transactionId: transactionId,
         amount: Number(transferAmount),
         content,
-        paymentDate: new Date(transactionDate),
-        gatewayRawData: webhookData
+        paymentDate: transactionDate ? new Date(transactionDate) : new Date(),
+        gatewayRawData: webhookData,
+        status: 'Success'
     });
 
-    // Tính tổng tiền đã nhận được cho đơn này (để xử lý khách chuyển nhiều lần)
-    const allPayments = await Payment.find({ orderId: order._id });
-    const totalPaid = allPayments.reduce((sum, p) => sum + p.amount, 0);
+    // 5. CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG
+    order.paymentStatus = 'Paid';
 
-    // 5. Logic cập nhật trạng thái đơn hàng
-
-    // TRƯỜNG HỢP 1: Thanh toán đủ (hoặc dư)
-    if (totalPaid >= order.finalAmount) {
-        order.paymentStatus = 'Paid';
-
-        // Nếu đơn vẫn đang Pending (Chưa bị Cron Job hủy)
-        if (order.status === 'Pending') {
-            try {
-                // Gọi orderService để chuyển sang Processing (và trừ kho)
-                await orderService.updateOrderStatus(
-                    order._id,
-                    'Processing',
-                    `Hệ thống: Nhận đủ tiền ${totalPaid.toLocaleString()}đ qua SePay.`
-                );
-                console.log(`[Webhook Success] Đơn hàng ${orderCode} đã thanh toán thành công.`);
-            } catch (error) {
-                order.statusHistory.push({
-                    status: 'Pending',
-                    note: `Hệ thống: Nhận đủ tiền nhưng lỗi khi cập nhật trạng thái: ${error.message}`
-                });
-            }
-        }
-        // Nếu đơn đã bị Cancelled (do quá 10 phút hoặc admin hủy)
-        else if (order.status === 'Cancelled') {
-            order.statusHistory.push({
-                status: 'Cancelled',
-                note: `CẢNH BÁO: Khách thanh toán đủ ${totalPaid.toLocaleString()}đ nhưng đơn ĐÃ BỊ HỦY trước đó (thanh toán muộn). Cần hoàn tiền hoặc xác nhận thủ công.`
-            });
-            console.warn(`[Webhook Warning] Đơn ${orderCode} đã hủy nhưng khách vẫn chuyển tiền.`);
-        }
-    }
-    // TRƯỜNG HỢP 2: Thanh toán thiếu
-    else {
-        order.paymentStatus = 'Partially_Paid';
+    if (order.status === 'Pending') {
+        // Chuyển sang Đang xử lý và trừ kho (Bỏ chữ "Hệ thống:")
+        await orderService.updateOrderStatus(
+            order._id,
+            'Processing',
+            `Thanh toán thành công ${Number(transferAmount).toLocaleString()}đ qua SePay.`
+        );
+    } else if (order.status === 'Cancelled') {
+        // Trường hợp khách chuyển tiền đúng lúc đơn vừa bị hủy tự động (sau 10p)
         order.statusHistory.push({
-            status: order.status,
-            note: `Hệ thống: Nhận thêm ${Number(transferAmount).toLocaleString()}đ. Đã nhận: ${totalPaid.toLocaleString()}/${order.finalAmount.toLocaleString()}đ. Chờ thanh toán thêm.`
+            status: 'Cancelled',
+            note: `Khách đã thanh toán ${Number(transferAmount).toLocaleString()}đ nhưng đơn đã bị hủy trước đó. Cần kiểm tra hoàn tiền hoặc xác nhận lại đơn.`
         });
     }
 
     await order.save();
-    return { success: true, orderCode, totalReceived: totalPaid };
+    return { success: true, orderCode };
 };

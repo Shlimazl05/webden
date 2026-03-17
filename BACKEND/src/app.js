@@ -29,7 +29,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
-const adminRoutes = require('./routes/adminRoutes'); // Tuyến đường cho Dashboard
+const dashboardRoutes = require('./routes/dashboardRoutes'); // Tuyến đường cho Dashboard
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
@@ -50,7 +50,7 @@ app.get('/', (req, res) => res.status(200).json({
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
-app.use('/api/admin', adminRoutes); // Dùng cho thống kê Dashboard
+app.use('/api/dashboard', dashboardRoutes); // Dùng cho thống kê Dashboard
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);

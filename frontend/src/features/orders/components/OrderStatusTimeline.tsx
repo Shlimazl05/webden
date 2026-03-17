@@ -1,5 +1,6 @@
 
 
+
 // "use client";
 // import React from 'react';
 // import {
@@ -10,7 +11,7 @@
 // interface OrderStatusTimelineProps {
 //   status: string;
 //   statusHistory: any[];
-//   createdAt: string; // THÊM DÒNG NÀY ĐỂ LẤY GIỜ GỐC
+//   createdAt: string; // Đảm bảo truyền cái này từ ClientOrderCard
 // }
 
 // export const OrderStatusTimeline = ({ status, statusHistory, createdAt }: OrderStatusTimelineProps) => {
@@ -46,16 +47,16 @@
 //           if (log) {
 //             displayDate = new Date(log.updatedAt);
 //           } else if (step.id === 'Pending' && createdAt) {
-//             // Nếu là bước đầu tiên mà history trống, lấy ngày tạo đơn làm giờ "Chờ xác nhận"
+//             // Fix: Luôn lấy createdAt cho bước đầu tiên nếu đơn hàng tồn tại
 //             displayDate = new Date(createdAt);
 //           }
 
 //           return (
-//             <div key={step.id} className="flex-1 relative flex flex-col items-center group">
+//             <div key={step.id} className="flex-1 relative flex flex-col items-center">
 
-//               {/* THANH NỐI NGANG */}
+//               {/* THANH NỐI NGANG (Nằm dưới icon) */}
 //               {index < steps.length - 1 && (
-//                 <div className="absolute left-[50%] top-[21px] w-full h-[3px] bg-slate-100 -z-0">
+//                 <div className="absolute left-[50%] top-[22px] w-full h-[3px] bg-slate-100 -z-0">
 //                   <div
 //                     className="h-full bg-indigo-500 transition-all duration-700"
 //                     style={{
@@ -66,7 +67,7 @@
 //                 </div>
 //               )}
 
-//               {/* Icon vòng tròn */}
+//               {/* Icon vòng tròn (Z-10 để đè lên thanh nối) */}
 //               <div className={`w-11 h-11 rounded-full flex items-center justify-center z-10 border-[3px] transition-all duration-500 shadow-sm
 //                 ${isDone ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-white border-slate-200 text-slate-300'}
 //                 ${isActive ? 'ring-4 ring-indigo-100 scale-110' : ''}
@@ -76,7 +77,7 @@
 
 //               {/* Thông tin chữ phía dưới */}
 //               <div className="mt-4 text-center px-2">
-//                 <p className={`text-[14px] font-black leading-tight ${isDone ? 'text-slate-900' : 'text-slate-400'}`}>
+//                 <p className={`text-[14px] font-black leading-tight whitespace-nowrap ${isDone ? 'text-slate-900' : 'text-slate-400'}`}>
 //                   {step.label}
 //                 </p>
 
@@ -92,7 +93,7 @@
 //         })}
 //       </div>
 
-//       {/* THÔNG BÁO HỦY ĐƠN (Giữ nguyên của bạn) */}
+//       {/* THÔNG BÁO HỦY ĐƠN (Chỉ hiện khi đơn bị Cancelled) */}
 //       {status === 'Cancelled' && (
 //         <div className="mt-12 flex flex-col items-center p-8 bg-rose-50/50 rounded-[2.5rem] border border-rose-100 max-w-md mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
 //           <div className="flex items-center gap-2 text-rose-600 mb-2">
@@ -155,7 +156,6 @@ export const OrderStatusTimeline = ({ status, statusHistory, createdAt }: OrderS
           if (log) {
             displayDate = new Date(log.updatedAt);
           } else if (step.id === 'Pending' && createdAt) {
-            // Fix: Luôn lấy createdAt cho bước đầu tiên nếu đơn hàng tồn tại
             displayDate = new Date(createdAt);
           }
 
@@ -168,7 +168,6 @@ export const OrderStatusTimeline = ({ status, statusHistory, createdAt }: OrderS
                   <div
                     className="h-full bg-indigo-500 transition-all duration-700"
                     style={{
-                      // Thanh nối xanh nếu trạng thái hiện tại đã vượt qua bước này
                       width: status !== 'Cancelled' && currentIndex > index ? '100%' : '0%'
                     }}
                   />
@@ -201,7 +200,7 @@ export const OrderStatusTimeline = ({ status, statusHistory, createdAt }: OrderS
         })}
       </div>
 
-      {/* THÔNG BÁO HỦY ĐƠN (Chỉ hiện khi đơn bị Cancelled) */}
+      {/* THÔNG BÁO HỦY ĐƠN (Xử lý bỏ chữ "Hệ thống:") */}
       {status === 'Cancelled' && (
         <div className="mt-12 flex flex-col items-center p-8 bg-rose-50/50 rounded-[2.5rem] border border-rose-100 max-w-md mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="flex items-center gap-2 text-rose-600 mb-2">
@@ -209,7 +208,13 @@ export const OrderStatusTimeline = ({ status, statusHistory, createdAt }: OrderS
             <span className="text-[14px] font-black uppercase tracking-widest">Đơn hàng đã bị hủy</span>
           </div>
           <p className="text-[12px] text-rose-500 font-bold italic text-center leading-relaxed">
-            {statusHistory?.filter(l => l.status === 'Cancelled').pop()?.note || "Hệ thống tự động đóng đơn hàng."}
+            {(() => {
+              // Lấy note từ lịch sử hủy đơn
+              const rawNote = statusHistory?.filter(l => l.status === 'Cancelled').pop()?.note
+                || "Tự động đóng đơn hàng.";
+              // Sử dụng Regex để xóa cụm "Hệ thống:" hoặc "Hệ thống: " ở đầu câu
+              return rawNote.replace(/^Hệ thống:\s*/i, '');
+            })()}
           </p>
         </div>
       )}
