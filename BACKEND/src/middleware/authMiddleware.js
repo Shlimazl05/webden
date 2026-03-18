@@ -14,7 +14,11 @@ const protect = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET || "Bi_Mat_123");
 
             // 3. Gán thông tin user vào request để Controller sử dụng
-            req.user = decoded; 
+            req.user = {
+                // _id: decoded._id || decoded.id, // Dùng cho code mới/MongoDB
+                id: decoded._id || decoded.id,  // Dùng cho code cũ (Giỏ hàng đang gọi req.user.id)
+                role: decoded.role
+            };
 
             next(); // Cho phép đi tiếp vào Controller
         } catch (error) {
