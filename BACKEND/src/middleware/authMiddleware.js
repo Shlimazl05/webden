@@ -27,7 +27,7 @@ const protect = async (req, res, next) => {
     }
 };
 
-// src/middleware/authMiddleware.js
+
 
 // Middleware kiểm tra quyền Admin
 const adminOnly = (req, res, next) => {
@@ -42,4 +42,3 @@ const adminOnly = (req, res, next) => {
 
 module.exports = { protect, adminOnly }; // Export cả 2
 
-module.exports = { protect, adminOnly };
