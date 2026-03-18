@@ -79,6 +79,110 @@ const createImportOrder = async (data) => {
 /**
  * Lấy danh sách hóa đơn nhập kèm tìm kiếm và phân trang
  */
+// const getAllOrders = async (options = {}) => {
+//     const search = options.search ? options.search.trim() : '';
+//     const page = Math.max(1, parseInt(options.page) || 1);
+//     const limit = Math.max(1, parseInt(options.limit) || 10);
+//     const skip = (page - 1) * limit;
+
+//     // Khởi tạo Pipeline cho Aggregation
+//     const pipeline = [
+//         {
+//             // 1. Nối với bảng Nhà cung cấp để lấy thông tin tên
+//             $lookup: {
+//                 from: 'suppliers',
+//                 localField: 'supplierId',
+//                 foreignField: '_id',
+//                 as: 'supplierId'
+//             }
+//         },
+//         { $unwind: '$supplierId' }
+//     ];
+
+//     // 2. LOGIC TÌM KIẾM: Thêm bước $match vào pipeline nếu có từ khóa search
+//     if (search) {
+//         pipeline.push({
+//             $match: {
+//                 $or: [
+//                     { importCode: { $regex: new RegExp(search, 'i') } },      // Tìm theo mã phiếu
+//                     { 'supplierId.name': { $regex: new RegExp(search, 'i') } } // Tìm theo tên nhà cung cấp
+//                 ]
+//             }
+//         });
+//     }
+
+//     // 3. Nối với bảng chi tiết và sản phẩm
+//     pipeline.push(
+//         {
+//             $lookup: {
+//                 from: 'importdetails',
+//                 localField: '_id',
+//                 foreignField: 'importOrderId',
+//                 as: 'details'
+//             }
+//         },
+//         {
+//             $lookup: {
+//                 from: 'products',
+//                 localField: 'details.productId',
+//                 foreignField: '_id',
+//                 as: 'productInfo'
+//             }
+//         },
+//         { $sort: { createdAt: -1 } },
+//         { $skip: skip },
+//         { $limit: limit }
+//     );
+
+//     // Thực thi Aggregation
+//     const orders = await ImportOrder.aggregate(pipeline);
+
+//     // 4. Xử lý format lại dữ liệu sản phẩm cho chi tiết (như cũ)
+//     const formattedOrders = orders.map(order => {
+//         const detailsWithProduct = order.details.map(detail => {
+//             const product = order.productInfo.find(p => p._id.toString() === detail.productId.toString());
+//             return { ...detail, productId: product };
+//         });
+//         return { ...order, details: detailsWithProduct };
+//     });
+
+//     // 5. Tính toán tổng số bản ghi để phân trang (phải tính dựa trên search)
+//     let totalOrders;
+//     if (search) {
+//         // Nếu có search, phải đếm số lượng sau khi lọc
+//         const countPipeline = [
+//             { $lookup: { from: 'suppliers', localField: 'supplierId', foreignField: '_id', as: 'sup' } },
+//             { $unwind: '$sup' },
+//             { 
+//                 $match: { 
+//                     $or: [
+//                         { importCode: { $regex: new RegExp(search, 'i') } },
+//                         { 'sup.name': { $regex: new RegExp(search, 'i') } }
+//                     ] 
+//                 } 
+//             },
+//             { $count: "total" }
+//         ];
+//         const countRes = await ImportOrder.aggregate(countPipeline);
+//         totalOrders = countRes.length > 0 ? countRes[0].total : 0;
+//     } else {
+//         totalOrders = await ImportOrder.countDocuments();
+//     }
+
+//     return {
+//         orders: formattedOrders,
+//         pagination: {
+//             totalOrders,
+//             totalPages: Math.ceil(totalOrders / limit),
+//             currentPage: page,
+//             limit
+//         }
+//     };
+// };
+
+/**
+ * Lấy danh sách hóa đơn nhập kèm tìm kiếm và phân trang (Đã sửa để lấy Ảnh sản phẩm)
+ */
 const getAllOrders = async (options = {}) => {
     const search = options.search ? options.search.trim() : '';
     const page = Math.max(1, parseInt(options.page) || 1);
@@ -87,8 +191,8 @@ const getAllOrders = async (options = {}) => {
 
     // Khởi tạo Pipeline cho Aggregation
     const pipeline = [
+        // 1. Nối với bảng Nhà cung cấp
         {
-            // 1. Nối với bảng Nhà cung cấp để lấy thông tin tên
             $lookup: {
                 from: 'suppliers',
                 localField: 'supplierId',
@@ -96,70 +200,76 @@ const getAllOrders = async (options = {}) => {
                 as: 'supplierId'
             }
         },
-        { $unwind: '$supplierId' }
-    ];
+        { $unwind: '$supplierId' },
 
-    // 2. LOGIC TÌM KIẾM: Thêm bước $match vào pipeline nếu có từ khóa search
-    if (search) {
-        pipeline.push({
-            $match: {
+        // 2. Logic tìm kiếm (Mã phiếu hoặc Tên nhà cung cấp)
+        {
+            $match: search ? {
                 $or: [
-                    { importCode: { $regex: new RegExp(search, 'i') } },      // Tìm theo mã phiếu
-                    { 'supplierId.name': { $regex: new RegExp(search, 'i') } } // Tìm theo tên nhà cung cấp
+                    { importCode: { $regex: new RegExp(search, 'i') } },
+                    { 'supplierId.name': { $regex: new RegExp(search, 'i') } }
                 ]
-            }
-        });
-    }
+            } : {}
+        },
 
-    // 3. Nối với bảng chi tiết và sản phẩm
-    pipeline.push(
+        // 3. Sắp xếp, Phân trang
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+
+        // 4. LẤY CHI TIẾT VÀ SẢN PHẨM (Kỹ thuật mấu chốt để lấy được ảnh)
         {
             $lookup: {
                 from: 'importdetails',
-                localField: '_id',
-                foreignField: 'importOrderId',
+                let: { orderId: '$_id' },
+                pipeline: [
+                    { $match: { $expr: { $eq: ['$importOrderId', '$$orderId'] } } },
+                    {
+                        $lookup: {
+                            from: 'products', // Tên collection sản phẩm (phải chính xác)
+                            localField: 'productId',
+                            foreignField: '_id',
+                            as: 'productData'
+                        }
+                    },
+                    { $unwind: '$productData' },
+                    {
+                        // Chỉ lấy các trường cần thiết để nhẹ dữ liệu
+                        $project: {
+                            _id: 1,
+                            quantity: 1,
+                            importPrice: 1,
+                            subTotal: 1,
+                            productId: {
+                                _id: '$productData._id',
+                                productName: '$productData.productName',
+                                productCode: '$productData.productCode',
+                                imageUrl: '$productData.imageUrl'
+                            }
+                        }
+                    }
+                ],
                 as: 'details'
             }
-        },
-        {
-            $lookup: {
-                from: 'products',
-                localField: 'details.productId',
-                foreignField: '_id',
-                as: 'productInfo'
-            }
-        },
-        { $sort: { createdAt: -1 } },
-        { $skip: skip },
-        { $limit: limit }
-    );
+        }
+    ];
 
     // Thực thi Aggregation
     const orders = await ImportOrder.aggregate(pipeline);
 
-    // 4. Xử lý format lại dữ liệu sản phẩm cho chi tiết (như cũ)
-    const formattedOrders = orders.map(order => {
-        const detailsWithProduct = order.details.map(detail => {
-            const product = order.productInfo.find(p => p._id.toString() === detail.productId.toString());
-            return { ...detail, productId: product };
-        });
-        return { ...order, details: detailsWithProduct };
-    });
-
-    // 5. Tính toán tổng số bản ghi để phân trang (phải tính dựa trên search)
+    // 5. Tính toán tổng số bản ghi để phân trang
     let totalOrders;
     if (search) {
-        // Nếu có search, phải đếm số lượng sau khi lọc
         const countPipeline = [
             { $lookup: { from: 'suppliers', localField: 'supplierId', foreignField: '_id', as: 'sup' } },
             { $unwind: '$sup' },
-            { 
-                $match: { 
+            {
+                $match: {
                     $or: [
                         { importCode: { $regex: new RegExp(search, 'i') } },
                         { 'sup.name': { $regex: new RegExp(search, 'i') } }
-                    ] 
-                } 
+                    ]
+                }
             },
             { $count: "total" }
         ];
@@ -170,7 +280,7 @@ const getAllOrders = async (options = {}) => {
     }
 
     return {
-        orders: formattedOrders,
+        orders, // Trình duyệt giờ đã nhận được mảng details có chứa productId đầy đủ ảnh
         pagination: {
             totalOrders,
             totalPages: Math.ceil(totalOrders / limit),

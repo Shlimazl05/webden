@@ -1,8 +1,9 @@
 
 
+
 "use client";
 import React, { useState } from "react";
-import { Trash2, ChevronDown, Package, ArrowDownToLine, Receipt, Clock } from "lucide-react";
+import { Trash2, ChevronDown, Package, Store, ReceiptText, CalendarDays, Hash } from "lucide-react";
 
 export const ImportOrderTable = ({ orders, loading, onDelete }: any) => {
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
@@ -11,132 +12,186 @@ export const ImportOrderTable = ({ orders, loading, onDelete }: any) => {
     setExpandedRow(expandedRow === id ? null : id);
   };
 
-  if (loading) return <div className="w-full h-64 bg-slate-50 animate-pulse rounded-[2rem] border border-slate-100" />;
+  if (loading) return (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="w-full h-24 bg-slate-100 animate-pulse rounded-3xl" />
+      ))}
+    </div>
+  );
+
+  if (orders.length === 0) return (
+    <div className="py-20 text-center bg-white rounded-[2rem] border border-dashed border-slate-200">
+      <Package className="mx-auto text-slate-200 mb-4" size={48} />
+      <p className="text-slate-900 font-black uppercase text-xs tracking-[0.2em]">Chưa có hóa đơn nào</p>
+    </div>
+  );
 
   return (
-    <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden font-sans">
-      <table className="w-full text-left border-collapse">
-        <thead className="bg-slate-50/80 border-b border-slate-100">
-          <tr className="text-slate-700 font-black text-[13px] uppercase tracking-widest">
-            <th className="p-6 w-16 text-center"></th>
-            <th className="p-6">Mã phiếu</th>
-            <th className="p-6">Nhà cung cấp</th>
-            <th className="p-6">Ngày nhập</th>
-            <th className="p-6 text-right">Tổng thanh toán</th>
-            <th className="p-6 text-center">Thao tác</th>
-          </tr>
-        </thead>
+    <div className="space-y-5 font-sans">
+      {orders.map((order: any) => {
+        const isExpanded = expandedRow === order._id;
+        return (
+          <div
+            key={order._id}
+            className="group bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            {/* --- PHẦN THẺ CHÍNH (HEADER CARD) --- */}
+            <div
+              onClick={() => toggleRow(order._id)}
+              // SỬA: items-start để tất cả các dòng tiêu đề bắt đầu từ cùng 1 cao độ
+              className="p-5 sm:p-7 cursor-pointer flex flex-nowrap items-start gap-4 sm:gap-6 bg-white"
+            >
+              {/* Mã phiếu */}
+              <div className="flex items-start gap-4 min-w-[140px] shrink-0">
+                {/* self-center giúp icon tím luôn nằm giữa card dù chữ có dài hay ngắn */}
+                <div className="p-3 rounded-2xl bg-violet-600 text-white shadow-lg shadow-violet-100 shrink-0 self-center">
+                  <Package size={22} strokeWidth={2.5} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-black text-slate-600 uppercase tracking-wider block mb-1.5 leading-none">Mã phiếu</span>
+                  <span className="font-mono font-black text-slate-900 text-[15px] tracking-tight uppercase leading-none">#{order.importCode}</span>
+                </div>
+              </div>
 
-        <tbody className="divide-y divide-slate-50">
-          {orders.length > 0 ? (
-            orders.map((order: any) => {
-              const isExpanded = expandedRow === order._id;
-              return (
-                <React.Fragment key={order._id}>
-                  <tr
-                    onClick={() => toggleRow(order._id)}
-                    className={`hover:bg-slate-50/50 transition-all cursor-pointer group ${isExpanded ? 'bg-indigo-50/30' : ''}`}
-                  >
-                    <td className="p-6 text-center">
-                      <div className={`p-1 rounded-lg transition-all ${isExpanded ? 'bg-indigo-600 text-white rotate-180' : 'bg-slate-100 text-slate-400 group-hover:text-indigo-600'}`}>
-                        <ChevronDown size={18} strokeWidth={3} />
-                      </div>
-                    </td>
-                    <td className="p-6">
-                      <span className="px-3 py-1.5 bg-white border border-indigo-100 text-indigo-700 rounded-xl font-black text-xs shadow-sm uppercase tracking-wider">
-                        #{order.importCode}
-                      </span>
-                    </td>
-                    <td className="p-6 font-black text-slate-900 text-[15px]">
-                      {order.supplierId?.name || "N/A"}
-                    </td>
-                    <td className="p-6 text-slate-500 font-bold text-[13px]">
-                      {new Date(order.importDate).toLocaleDateString('vi-VN')}
-                    </td>
-                    <td className="p-6 text-right">
-                      <span className="text-[17px] font-black text-rose-600 tracking-tighter">
-                        {order.totalAmount?.toLocaleString()}
-                      </span>
-                      <span className="text-[12px] font-bold text-rose-600 ml-1 underline">đ</span>
-                    </td>
-                    <td className="p-6 text-center" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        onClick={() => onDelete(order._id)}
-                        className="p-2.5 text-rose-400 bg-white border border-slate-100 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 rounded-xl transition-all active:scale-90 shadow-sm"
-                      >
-                        <Trash2 size={18} strokeWidth={2.5} />
-                      </button>
-                    </td>
-                  </tr>
+              {/* Nhà cung cấp - Không còn bị nhảy nhờ items-start ở cha */}
+              <div className="flex-1 min-w-[220px] flex flex-col">
+                <span className="text-[11px] font-black text-slate-600 uppercase tracking-wider block mb-1.5 leading-none">Nhà cung cấp</span>
+                <div className="flex items-start gap-2">
+                  <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg shrink-0 mt-0.5">
+                    <Store size={14} strokeWidth={3} />
+                  </div>
+                  <span className="font-black text-slate-900 text-[15px] leading-tight">
+                    {order.supplierId?.name || "N/A"}
+                  </span>
+                </div>
+              </div>
 
-                  {isExpanded && (
-                    <tr className="bg-slate-50/30">
-                      <td colSpan={6} className="p-8 pt-0 pb-8">
-                        <div className="bg-white rounded-[2.5rem] border border-indigo-100 shadow-xl overflow-hidden animate-in slide-in-from-top-4 duration-300">
-                          {/* HEADER CHI TIẾT: ĐÃ BỎ LƯU Ý THUẾ */}
-                          <div className="bg-indigo-600 px-8 py-4 flex items-center gap-3 text-white">
-                            <Receipt size={20} strokeWidth={2.5} />
-                            <span className="text-[12px] font-black uppercase tracking-[0.2em]">Danh mục hàng nhập kho</span>
-                          </div>
+              {/* Thời gian */}
+              <div className="hidden lg:flex flex-col min-w-[180px] shrink-0">
+                <span className="text-[11px] font-black text-slate-600 uppercase tracking-wider block mb-1.5 leading-none">Thời gian</span>
+                <div className="flex items-center gap-2 text-slate-900 font-black text-[13px]">
+                  <CalendarDays size={16} strokeWidth={2.5} className="text-slate-400" />
+                  {new Date(order.importDate).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} - {new Date(order.importDate).toLocaleDateString('vi-VN')}
+                </div>
+              </div>
 
-                          <div className="p-4">
-                            <table className="w-full text-left">
-                              <thead className="bg-slate-50 rounded-2xl">
-                                <tr className="text-[11px] font-black text-slate-400 uppercase tracking-widest">
-                                  <th className="p-5 pl-10">Sản phẩm </th>
-                                  <th className="p-5 text-center">Số lượng</th>
-                                  <th className="p-5 text-right">Giá nhập</th>
-                                  <th className="p-5 text-right pr-10">Thành tiền</th>
-                                </tr>
-                              </thead>
-                              <tbody className="divide-y divide-slate-50">
-                                {order.details?.map((item: any, idx: number) => (
-                                  <tr key={idx} className="text-[14px] font-bold text-slate-700">
-                                    <td className="p-5 pl-10">
-                                      <p className="text-slate-800 font-bold leading-tight  tracking-tight">{(item.productId as any)?.productName}</p>
-                                      <p className="text-[10px] text-indigo-500 font-bold mt-1 ">MÃ SP: {(item.productId as any)?.productCode}</p>
-                                    </td>
-                                    <td className="p-5 text-center">
-                                      <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-lg font-black text-[15px]">{item.quantity}</span>
-                                    </td>
-                                    <td className="p-5 text-right text-slate-500 font-medium">{item.importPrice.toLocaleString()}đ</td>
-                                    <td className="p-5 text-right pr-10 text-slate-950 font-black text-[15px]">{item.subTotal.toLocaleString()}đ</td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
+              {/* Tổng thanh toán */}
+              <div className="text-right min-w-[160px] shrink-0 flex flex-col items-end">
+                <span className="text-[11px] font-black text-slate-600 uppercase tracking-wider block mb-1.5 leading-none">Tổng thanh toán</span>
+                <span className="text-[19px] font-black text-rose-500 tracking-tighter leading-none">
+                  {order.totalAmount?.toLocaleString()}
+                  <span className="text-[13px] ml-0.5 underline">đ</span>
+                </span>
+              </div>
 
-                            {/* FOOTER CHI TIẾT: ĐÃ BỎ GHI CHÚ & THÊM THỜI GIAN TẠO */}
-                            <div className="mt-4 p-6 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center rounded-b-[2rem]">
-                              <div className="flex items-center gap-3">
-                                <div className="p-2 bg-white rounded-lg border border-slate-200 text-indigo-600">
-                                  <Clock size={16} strokeWidth={3} />
+              {/* Thao tác - self-center để các nút này nằm giữa hàng */}
+              <div className="flex items-center gap-2 pl-4 border-l-2 border-slate-50 shrink-0 self-center" onClick={(e) => e.stopPropagation()}>
+                <button
+                  onClick={() => onDelete(order._id)}
+                  className="p-3 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all active:scale-90"
+                >
+                  <Trash2 size={18} strokeWidth={2.5} />
+                </button>
+                <div className={`p-2 transition-transform duration-500 ${isExpanded ? 'rotate-180 text-violet-600' : 'text-slate-300'}`}>
+                  <ChevronDown size={24} strokeWidth={3} />
+                </div>
+              </div>
+            </div>
+
+            {/* --- PHẦN CHI TIẾT --- */}
+            {isExpanded && (
+              <div className="px-5 pb-5 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="bg-slate-50/50 rounded-[2.5rem] p-4 border border-slate-100">
+
+                  {/* Tiêu đề đơn giản: Chữ đen + Đường gạch ngang */}
+                  <div className="mb-4 px-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ReceiptText size={16} className="text-violet-600" strokeWidth={3} />
+                      <span className="text-[11px] font-black text-slate-900 uppercase tracking-[0.15em]">Danh mục sản phẩm nhập kho</span>
+                    </div>
+                    <div className="h-px bg-slate-200 w-full" />
+                  </div>
+
+                  <div className="bg-white rounded-[1.5rem] shadow-sm overflow-hidden border border-slate-100">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="text-[12px] font-black text-slate-900 uppercase trackingtext-rose-600 border-b border-slate-50">
+                          <th className="px-6 py-4 text-left">Sản phẩm</th>
+                          <th className="px-6 py-4 text-center">Số lượng</th>
+                          <th className="px-6 py-4 text-right">Giá vốn</th>
+                          <th className="px-6 py-4 text-right pr-8">Thành tiền</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-50">
+                        {order.details?.map((item: any, idx: number) => (
+                          <tr key={idx}>
+                            <td className="px-10 py-8">
+                              <div className="flex items-center gap-6 text-left">
+                                <div className="w-24 h-24 bg-white rounded-xl border border-slate-100 overflow-hidden flex-shrink-0 flex items-center justify-center p-0.5 shadow-sm">
+                                  {item.productId?.imageUrl ? (
+                                    <img
+                                      // Dùng trực tiếp đường dẫn từ DB (Ví dụ: /uploads/den-ban.jpg)
+                                      src={item.productId.imageUrl}
+                                      alt="Product"
+                                      className="w-full h-full object-cover rounded-lg"
+                                      onError={(e: any) => {
+                                        e.target.onerror = null;
+                                        e.target.src = "https://placehold.co/100x100?text=No+File";
+                                      }}
+                                    />
+                                  ) : (
+                                    <div className="opacity-20"><Package size={20} /></div>
+                                  )}
                                 </div>
                                 <div>
-                                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Thời gian lập phiếu</p>
-                                  <p className="text-sm text-slate-900 font-black">
-                                    {new Date(order.createdAt || order.importDate).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} - {new Date(order.importDate).toLocaleDateString('vi-VN')}
+                                  <p className="text-slate-900 font-black text-[15px] leading-tight mb-1 tracking-tight">
+                                    {item.productId?.productName}
                                   </p>
+                                  <span className="inline-flex items-center gap-1 text-[10px]  font-black uppercase tracking-wider">
+                                    <Hash size={10} strokeWidth={3} /> {item.productId?.productCode}
+                                  </span>
                                 </div>
                               </div>
-                              <div className="text-right">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Tổng hóa đơn</p>
-                                <p className="text-2xl font-black text-indigo-600 tracking-tighter">{order.totalAmount?.toLocaleString()}đ</p>
-                              </div>
-                            </div>
-                          </div>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                              <span className="inline-flex items-center justify-center bg-slate-50 text-slate-900 px-3 py-1 rounded-xl font-black text-[14px] min-w-[40px] border border-slate-200">
+                                {item.quantity}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-right text-slate-900 font-bold text-sm">
+                              {item.importPrice?.toLocaleString()}đ
+                            </td>
+                            <td className="px-6 py-4 text-right pr-8">
+                              <span className="text-slate-900 font-black text-[15px]">
+                                {item.subTotal?.toLocaleString()}đ
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    {/* Footer chi tiết tối giản (Chỉ còn tổng tiền) */}
+                    <div className="p-6 bg-slate-50/50 flex justify-end items-center">
+                      <div className="text-right">
+                        <p className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] mb-1">Tổng cộng hóa đơn</p>
+                        <div className="flex items-center justify-end gap-2">
+                          <span className="text-[26px] font-black text-rose-500 tracking-tighter leading-none">
+                            {order.totalAmount?.toLocaleString()}
+                          </span>
+                          <span className="text-lg font-black text-rose-500 underline">đ</span>
                         </div>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              );
-            })
-          ) : (
-            <tr><td colSpan={6} className="p-24 text-center text-slate-300 font-black uppercase text-xs tracking-widest">Chưa có dữ liệu hóa đơn</td></tr>
-          )}
-        </tbody>
-      </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
+
