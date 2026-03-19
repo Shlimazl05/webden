@@ -37,7 +37,7 @@ const beVietnamPro = Be_Vietnam_Pro({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi">
-      <body className={`${beVietnamPro.variable} font-sans antialiased text-[#001529]`}>
+      <body className={`${beVietnamPro.variable} font-sans antialiased `}>
         
         {/* 2. Cấu hình Toaster - Thông báo sẽ hiện ra ở CHÍNH GIỮA phía trên */}
         <Toaster 
