@@ -334,7 +334,7 @@ export const ImportOrderTable = ({ orders, loading, onDelete }: any) => {
                                     alt="thumb"
                                   />
                                 </div>
-                                <div className="max-w-[280px]">
+                                <div className="max-w-[500px]">
                                   <p className="ui-product-name !text-[14px] !font-medium text-slate-800">
                                     {item.productId?.productName}
                                   </p>
