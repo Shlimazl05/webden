@@ -410,6 +410,7 @@ export const useProductFeature = () => {
 
     // Modal Detail (Smart Modal)
     detailProduct,
+    setDetailProduct,
     isEditingDetail,      // PHẢI CÓ DÒNG NÀY
     handleOpenDetail,
     handleCloseDetail,
