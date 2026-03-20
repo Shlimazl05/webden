@@ -28,13 +28,13 @@ export const OrderTabs = ({ activeTab, onTabChange }: OrderTabsProps) => {
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`pb-4 px-2 text-[14px] transition-all relative flex items-center gap-2 group ${
+            className={`pb-4 px-2 text-[15px] transition-all relative flex items-center gap-2 group ${
               isActive 
                 ? "text-indigo-600 font-black" 
-                : "text-slate-400 font-bold hover:text-slate-600"
+                : "text-slate-600 font-bold hover:text-slate-500"
             }`}
           >
-            <span className="uppercase tracking-widest">{tab.label}</span>
+            <span className=" tracking-widest">{tab.label}</span>
             
             {/* Thanh gạch chân khi active: Sắc nét & Indigo */}
             {isActive && (

@@ -1,5 +1,6 @@
 // ĐỊNH NGHĨA KIỂU DỮ LIỆU
 export interface IProduct {
+  name: any;
   data: {
     productName: any; salePrice: number; stockQuantity: number; categoryId: any; status: any; imageUrl: any; images: any; specifications: { description: any; }; basePrice: any; slug: any; _id: string; // MongoDB tự sinh ra
     // MongoDB tự sinh ra

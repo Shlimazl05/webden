@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { orderAdminApi } from '../api/order.admin.api';
 import { IOrder, OrderStatus } from '../order.types';
 import toast from 'react-hot-toast';
+import { useRouter, useSearchParams } from 'next/navigation';
+import router from 'next/router';
 
 export const useAdminOrder = () => {
   const [orders, setOrders] = useState<IOrder[]>([]);
@@ -13,6 +15,9 @@ export const useAdminOrder = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedOrderId = searchParams.get('id');
   // Debounce search 500ms
   useEffect(() => {
     const timer = setTimeout(() => { setDebouncedSearch(searchTerm); setCurrentPage(1); }, 500);
@@ -61,7 +66,7 @@ export const useAdminOrder = () => {
   //     toast.error(msg.toUpperCase());
   //   }
   // };
-const handleUpdateStatus = async (orderId: string, status: OrderStatus) => {
+  const handleUpdateStatus = async (orderId: string, status: OrderStatus) => {
     // 1. Loading toast với thông điệp nhẹ nhàng hơn
     const toastId = toast.loading("Đang xử lý đơn hàng...");
 
@@ -108,8 +113,17 @@ const handleUpdateStatus = async (orderId: string, status: OrderStatus) => {
       });
     }
   };
+
+  // Hàm chọn đơn hàng
+  const goToDetail = (id: string) => {
+    router.push(`/admin/orders?id=${id}`);
+  };// Hàm quay lại danh sách
+  const goBackToList = () => {
+    router.push('/admin/orders');
+  };
+
   return {
-    orders, loading, currentPage, totalPages, activeTab, searchTerm,
+    orders, loading, currentPage, totalPages, activeTab, searchTerm, selectedOrderId, goToDetail, goBackToList,
     handleSearch: setSearchTerm,
     handlePageChange: setCurrentPage,
     handleTabChange: (tab: string) => { setActiveTab(tab); setCurrentPage(1); },
