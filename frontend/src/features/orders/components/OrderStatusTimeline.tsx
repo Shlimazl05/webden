@@ -125,7 +125,7 @@ interface OrderStatusTimelineProps {
 
 export const OrderStatusTimeline = ({ status, statusHistory, createdAt }: OrderStatusTimelineProps) => {
   const steps = [
-    { id: 'Pending', label: 'Chờ xác nhận', icon: <ShoppingBag size={18} /> },
+    { id: 'Pending', label: 'Đơn đã đặt', icon: <ShoppingBag size={18} /> },
     { id: 'Processing', label: 'Đang xử lý', icon: <Package size={18} /> },
     { id: 'Shipping', label: 'Đang giao hàng', icon: <Truck size={18} /> },
     { id: 'Completed', label: 'Hoàn thành', icon: <PackageCheck size={18} /> }
@@ -136,11 +136,6 @@ export const OrderStatusTimeline = ({ status, statusHistory, createdAt }: OrderS
 
   return (
     <div className="pt-10 border-t border-slate-100 mt-10">
-      <h4 className="text-[14px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2 mb-12">
-        <Route size={22} strokeWidth={3} className="text-indigo-600" />
-        Hành trình đơn hàng
-      </h4>
-
       <div className="relative flex justify-between w-full max-w-4xl mx-auto px-4">
         {steps.map((step, index) => {
           const stepOrderIndex = statusOrder.indexOf(step.id);
