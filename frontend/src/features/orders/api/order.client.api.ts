@@ -10,6 +10,13 @@ export const orderClientApi = {
         return res.data;
     },
 
+    // Lấy chi tiết một đơn hàng cụ thể
+    getOrderDetail: async (orderId: string) => {
+        // Backend của bạn thường sẽ check Token để đảm bảo đơn hàng này thuộc về người dùng đó
+        const res = await axiosInstance.get(`/orders/${orderId}`);
+        return res.data;
+    },
+
     // Khách hàng thường chỉ có quyền Hủy đơn khi đơn chưa được xác nhận
     cancelMyOrder: async (orderId: string) => {
         // Gọi thẳng vào ID/cancel (Vì ở app.js bạn đã có /api/orders rồi)

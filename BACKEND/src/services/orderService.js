@@ -1,4 +1,4 @@
-
+const User = require('../models/User');
 const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 const Product = require('../models/Product');
@@ -262,4 +262,62 @@ exports.createOrder = async (orderData, customerId) => {
         order: newOrder,
         checkoutUrl: checkoutUrl
     };
+};
+
+/**
+ * LẤY DANH SÁCH ĐƠN HÀNG DÀNH RIÊNG CHO CLIENT (Khách hàng)
+ * Thêm hàm này để Controller gọi được
+ */
+exports.getMyOrdersClient = async (options = {}) => {
+    const { customerId, status = '', page = 1, limit = 10 } = options;
+
+    // Bảo mật: Ép buộc phải có customerId
+    if (!customerId) throw new Error("customerId là bắt buộc để lấy đơn hàng cá nhân");
+
+    const skip = (page - 1) * limit;
+    const filter = { customerId: customerId };
+
+    if (status && status !== 'all') {
+        filter.status = status;
+    }
+
+    try {
+        const [orders, totalOrders] = await Promise.all([
+            Order.find(filter)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+            Order.countDocuments(filter)
+        ]);
+
+        const ordersWithDetails = await Promise.all(orders.map(async (order) => {
+            const details = await OrderDetail.find({ orderId: order._id })
+                .populate('productId', 'productName productCode imageUrl').lean();
+
+            let checkoutUrl = null;
+            // Sử dụng hàm generateQrUrl đã có ở đầu file orderService.js của bạn
+            if (order.paymentMethod === 'SePay' && order.status === 'Pending' && order.paymentStatus !== 'Paid') {
+                // Đảm bảo hàm generateQrUrl tồn tại ở trên
+                const bankAcc = process.env.BANK_NUMBER;
+                const bankName = process.env.BANK_NAME;
+                const amount = Math.round(order.finalAmount || 0);
+                checkoutUrl = `https://qr.sepay.vn/img?acc=${bankAcc}&bank=${bankName}&amount=${amount}&des=${order.orderCode}`;
+            }
+
+            return { ...order, orderDetails: details, checkoutUrl };
+        }));
+
+        return {
+            orders: ordersWithDetails,
+            pagination: {
+                totalOrders,
+                totalPages: Math.ceil(totalOrders / limit),
+                currentPage: parseInt(page)
+            }
+        };
+    } catch (error) {
+        console.error("Lỗi tại getMyOrdersClient Service:", error.message);
+        throw error;
+    }
 };

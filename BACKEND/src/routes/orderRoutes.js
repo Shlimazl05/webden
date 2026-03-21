@@ -27,10 +27,11 @@ router.patch('/admin/:id/status', protect, adminOnly, orderController.updateStat
 // --- TUYẾN ĐƯỜNG DÀNH CHO KHÁCH HÀNG ---
 
 // Đường dẫn: PATCH /api/orders/mine/:id/cancel
-router.patch('/:id/cancel', protect, orderController.cancelMyOrder);
+
 router.get('/mine', protect, orderController.getMyOrders);
 router.post('/create', protect, orderController.createNewOrder);
 router.get('/status/:orderCode', protect, orderController.checkOrderStatus);
-
+router.get('/:id', protect, orderController.getOrderDetail);
+router.patch('/:id/cancel', protect, orderController.cancelMyOrder);
 
 module.exports = router;
