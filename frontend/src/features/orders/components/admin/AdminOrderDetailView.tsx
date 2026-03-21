@@ -22,7 +22,7 @@ export const AdminOrderDetailView: React.FC<Props> = ({ order, onBack, onUpdateS
                 </button>
                 <div>
                     <h2 className="text-xl font-black text-slate-800 tracking-tight">
-                        Đơn hàng <span className="text-indigo-600 font-black">#{order.orderCode}</span>
+                        Đơn hàng <span className=" font-black">#{order.orderCode}</span>
                     </h2>
                     <p className="text-[12px] text-slate-400 font-medium">Đặt lúc {new Date(order.createdAt).toLocaleString('vi-VN')}</p>
                 </div>
