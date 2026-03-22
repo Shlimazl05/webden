@@ -255,7 +255,7 @@ export const ClientOrderCard: React.FC<ClientOrderCardProps> = ({ order, onClick
                         </div>
                         <div className="text-right">
                             <p className="ui-currency text-slate-900 text-sm">
-                                {(item.unitPrice * item.quantity).toLocaleString()}
+                                {(item.unitPrice ).toLocaleString()}
                                 <span className="currency-symbol">đ</span>
                             </p>
                         </div>

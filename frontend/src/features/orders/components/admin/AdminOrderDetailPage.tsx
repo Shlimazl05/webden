@@ -42,6 +42,7 @@ interface Props {
     order: IOrder;
     onBack: () => void;
     onUpdateStatus: (id: string, status: OrderStatus) => void;
+    
 }
 
 export const AdminOrderDetailView: React.FC<Props> = ({ order, onBack, onUpdateStatus }) => {

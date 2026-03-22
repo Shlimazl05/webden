@@ -153,7 +153,7 @@ export const CustomerOrderDetailView: React.FC<Props> = ({ order, onBack, onOpen
 
                     {/* THÔNG TIN KHÁCH HÀNG & KIỆN HÀNG */}
                     <CustomerInfo order={order} />
-                    <OrderPackageDetails order={order} />
+                    <OrderPackageDetails order={order} isClientView={true} />
                 </div>
             </div>
         </div>
