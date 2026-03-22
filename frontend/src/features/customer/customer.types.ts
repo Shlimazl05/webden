@@ -1,37 +1,4 @@
 
-// export type UserStatus = 'Active' | 'Blocked';
-
-// export interface IUser {
-//   _id: string;
-//   username: string;
-//   phone: string;
-//   email?: string;
-//   role: 'Customer' | 'Admin';
-//   status: UserStatus;
-//   createdAt: string;
-// }
-
-// export interface ICustomer extends IUser {
-//   name: any;
-//   address?: string;
-//   totalSpent: number;
-//   orderCount: number;
-// }
-
-// export interface IAdmin extends IUser {
-  
-
-// }
-
-// export interface UpdateUserStatusPayload {
-//   customerId: any;
-//   userId: string;
-//   status: UserStatus;
-// }
-
-
-
-
 export type UserStatus = 'Active' | 'Blocked';
 
 export interface IUser {
