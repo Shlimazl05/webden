@@ -4,10 +4,12 @@
 import React, { useEffect, useState } from "react";
 import { Box, FileText, LayoutGrid, ReceiptText } from "lucide-react";
 import { IProduct } from "../../product/product.types";
+import { useCartStore } from "@/features/cart/hooks/useCartStore";
 
 export const ProductDetailContent = ({ product }: { product: IProduct }) => {
   const [activeImg, setActiveImg] = useState(product.imageUrl || "/img/placeholder.svg");
-
+  const fetchCartCount = useCartStore((state) => state.fetchCartCount);
+  
   return (
     <div className="grid grid-cols-12 gap-8 lg:gap-10">
 

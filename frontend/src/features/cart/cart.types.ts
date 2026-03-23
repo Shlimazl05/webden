@@ -33,3 +33,10 @@ export interface ICartSummary {
   shippingFee: number;       // Phí vận chuyển (nhảy tự động 0đ hoặc 150k)
   totalAmount: number;       // Con số cuối cùng khách phải trả (subTotal + shippingFee)
 }
+
+export interface ICartStore {
+  cartCount: number;
+  fetchCartCount: () => Promise<void>;
+  clearCart: () => void;
+  // addToCartLocal: (product: IProduct) => void;
+}

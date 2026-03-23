@@ -2,10 +2,13 @@
 
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+//hooks
 import { useAuth } from '@/features/auth/auth.hooks';
+import { useCartStore } from '@/features/cart/hooks/useCartStore';
+import { useNavbarLogic } from '@/features/navigation/hooks/useNavbarLogic';
 import {
   Home,
   ShoppingCart,
@@ -19,18 +22,10 @@ import {
 } from 'lucide-react';
 
 const Navbar = () => {
-  const { user, isLoggedIn, isLoaded, logout } = useAuth();
-  const pathname = usePathname();
+  const { user, isLoggedIn, isLoaded, logout, cartCount, showNavbar, isCartPage } = useNavbarLogic();
 
-  /**
-   * Xác định trang hiện tại để xử lý ẩn/hiện các thành phần giao diện
-   */
-  const isCartPage = pathname === '/cart';
+  if (!isLoaded) return <nav className="w-full h-[100px] bg-slate-950 shadow-sm" />;
 
-  // Tránh hiện tượng nhảy giao diện khi dữ liệu phiên đăng nhập chưa được tải từ storage
-  if (!isLoaded) {
-    return <nav className="w-full h-[100px] bg-[#0f172a]  shadow-sm" />;
-  }
 
   return (
     <nav className="w-full h-[100px] px-[50px] bg-slate-950/95 backdrop-blur-md border-b border-slate-800  flex items-center justify-between shadow-2xl sticky top-0 z-50">
@@ -80,7 +75,7 @@ const Navbar = () => {
               className="text-slate-300 group-hover/cart:text-amber-400 transition-colors duration-300"
             />
             <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] text-slate-900">
-              0
+              {cartCount}
             </span>
           </Link>
         )}

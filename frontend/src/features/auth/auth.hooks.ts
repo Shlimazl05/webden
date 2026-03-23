@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import toast from 'react-hot-toast'; // 1. Import thư viện toast
 import { loginApi } from "./auth.api";
 import { tokenUtils } from "@/utils/token.utils";
+import { useCartStore } from "@/features/cart/hooks/useCartStore"; 
 
 /**
  * Hook dùng chung: Lấy thông tin user hiện tại và đăng xuất
@@ -43,6 +44,8 @@ export const useAuth = () => {
 
     // Xóa thêm các cookie nếu có dùng
     Cookies.remove('user_role', { path: '/' });
+
+    useCartStore.getState().clearCart();
 
     setUser(null);
     setIsLoggedIn(false);
@@ -143,6 +146,8 @@ export const useLogin = () => {
       tokenUtils.setAccessToken(token); 
       localStorage.setItem("user", JSON.stringify({ ...userData, role }));
       Cookies.set("user_role", role, { expires: 7, path: '/' });
+
+      await useCartStore.getState().fetchCartCount();
 
       toast.success(`Đăng nhập thành công!`);
 

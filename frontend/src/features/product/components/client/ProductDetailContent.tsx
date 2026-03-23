@@ -11,13 +11,14 @@ import toast from "react-hot-toast";
 import { addToCartApi } from "@/features/cart/api/cart.api"; // Import API
 import { useAuth } from "@/features/auth/auth.hooks"; // Để kiểm tra đăng nhập
 import { useRouter } from "next/navigation";
+import { useCartStore } from "@/features/cart/hooks/useCartStore";
 
 export const ProductDetailContent = ({ product }: { product: IProduct }) => {
     const { isLoggedIn } = useAuth();
     const router = useRouter();
     const [quantity, setQuantity] = useState(1);
     const [isAdding, setIsAdding] = useState(false); // Trạng thái loading cho nút
-
+    const fetchCartCount = useCartStore((state) => state.fetchCartCount);
     const allImages = [product.imageUrl, ...(product.images || [])].filter(Boolean) as string[];
     const [activeIndex, setActiveIndex] = useState(0);
     const [isAutoPlay, setIsAutoPlay] = useState(true);
@@ -53,6 +54,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
 
             if (res.success) {
                 if (showToast) {
+                    await fetchCartCount(); 
                     toast.success(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`, {
                         style: { borderRadius: '15px', background: '#1e293b', color: '#fff', fontWeight: 'bold' }
                     });
