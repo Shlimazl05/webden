@@ -62,10 +62,34 @@ const getProfile = async (req, res) => {
     }
 };
 
+
+// ------ thong tin tai khoan -------//
+const updateProfile = async (req, res) => {
+    try {
+        const user = await authService.updateUserProfile(req.user.id, req.body);
+        res.status(200).json({ message: "Cập nhật thành công", data: user });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// ------ doi mat khau----- //
+const changePassword = async (req, res) => {
+    try {
+        await authService.changePassword(req.user.id, req.body);
+        res.status(200).json({ message: "Đổi mật khẩu thành công" });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
 // QUAN TRỌNG: Export tất cả các hàm bằng cách này để đồng nhất
 module.exports = {
     register,
     login,
     logout,
-    getProfile
+    getProfile,
+    updateProfile, 
+    changePassword
 };

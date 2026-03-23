@@ -9,4 +9,6 @@ router.post('/logout', authController.logout);
 
 // router.delete('/:id', protect, adminOnly, productController.deleteProduct);
 router.get('/profile', protect, authController.getProfile); 
+router.put('/update-profile', protect, authController.updateProfile);
+router.put('/change-password', protect, authController.changePassword);
 module.exports = router;

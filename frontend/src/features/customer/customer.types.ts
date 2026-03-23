@@ -2,6 +2,7 @@
 export type UserStatus = 'Active' | 'Blocked';
 
 export interface IUser {
+  address?: string;
   _id: string;
   username: string;
   phone: string;
@@ -27,4 +28,14 @@ export interface UpdateUserStatusPayload {
   customerId: any;
   userId: string; // Dùng userId là đủ để định danh
   status: UserStatus;
+}
+
+export interface UpdateProfilePayload {
+  email?: string;
+  address?: string;
+}
+
+export interface ChangePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
 }

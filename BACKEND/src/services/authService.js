@@ -117,4 +117,42 @@ const loginUser = async (identifier, password) => {
 };
 
 
-module.exports = { registerUser, loginUser };
+// ------ thong tin tai khoan va doi mat khau
+const updateUserProfile = async (userId, updateData) => {
+  const { email, address } = updateData;
+
+  // Kiểm tra email nếu người dùng muốn cập nhật email mới
+  if (email) {
+    const isEmailExist = await User.findOne({ email, _id: { $ne: userId } });
+    if (isEmailExist) throw new Error('Email này đã được sử dụng bởi tài khoản khác');
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { email, address },
+    { new: true, runValidators: true }
+  ).select('-password');
+
+  return updatedUser;
+};
+
+const changePassword = async (userId, { oldPassword, newPassword }) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error('Người dùng không tồn tại');
+
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isMatch) throw new Error('Mật khẩu hiện tại không chính xác');
+
+  if (newPassword.length < 6) throw new Error('Mật khẩu mới phải từ 6 ký tự');
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+  return { message: "Đổi mật khẩu thành công" };
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  updateUserProfile, // Mới
+  changePassword      // Mới
+};
