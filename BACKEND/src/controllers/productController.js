@@ -14,6 +14,8 @@ exports.addProduct = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
     try {
+
+        await productService.migrateProductNameSearch(); 
         // 1. Lấy TẤT CẢ tham số từ req.query (bao gồm cả minPrice, maxPrice)
         const { search, page, limit, categoryId, status, minPrice, maxPrice, isAdmin: queryIsAdmin } = req.query;
         const isAdmin = queryIsAdmin === 'true' || (req.user && req.user.role === 'Admin');

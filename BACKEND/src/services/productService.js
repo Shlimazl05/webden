@@ -2,6 +2,7 @@
 const Product = require('../models/Product');
 const slugify = require('slugify');
 const mongoose = require('mongoose');
+const removeAccents = require('../utils/removeAccents');
 
 // ------ TẠO SẢN PHẨM -----stockQuantity //
 const createProduct = async (productData) => {
@@ -30,94 +31,18 @@ const createProduct = async (productData) => {
     const slugCode = slugify(productData.productCode, { lower: true });
     const slug = `${slugName}-${slugCode}`;
 
+    const productNameSearch = removeAccents(productData.productName);
+
     const newProduct = new Product({
         ...productData,
+        productNameSearch,
         slug
     });
 
     return await newProduct.save();
 };
 
-// ----- LẤY DANH SÁCH SẢN PHẨM
-// const getAllProducts = async (options = {}) => {
-//     // Chuẩn hóa dữ liệu đầu vào
-//     const search = options.search ? options.search.trim() : '';
-//     const page = Math.max(1, parseInt(options.page) || 1);
-//     const limit = Math.max(1, parseInt(options.limit) || 20);
-//     const skip = (page - 1) * limit;
-//     const { categoryId, status, minPrice, maxPrice, isAdmin } = options;
 
-
-//     // Thiết lập bộ lọc tìm kiếm (Tên sản phẩm hoặc Mã SKU)
-//     const filter = {};
-
-//     // --- CẬP NHẬT: Lọc theo trạng thái (Active/Hidden) ---
-//     if (isAdmin) {
-//         // Nếu là Admin: chỉ lọc status nếu Admin truyền vào cụ thể (Active hoặc Hidden)
-//         // Nếu Admin không truyền status, filter.status sẽ undefined (nghĩa là lấy tất cả)
-//         if (status) {
-//             filter.status = status;
-//         }
-//     } else {
-//         // Nếu là Khách: Bắt buộc chỉ lấy sản phẩm Active
-//         filter.status = 'Active';
-//     }
-
-//     // --- CẬP NHẬT: Lọc theo danh mục (Sửa lỗi dính sản phẩm khác) ---
-//     if (categoryId && mongoose.Types.ObjectId.isValid(categoryId)) {
-//         filter.categoryId = new mongoose.Types.ObjectId(categoryId);
-//     }
-
-
-//     // 3. Lọc giá (Chỉ thêm nếu là số hợp lệ)
-//     if (minPrice !== undefined || maxPrice !== undefined) {
-//         filter.salePrice = {};
-//         if (typeof minPrice === 'number' && !isNaN(minPrice)) {
-//             filter.salePrice.$gte = minPrice;
-//         }
-//         if (typeof maxPrice === 'number' && !isNaN(maxPrice)) {
-//             filter.salePrice.$lte = maxPrice;
-//         }
-//         // Nếu không có điều kiện nào hợp lệ thì xóa luôn field
-//         if (Object.keys(filter.salePrice).length === 0) delete filter.salePrice;
-//     }
-
-//     if (search) {
-//         filter.$or = [
-//             { productName: { $regex: new RegExp(search, 'i') } },
-//             { productCode: { $regex: new RegExp(search, 'i') } }
-//         ];
-//     }
-
-//     /**
-//      * Thực hiện truy vấn song song để tối ưu thời gian phản hồi:
-//      * 1. find: Lấy danh sách sản phẩm theo bộ lọc, phân trang và liên kết dữ liệu danh mục.
-//      * 2. countDocuments: Đếm tổng số bản ghi khớp điều kiện để phục vụ tính toán phân trang.
-//      */
-//     const [products, totalProducts] = await Promise.all([
-//         Product.find(filter)
-//             .populate('categoryId', 'name status') // LẤY THÊM TRƯỜNG STATUS CỦA DANH MỤC
-//             .sort({ createdAt: -1 })
-//             .skip(skip)
-//             .limit(limit)
-//             .lean(),
-//         Product.countDocuments(filter)
-//     ]);
-
-
-//     // Tính toán thông tin phân trang tổng quát
-//     const totalPages = Math.ceil(totalProducts / limit);
-
-//     return {
-//         products,
-//         pagination: {
-//             totalProducts,
-//             totalPages,
-//             currentPage: page,
-//             limit
-//         }
-//     };
-// };
 
 // backend/services/product.service.js
 
@@ -154,8 +79,10 @@ const getAllProducts = async (options = {}) => {
 
     // 4. LOGIC TÌM KIẾM: Fix lỗi không tìm thấy
     if (search) {
+        const searchKeyword = removeAccents(search);
         filter.$or = [
             { productName: { $regex: search, $options: 'i' } },
+            { productNameSearch: { $regex: searchKeyword, $options: 'i' } },
             { productCode: { $regex: search, $options: 'i' } }
         ];
     }
@@ -208,6 +135,9 @@ const updateProduct = async (id, data) => {
         const slugCode = slugify(code, { lower: true });
 
         data.slug = `${slugName}-${slugCode}`;
+
+        // --- MỚI: Cập nhật trường tìm kiếm không dấu ---
+        data.productNameSearch = removeAccents(data.productName);
     }
 
     // 2. Tiến hành cập nhật
@@ -219,4 +149,34 @@ const deleteProduct = async (id) => {
     return await Product.findByIdAndDelete(id);
 };
 
-module.exports = { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct };
+
+// Script cập nhật dữ liệu cũ (Chạy 1 lần duy nhất)
+const migrateProductNameSearch = async () => {
+    try {
+        console.log("--- BẮT ĐẦU CẬP NHẬT DỮ LIỆU TÌM KIẾM ---");
+
+        // Lấy tất cả sản phẩm
+        const products = await Product.find({});
+        console.log(`Tìm thấy ${products.length} sản phẩm cần xử lý.`);
+
+        let count = 0;
+        for (let p of products) {
+            // Sử dụng đúng tên hàm removeAccents bạn đã import ở đầu file
+            p.productNameSearch = removeAccents(p.productName);
+
+            // Lưu lại vào Database
+            await p.save({ validateBeforeSave: false });
+            count++;
+            console.log(`[${count}/${products.length}] Đã cập nhật: ${p.productName}`);
+        }
+
+        console.log("--- HOÀN THÀNH CẬP NHẬT THÀNH CÔNG ---");
+        return { success: true, message: `Đã cập nhật ${count} sản phẩm.` };
+    } catch (error) {
+        console.error("LỖI KHI MIGRATE DỮ LIỆU:", error.message);
+        throw error;
+    }
+};
+
+
+module.exports = { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, migrateProductNameSearch };
