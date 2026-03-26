@@ -18,6 +18,8 @@ const ProductSchema = new mongoose.Schema({
     trim: true 
   },
 
+  
+
   // Slug để làm URL đẹp (Ví dụ: den-ban-luxury-01) - Tốt cho SEO
   slug: { 
     type: String, 

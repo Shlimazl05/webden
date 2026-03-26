@@ -106,7 +106,7 @@ const loginUser = async (identifier, password) => {
     const token = jwt.sign(
         { id: user._id, role: user.role },
         process.env.JWT_SECRET || "Bi_Mat_123",
-        { expiresIn: '30d' }
+        { expiresIn: '7d' }
     );
 
     // Tối ưu: Loại bỏ password trước khi trả về
