@@ -94,4 +94,9 @@
     @apply text-[10px] ml-0.5 font-bold opacity-70 underline;
     vertical-align: baseline;
   }
+
+
+  .ui-interactive {
+    @apply cursor-pointer transition-all duration-200 active:scale-95;
+  }
 }
