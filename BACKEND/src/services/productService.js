@@ -150,33 +150,4 @@ const deleteProduct = async (id) => {
 };
 
 
-// Script cập nhật dữ liệu cũ (Chạy 1 lần duy nhất)
-const migrateProductNameSearch = async () => {
-    try {
-        console.log("--- BẮT ĐẦU CẬP NHẬT DỮ LIỆU TÌM KIẾM ---");
-
-        // Lấy tất cả sản phẩm
-        const products = await Product.find({});
-        console.log(`Tìm thấy ${products.length} sản phẩm cần xử lý.`);
-
-        let count = 0;
-        for (let p of products) {
-            // Sử dụng đúng tên hàm removeAccents bạn đã import ở đầu file
-            p.productNameSearch = removeAccents(p.productName);
-
-            // Lưu lại vào Database
-            await p.save({ validateBeforeSave: false });
-            count++;
-            console.log(`[${count}/${products.length}] Đã cập nhật: ${p.productName}`);
-        }
-
-        console.log("--- HOÀN THÀNH CẬP NHẬT THÀNH CÔNG ---");
-        return { success: true, message: `Đã cập nhật ${count} sản phẩm.` };
-    } catch (error) {
-        console.error("LỖI KHI MIGRATE DỮ LIỆU:", error.message);
-        throw error;
-    }
-};
-
-
-module.exports = { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, migrateProductNameSearch };
+module.exports = { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct};

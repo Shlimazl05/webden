@@ -21,12 +21,10 @@ export const SecuritySection = ({ onBack }: SecuritySectionProps) => {
         <div id="security-section" className="relative w-full max-w-5xl mx-auto py-4 font-['Be_Vietnam_Pro'] animate-in fade-in slide-in-from-right-4 duration-500">
 
             {/* HEADER: Phân đoạn Bảo mật */}
-            <div className="flex items-center gap-6 mb-16 mt-8">
-                <div className="h-[1px] bg-slate-200 flex-1 border-t border-dashed"></div>
-                <span className="ui-label text-indigo-600 font-extrabold tracking-[0.3em] whitespace-nowrap text-[11px]">
-                    BẢO MẬT
+            <div className="flex items-center justify-center gap-4 mb-12">
+                <span className="ui-label text-lg text-[var(--color-primary)] font-extrabold  whitespace-nowrap">
+                    ĐỔI MẬT KHẨU
                 </span>
-                <div className="h-[1px] bg-slate-200 flex-1 border-t border-dashed"></div>
             </div>
 
             {/* GRID: Căn chỉnh mật khẩu chuẩn */}
