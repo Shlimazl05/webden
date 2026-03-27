@@ -13,10 +13,14 @@
   --color-text-muted: #757575;
   --color-text-placeholder: #b5b5b5;
 
-  --color-primary: #5d3fd3;
+  /* --color-primary: #5d3fd3; */
+  --color-primary: #1e1b4b;
+  --color-accent: #facc15;
   --color-danger: #e11d48;
   --color-success: #10b981;
-
+  --bg-light: #f8fafc;
+  
+  --color-text-main: #0f172a;
   /* --- Tinh chỉnh kích thước chữ cho thanh thoát --- */
   --fs-xs: 11px;
   --fs-sm: 12px;

@@ -215,11 +215,11 @@ export default function CartPage() {
 
         {/* 2. TIÊU ĐỀ GIỎ HÀNG TRÊN CÙNG */}
         <div className="flex items-center gap-4 mb-12">
-          <div className="bg-[var(--color-primary)] p-3 rounded-2xl text-white shadow-lg shadow-indigo-100">
+          <div className="bg-[#facc15] p-3 rounded-2xl text-[#1e1b4b] shadow-lg shadow-yellow-100">
             <ShoppingCart size={28} strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase">
+            <h1 className="text-3xl font-black text-[#1e1b4b] tracking-tight uppercase">
               Giỏ hàng
             </h1>
             <p className="text-[14px] font-bold text-slate-400  tracking-widest mt-1">
