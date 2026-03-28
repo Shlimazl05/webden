@@ -48,6 +48,7 @@ const addToCart = async (userId, productId, quantity) => {
 
     if (detail) {
         detail.quantity += quantity;
+        detail.selected = true;
         if (product.stockQuantity < detail.quantity) throw new Error("Tổng số lượng vượt quá tồn kho!");
         await detail.save();
     } else {
@@ -64,17 +65,22 @@ const addToCart = async (userId, productId, quantity) => {
 
 // 3. CẬP NHẬT SỐ LƯỢNG (Giữ nguyên logic)
 const updateQuantity = async (cartDetailId, newQuantity) => {
-    if (newQuantity < 1) throw new Error("Số lượng không thể nhỏ hơn 1");
+    // Tự động đưa về 1 nếu số lượng nhập vào nhỏ hơn 1 (Không bắn lỗi)
+    let quantityToUpdate = newQuantity < 1 ? 1 : newQuantity;
 
     const detail = await CartDetail.findById(cartDetailId).populate('productId');
-    if (!detail) throw new Error("Không tìm thấy dòng sản phẩm này trong giỏ");
+    if (!detail) throw new Error("Sản phẩm không tồn tại trong giỏ");
 
-    if (detail.productId.stockQuantity < newQuantity) {
-        throw new Error("Số lượng trong kho không đủ!");
+    const stock = detail.productId.stockQuantity;
+
+    // Chỉ bắn lỗi khi vượt quá kho hàng
+    if (stock < quantityToUpdate) {
+        throw new Error(`Số lượng sản phẩm hiện tại chỉ còn ${stock}.`);
     }
 
-    detail.quantity = newQuantity;
+    detail.quantity = quantityToUpdate;
     await detail.save();
+
     return detail;
 };
 
@@ -85,4 +91,18 @@ const removeItem = async (cartDetailId) => {
     return result;
 };
 
-module.exports = { addToCart, getCart, updateQuantity, removeItem };
+const removeManyItems = async (ids) => {
+    // Kiểm tra đầu vào
+    if (!ids || ids.length === 0) return null;
+
+    // Sử dụng deleteMany kết hợp toán tử $in để xóa hàng loạt
+    const result = await CartDetail.deleteMany({
+        _id: { $in: ids }
+    });
+
+    // Trả về kết quả (số lượng đã xóa)
+    return result;
+};
+
+
+module.exports = { addToCart, getCart, updateQuantity, removeItem, removeManyItems };
