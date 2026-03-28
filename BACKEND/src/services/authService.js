@@ -150,9 +150,17 @@ const changePassword = async (userId, { oldPassword, newPassword }) => {
   return { message: "Đổi mật khẩu thành công" };
 };
 
+const getProfile = async (userId) => {
+  // Lấy thông tin user, loại bỏ password
+  const user = await User.findById(userId).select('-password');
+  if (!user) throw new Error("Không tìm thấy người dùng");
+  return user;
+};
+
 module.exports = {
   registerUser,
   loginUser,
-  updateUserProfile, // Mới
-  changePassword      // Mới
+  updateUserProfile, 
+  changePassword,
+  getProfile     
 };

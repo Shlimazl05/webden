@@ -10,9 +10,10 @@ interface Props {
 export const PaymentMethodForm = ({ value, onChange }: Props) => {
     return (
         <div className="space-y-6">
-            <div className="flex items-center gap-3 mb-6">
-                <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-                <h2 className="text-sm font-black tracking-widest uppercase text-slate-800">
+
+            <div className="flex items-center gap-3 mb-4">
+                <div className="w-1 h-5 bg-blue-500 rounded-full"></div>
+                <h2 className="text-[15px] font-bold text-slate-800">
                     Phương thức thanh toán
                 </h2>
             </div>
@@ -34,11 +35,11 @@ export const PaymentMethodForm = ({ value, onChange }: Props) => {
                     />
                     <Banknote className={value === 'COD' ? 'text-indigo-600' : 'text-slate-400'} size={28} />
                     <div>
-                        <span className="block text-[13px] font-bold text-slate-800 uppercase tracking-wide">
+                        <span className="block text-[13px] font-bold text-slate-800  tracking-wide">
                             Thanh toán khi nhận hàng
                         </span>
                         <span className="block text-[11px] font-medium text-slate-500 mt-1">
-                            Khách hàng thanh toán bằng tiền mặt khi giao hàng (COD)
+                            Thanh toán bằng tiền mặt khi giao hàng (COD)
                         </span>
                     </div>
                 </label>
@@ -59,7 +60,7 @@ export const PaymentMethodForm = ({ value, onChange }: Props) => {
                     />
                     <CreditCard className={value === 'SePay' ? 'text-indigo-600' : 'text-slate-400'} size={28} />
                     <div>
-                        <span className="block text-[13px] font-bold text-slate-800 uppercase tracking-wide">
+                        <span className="block text-[13px] font-bold text-slate-800  tracking-wide">
                             Thanh toán trực tuyến
                         </span>
                         <span className="block text-[11px] font-medium text-slate-500 mt-1">
@@ -71,3 +72,4 @@ export const PaymentMethodForm = ({ value, onChange }: Props) => {
         </div>
     );
 };
+

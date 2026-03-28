@@ -50,8 +50,8 @@
 
   .ui-label {
     /* Chữ nhẹ, dãn cách rộng, in hoa vừa phải */
-    @apply text-slate-400 font-medium uppercase tracking-widest;
-    font-size: 10.5px;
+    @apply text-slate-400 font-medium  ;
+    font-size: 12px;
   }
 
   .ui-value {
@@ -83,7 +83,7 @@
 
   .ui-section-title {
     /* Font 700 hoặc 800 cho tiêu đề lớn */
-    @apply text-[var(--color-text-main)] font-extrabold tracking-tight;
+    @apply text-[var(--color-text-main)] font-bold tracking-tight;
     font-size: 16px;
   }
 
