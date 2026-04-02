@@ -1,7 +1,9 @@
 
 'use client';
 import React from 'react';
+
 import { User, Phone, Mail, MapPin, Check, X, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 import { IUser } from '@/features/customer/customer.types';
 import { ProfileMenu } from './ProfileMenu';
 import { useProfileEdit } from '@/features/customer/hooks/useProfileEdit';
@@ -109,20 +111,14 @@ export const ProfileCard = ({ user, onUpdateSuccess, onGoToSecurity }: ProfileCa
 
             {/* BỘ NÚT ĐIỀU KHIỂN: Chỉ hiện khi đang sửa */}
             {isEditing && (
-                <div className="flex justify-end gap-4 mt-12 px-8 animate-in slide-in-from-right-4 duration-300">
-                    <button
-                        onClick={cancelEditing}
-                        className="flex items-center px-6 py-2 rounded-full border border-slate-200 hover:bg-slate-50 text-slate-500 font-bold text-xs transition-all"
-                    >
-                        <X size={14} className="mr-2" /> HỦY
-                    </button>
-                    <button
-                        onClick={saveChanges}
-                        disabled={isLoading}
-                        className="flex items-center px-6 py-2 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs transition-all shadow-lg shadow-emerald-100 disabled:opacity-50"
-                    >
-                        {isLoading ? <Loader2 size={14} className="animate-spin" /> : <><Check size={14} className="mr-2" /> LƯU THÔNG TIN</>}
-                    </button>
+                <div className="flex justify-end items-center gap-5 mt-14 px-12">
+                    <Button variant="outline" onClick={cancelEditing} leftIcon={<X size={16} />}>
+                        Hủy bỏ
+                    </Button>
+
+                    <Button variant="primary" onClick={saveChanges} isLoading={isLoading} leftIcon={<Check size={16} />}>
+                        Lưu thông tin
+                    </Button>
                 </div>
             )}
 

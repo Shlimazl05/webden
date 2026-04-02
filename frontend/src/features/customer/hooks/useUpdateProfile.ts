@@ -9,10 +9,9 @@ export const useUpdateProfile = () => {
         setIsLoading(true);
         try {
             const res = await authApi.updateProfile(data);
-            alert("Cập nhật thành công!");
             return res.data;
         } catch (err: any) {
-            alert(err.response?.data?.message || "Có lỗi xảy ra");
+            throw err; 
         } finally {
             setIsLoading(false);
         }

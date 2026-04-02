@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             style: {
               background: '#ffffff',
               color: '#001529',
-              fontSize: '14px',      // .875rem chuẩn của ní
+              fontSize: '14px',      
               fontWeight: '600',
               borderRadius: '16px',
               padding: '12px 24px',

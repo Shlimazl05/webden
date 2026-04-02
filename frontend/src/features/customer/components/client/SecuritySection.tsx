@@ -2,6 +2,9 @@
 
 'use client';
 import React from 'react';
+import toast from 'react-hot-toast';
+import { Button } from '@/components/ui/Button';
+import { notify } from '@/utils/notifications';
 import { Lock, Eye, EyeOff, RotateCcw, CheckCircle2, Loader2 } from 'lucide-react';
 import { useSecurityForm } from '@/features/customer/hooks/useSecurityForm';
 
@@ -13,8 +16,24 @@ export const SecuritySection = ({ onBack }: SecuritySectionProps) => {
     const { formData, showPw, isLoading, toggleVisibility, handleInputChange, handleSubmit } = useSecurityForm();
 
     const onSave = async () => {
-        const success = await handleSubmit();
-        if (success) onBack();
+        try {
+            // Bước 1: Gọi hàm xử lý logic (nó sẽ check mật khẩu và gọi API)
+            const success = await handleSubmit();
+
+            // Bước 2: Nếu API trả về thành công (true)
+            if (success) {
+                notify.successIndigo('Đổi mật khẩu thành công! 🔐');
+
+                // Đợi 1 giây để người dùng thấy thông báo rồi mới quay lại
+                setTimeout(() => {
+                    onBack();
+                }, 1000);
+            }
+        } catch (err: any) {
+            // Bước 3: Nếu API trả về lỗi (sai mật khẩu cũ, lỗi server...)
+            const msg = err.response?.data?.message || "Đổi mật khẩu thất bại!";
+            notify.error(msg);
+        }
     };
 
     return (
@@ -106,36 +125,14 @@ export const SecuritySection = ({ onBack }: SecuritySectionProps) => {
             </div>
 
             {/* BỘ NÚT ĐIỀU KHIỂN */}
-            <div className="flex justify-end items-center gap-5 mt-14 px-12 animate-in slide-in-from-right-4 duration-300">
+            <div className="flex justify-end items-center gap-5 mt-14 px-12">
+                <Button variant="outline" onClick={onBack} leftIcon={<RotateCcw size={16} />}>
+                    Quay lại
+                </Button>
 
-                {/* NÚT QUAY LẠI CHUẨN 100% UI ẢNH MẪU */}
-                <button
-                    type="button"
-                    onClick={onBack}
-                    className="flex items-center justify-center px-8 py-3 rounded-full border border-slate-200 text-slate-500 hover:bg-slate-50 transition-all group"
-                >
-                    {/* Icon nằm bên trái với khoảng cách mr-2 */}
-                    <RotateCcw size={16} className="mr-2 transition-transform group-hover:-rotate-45" />
-
-                    {/* Chữ nằm bên phải */}
-                    <span className="text-[10px] font-black tracking-[0.15em] uppercase leading-none">
-                        Quay lại
-                    </span>
-                </button>
-
-                {/* NÚT LƯU MẬT KHẨU */}
-                <button
-                    disabled={isLoading}
-                    onClick={onSave}
-                    className="h-12 px-10 rounded-full bg-indigo-600 text-white font-bold text-[10px] shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all disabled:opacity-50 tracking-widest uppercase flex items-center justify-center"
-                >
-                    {isLoading ? (
-                        <Loader2 size={14} className="animate-spin mr-2" />
-                    ) : (
-                        <CheckCircle2 size={14} className="mr-2" />
-                    )}
+                <Button variant="primary" onClick={onSave} isLoading={isLoading} leftIcon={<CheckCircle2 size={16} />}>
                     Lưu mật khẩu
-                </button>
+                </Button>
             </div>
         </div>
     );

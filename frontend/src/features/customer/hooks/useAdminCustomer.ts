@@ -1,9 +1,4 @@
 
-
-
-
-
-
 import { useState, useEffect, useCallback } from 'react'; // Phải có các import này
 import { ICustomer } from '../customer.types';
 import { customerApi } from '../api/customer.admin.api';

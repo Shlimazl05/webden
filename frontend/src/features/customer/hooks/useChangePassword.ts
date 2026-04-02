@@ -9,11 +9,9 @@ export const useChangePassword = () => {
         setIsLoading(true);
         try {
             await authApi.changePassword(data);
-            alert("Đổi mật khẩu thành công!");
             return true;
         } catch (err: any) {
-            alert(err.response?.data?.message || "Mật khẩu cũ không chính xác");
-            return false;
+            throw err;
         } finally {
             setIsLoading(false);
         }

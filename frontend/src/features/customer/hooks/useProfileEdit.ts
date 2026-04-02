@@ -1,3 +1,5 @@
+import toast from 'react-hot-toast';
+import { notify } from '@/utils/notifications';
 import { useState, useEffect } from 'react';
 import { IUser, UpdateProfilePayload } from '../customer.types';
 import { useUpdateProfile } from './useUpdateProfile';
@@ -27,10 +29,21 @@ export const useProfileEdit = (user: IUser, onUpdateSuccess: () => void) => {
     };
 
     const saveChanges = async () => {
-        const result = await updateProfile(formData);
-        if (result) {
-            setIsEditing(false);
-            onUpdateSuccess();
+        try {
+            // Gọi API cập nhật
+            const result = await updateProfile(formData);
+
+            if (result) {
+                // Thông báo thành công kiểu đơn giản & thân thiện
+                notify.success('Cập nhật thành công!');
+
+                setIsEditing(false);
+                onUpdateSuccess();
+            } 
+        } catch (err: any) {
+            // Lấy message lỗi từ Server (ví dụ: "Email đã tồn tại")
+            const msg = err.response?.data?.message || "Không thể cập nhật hồ sơ!";
+            notify.error(msg); // Hiện thông báo lỗi chuyên nghiệp
         }
     };
 
