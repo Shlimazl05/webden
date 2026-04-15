@@ -49,7 +49,7 @@ export default function OrdersPage() {
                 </div>
 
                 {/* BỘ LỌC TRẠNG THÁI */}
-                <div className="bg-white p-2 rounded-3xl shadow-sm border border-slate-100">
+                <div className="bg-white sticky top-0 z-10">
                     <OrderTabs activeTab={activeTab} onTabChange={setTab} />
                 </div>
 

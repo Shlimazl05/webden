@@ -105,7 +105,7 @@ const Navbar = () => {
         <div className="relative group flex items-center py-4 cursor-pointer">
           {isLoggedIn && user && (
             <span className="mr-3 text-slate-300 font-medium hidden lg:inline-block">
-              Chào, <span className="text-amber-400">{user.name.split(' ').slice(-1)[0]}</span>
+              <span className="text-amber-400">{user.name.split(' ').slice(-1)[0]}</span>
             </span>
           )}
 
@@ -120,10 +120,10 @@ const Navbar = () => {
               {isLoggedIn && user ? (
                 <div className="w-[260px] flex flex-col">
                   {/* Dropdown Header */}
-                  <div className="px-6 py-5 bg-gradient-to-br from-slate-800 to-slate-900 border-b border-slate-800">
+                  {/* <div className="px-6 py-5 bg-gradient-to-br from-slate-800 to-slate-900 border-b border-slate-800">
                     <p className="text-[10px] text-amber-500 font-bold uppercase tracking-widest mb-1">Thành viên Stellar</p>
                     <p className="text-base font-bold text-white truncate">{user.name}</p>
-                  </div>
+                  </div> */}
 
                   {/* Menu Options */}
                   <div className="p-2">
