@@ -16,9 +16,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="vi">
       <body className={`${beVietnamPro.variable} font-sans antialiased `}>
-        
+
         {/* 2. Cấu hình Toaster - Thông báo sẽ hiện ra ở CHÍNH GIỮA phía trên */}
-        <Toaster 
+        <Toaster
           position="top-center" // Đưa thông báo ra giữa màn hình
           reverseOrder={false}
           toastOptions={{
@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             style: {
               background: '#ffffff',
               color: '#001529',
-              fontSize: '14px',      
+              fontSize: '14px',
               fontWeight: '600',
               borderRadius: '16px',
               padding: '12px 24px',
