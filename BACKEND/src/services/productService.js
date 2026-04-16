@@ -8,35 +8,47 @@ const removeAccents = require('../utils/removeAccents');
 
 const fs = require('fs');
 const path = require('path');
+
 // --- HÀM PHỤ: TỰ ĐỘNG XỬ LÝ VECTOR (Dùng chung cho Create/Update) ---
 const syncAIVector = async (product) => {
-    if (!product.imageUrl || !product.imageUrl.startsWith('data:image')) return;
+    // Chỉ xử lý nếu có ảnh và là dạng Base64
+    if (!product.imageUrl || !product.imageUrl.startsWith('data:image')) {
+        console.log(`⚠️ Bỏ qua tạo vector cho SP: ${product.productName} (Ảnh không phải Base64)`);
+        return;
+    }
 
     let tempPath = "";
     try {
         // 1. Chuyển Base64 thành file tạm
         const base64Data = product.imageUrl.replace(/^data:image\/\w+;base64,/, "");
         const buffer = Buffer.from(base64Data, 'base64');
-        tempPath = path.join(__dirname, `../../scripts/temp_sync_${product._id}.jpg`);
 
+        // Tạo đường dẫn file tạm trong folder scripts
+        tempPath = path.resolve(__dirname, `../../scripts/temp_sync_${product._id}.jpg`);
         fs.writeFileSync(tempPath, buffer);
 
-        // 2. Gọi AI trích xuất Vector
-        const vector = await SearchService.getVector(tempPath);
+        console.log(`⏳ AI đang học sản phẩm: ${product.productName}...`);
 
-        // 3. Lưu hoặc Cập nhật vào bảng ProductFeature
+        // 2. Gọi AI trích xuất (Trả về Object { category_label, vector })
+        const aiData = await SearchService.getVector(tempPath);
+
+        // 3. LƯU VÀO DATABASE - Quan trọng: Chỉ lấy trường .vector
         await ProductFeature.findOneAndUpdate(
             { productId: product._id },
-            { vector: vector },
+            {
+                vector: aiData.vector // <--- BẮT BUỘC PHẢI LẤY .vector Ở ĐÂY
+            },
             { upsert: true, returnDocument: 'after' }
         );
 
-        console.log(`🚀 [AI Sync] Đã cập nhật vector cho: ${product.productName}`);
+        console.log(`🚀 [AI Sync Success] Đã cập nhật vector cho: ${product.productName} (Loại: ${aiData.category_label})`);
     } catch (error) {
-        console.error("❌ [AI Sync Error]:", error.message);
+        console.error(`❌ [AI Sync Error] Tại SP ${product.productName}:`, error.message);
     } finally {
-        // 4. Xóa file tạm
-        if (tempPath && fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+        // 4. Xóa file tạm ngay lập tức để giải phóng bộ nhớ server
+        if (tempPath && fs.existsSync(tempPath)) {
+            fs.unlinkSync(tempPath);
+        }
     }
 };
 
