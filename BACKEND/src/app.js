@@ -14,8 +14,7 @@ connectDB();
 
 const app = express();
 
-// Cho phép truy cập vào thư mục public
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
 // --- 2. MIDDLEWARES ---
 app.use(cors({
     origin: process.env.CLIENT_URL || 'http://localhost:3000',
@@ -42,7 +41,7 @@ const customerRoutes = require('./routes/customerRoutes');
 const shippingRoutes = require('./routes/shippingRoutes');
 
 const orderService = require('./services/orderService');
-
+const searchRoutes = require('./routes/searchRoutes');
 // Cổng chào API
 app.get('/', (req, res) => res.status(200).json({ 
     message: "Stellar Lights API is running..." 
@@ -61,7 +60,7 @@ app.use('/api/suppliers', supplierRoutes);
 app.use('/api/import-orders', importOrderRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/shipping', shippingRoutes);
-
+app.use('/api/search', searchRoutes);
 // --- KÍCH HOẠT QUÉT ĐƠN HÀNG HẾT HẠN ---//
 orderService.startOrderCleanupTask();
 // --- 4. ERROR HANDLING ---//
