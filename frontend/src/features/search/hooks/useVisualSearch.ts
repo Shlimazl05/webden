@@ -11,7 +11,7 @@
 //     const [isDragging, setIsDragging] = useState(false);
 //     const [isVisualLoading, setIsVisualLoading] = useState(false);
 //     const [visualResults, setVisualResults] = useState<IProduct[]>([]);
-//     const fileInputRef = useRef<HTMLInputElement>(null);
+//     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
 //     const openModal = () => setIsModalOpen(true);
 //     const closeModal = () => {
@@ -19,9 +19,8 @@
 //         setIsDragging(false);
 //     };
 
-//     // --- BẠN ĐANG THIẾU DÒNG NÀY ---
+//     // Định nghĩa hàm xóa kết quả
 //     const clearResults = () => setVisualResults([]);
-//     // -------------------------------
 
 //     const handleCameraClick = () => {
 //         if (fileInputRef.current) {
@@ -35,42 +34,43 @@
 //             return;
 //         }
 
-//         // 1. Đóng Modal ngay để người dùng thấy giao diện tìm kiếm ở Navbar
 //         closeModal();
-
-//         // 2. Kích hoạt Loading state của AI
 //         setIsVisualLoading(true);
 
-//         // 3. Tạo một Toast Loading và lưu lại ID của nó
-//         // Toast này sẽ KHÔNG BIẾN MẤT cho đến khi ta ra lệnh tiếp theo
-//         const toastId = toast.loading("Đang gửi ảnh lên hệ thống AI...");
+//         // --- SỬ DỤNG TOAST.PROMISE ĐỂ GIỮ THÔNG BÁO ---
+//         const searchPromise = searchApi.visualSearch(file);
 
-//         try {
-//             // Cập nhật text của toast khi bắt đầu giai đoạn trích xuất vector
-//             toast.loading("AI đang phân tích đặc trưng hình ảnh...", { id: toastId });
+//         toast.promise(
+//             searchPromise,
+//             {
+//                 loading: 'Hệ thống AI đang phân tích hình ảnh...',
+//                 success: (results: any) => {
+//                     // Xử lý dữ liệu trả về
+//                     const data = results.data?.data || results.data || results;
+//                     setVisualResults(data);
 
-//             // GỌI API BACKEND
-//             const results = await searchApi.visualSearch(file);
-
-//             setVisualResults(results);
-
-//             if (results.length > 0) {
-//                 // THÀNH CÔNG: Thay thế Loading bằng Success (Dùng đúng toastId)
-//                 toast.success(`Đã tìm thấy ${results.length} sản phẩm tương đồng!`, {
-//                     id: toastId,
-//                     duration: 4000 // Giữ thông báo thành công trong 4 giây
-//                 });
-//             } else {
-//                 // KHÔNG CÓ KẾT QUẢ: Thay thế bằng Error
-//                 toast.error("Không tìm thấy mẫu đèn nào phù hợp trong kho.", { id: toastId });
+//                     if (data.length > 0) {
+//                         return `Tìm thấy ${data.length} sản phẩm tương đồng!`;
+//                     } else {
+//                         throw new Error("Không có sản phẩm nào phù hợp.");
+//                     }
+//                 },
+//                 error: (err) => {
+//                     return err.message || "Lỗi hệ thống nhận diện AI.";
+//                 },
+//             },
+//             {
+//                 // Giữ style đẹp của bạn từ layout.tsx
+//                 style: {
+//                     minWidth: '300px',
+//                 },
+//                 success: {
+//                     duration: 5000, // Kết quả hiện trong 5 giây cho người dùng kịp nhìn
+//                 },
 //             }
-//         } catch (error) {
-//             // LỖI HỆ THỐNG: Thay thế bằng Error
-//             toast.error("Hệ thống AI đang bận hoặc lỗi kết nối.", { id: toastId });
-//         } finally {
-//             // Kết thúc quá trình loading
+//         ).finally(() => {
 //             setIsVisualLoading(false);
-//         }
+//         });
 //     };
 
 //     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,13 +111,17 @@
 // };
 
 
-
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation'; // Import router
 import toast from 'react-hot-toast';
 import { searchApi } from '../api/searchAI.api';
 import { IProduct } from '../../product/product.types';
+import { useVisualSearchStore } from '../store/useVisualSearchStore'; // Import Store
 
 export const useVisualSearch = () => {
+    const router = useRouter();
+    const setVisualData = useVisualSearchStore((state) => state.setVisualData);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const [isVisualLoading, setIsVisualLoading] = useState(false);
@@ -130,7 +134,6 @@ export const useVisualSearch = () => {
         setIsDragging(false);
     };
 
-    // Định nghĩa hàm xóa kết quả
     const clearResults = () => setVisualResults([]);
 
     const handleCameraClick = () => {
@@ -145,10 +148,12 @@ export const useVisualSearch = () => {
             return;
         }
 
+        // Tạo URL preview để hiển thị ở trang kết quả
+        const previewUrl = URL.createObjectURL(file);
+
         closeModal();
         setIsVisualLoading(true);
 
-        // --- SỬ DỤNG TOAST.PROMISE ĐỂ GIỮ THÔNG BÁO ---
         const searchPromise = searchApi.visualSearch(file);
 
         toast.promise(
@@ -156,28 +161,25 @@ export const useVisualSearch = () => {
             {
                 loading: 'Hệ thống AI đang phân tích hình ảnh...',
                 success: (results: any) => {
-                    // Xử lý dữ liệu trả về
                     const data = results.data?.data || results.data || results;
-                    setVisualResults(data);
 
-                    if (data.length > 0) {
-                        return `Tìm thấy ${data.length} sản phẩm tương đồng!`;
+                    if (data && data.length > 0) {
+                        // 1. Lưu dữ liệu vào Store toàn cục
+                        setVisualData(data, previewUrl);
+
+                        // 2. Chuyển hướng sang trang kết quả
+                        router.push('/search/visual');
+
+                        return `Tìm thấy ${data.length} sản phẩm phù hợp!`;
                     } else {
                         throw new Error("Không có sản phẩm nào phù hợp.");
                     }
                 },
-                error: (err) => {
-                    return err.message || "Lỗi hệ thống nhận diện AI.";
-                },
+                error: (err) => err.message || "Lỗi hệ thống nhận diện AI.",
             },
             {
-                // Giữ style đẹp của bạn từ layout.tsx
-                style: {
-                    minWidth: '300px',
-                },
-                success: {
-                    duration: 5000, // Kết quả hiện trong 5 giây cho người dùng kịp nhìn
-                },
+                style: { minWidth: '300px' },
+                success: { duration: 5000 },
             }
         ).finally(() => {
             setIsVisualLoading(false);
