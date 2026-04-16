@@ -2,11 +2,16 @@
 
 
 // import { useState, useRef } from 'react';
+// import { useRouter } from 'next/navigation'; // Import router
 // import toast from 'react-hot-toast';
 // import { searchApi } from '../api/searchAI.api';
 // import { IProduct } from '../../product/product.types';
+// import { useVisualSearchStore } from '../store/useVisualSearchStore'; // Import Store
 
 // export const useVisualSearch = () => {
+//     const router = useRouter();
+//     const setVisualData = useVisualSearchStore((state) => state.setVisualData);
+
 //     const [isModalOpen, setIsModalOpen] = useState(false);
 //     const [isDragging, setIsDragging] = useState(false);
 //     const [isVisualLoading, setIsVisualLoading] = useState(false);
@@ -19,7 +24,6 @@
 //         setIsDragging(false);
 //     };
 
-//     // Định nghĩa hàm xóa kết quả
 //     const clearResults = () => setVisualResults([]);
 
 //     const handleCameraClick = () => {
@@ -34,10 +38,12 @@
 //             return;
 //         }
 
+//         // Tạo URL preview để hiển thị ở trang kết quả
+//         const previewUrl = URL.createObjectURL(file);
+
 //         closeModal();
 //         setIsVisualLoading(true);
 
-//         // --- SỬ DỤNG TOAST.PROMISE ĐỂ GIỮ THÔNG BÁO ---
 //         const searchPromise = searchApi.visualSearch(file);
 
 //         toast.promise(
@@ -45,28 +51,25 @@
 //             {
 //                 loading: 'Hệ thống AI đang phân tích hình ảnh...',
 //                 success: (results: any) => {
-//                     // Xử lý dữ liệu trả về
 //                     const data = results.data?.data || results.data || results;
-//                     setVisualResults(data);
 
-//                     if (data.length > 0) {
-//                         return `Tìm thấy ${data.length} sản phẩm tương đồng!`;
+//                     if (data && data.length > 0) {
+//                         // 1. Lưu dữ liệu vào Store toàn cục
+//                         setVisualData(data, previewUrl);
+
+//                         // 2. Chuyển hướng sang trang kết quả
+//                         router.push('/search/visual');
+
+//                         return `Tìm thấy ${data.length} sản phẩm phù hợp!`;
 //                     } else {
 //                         throw new Error("Không có sản phẩm nào phù hợp.");
 //                     }
 //                 },
-//                 error: (err) => {
-//                     return err.message || "Lỗi hệ thống nhận diện AI.";
-//                 },
+//                 error: (err) => err.message || "Lỗi hệ thống nhận diện AI.",
 //             },
 //             {
-//                 // Giữ style đẹp của bạn từ layout.tsx
-//                 style: {
-//                     minWidth: '300px',
-//                 },
-//                 success: {
-//                     duration: 5000, // Kết quả hiện trong 5 giây cho người dùng kịp nhìn
-//                 },
+//                 style: { minWidth: '300px' },
+//                 success: { duration: 5000 },
 //             }
 //         ).finally(() => {
 //             setIsVisualLoading(false);
@@ -111,15 +114,17 @@
 // };
 
 
+
 import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation'; // Import router
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { searchApi } from '../api/searchAI.api';
 import { IProduct } from '../../product/product.types';
-import { useVisualSearchStore } from '../store/useVisualSearchStore'; // Import Store
+import { useVisualSearchStore } from '../store/useVisualSearchStore';
 
 export const useVisualSearch = () => {
     const router = useRouter();
+    // Lấy hàm setVisualData từ Store
     const setVisualData = useVisualSearchStore((state) => state.setVisualData);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -148,7 +153,7 @@ export const useVisualSearch = () => {
             return;
         }
 
-        // Tạo URL preview để hiển thị ở trang kết quả
+        // Tạo URL preview ảnh để hiển thị ở trang kết quả
         const previewUrl = URL.createObjectURL(file);
 
         closeModal();
@@ -160,17 +165,20 @@ export const useVisualSearch = () => {
             searchPromise,
             {
                 loading: 'Hệ thống AI đang phân tích hình ảnh...',
-                success: (results: any) => {
-                    const data = results.data?.data || results.data || results;
+                success: (res: any) => {
+                    // Cấu trúc dữ liệu mới từ Backend: { products: [...], categoryName: "..." }
+                    // res.data thường là bọc ngoài của Axios
+                    const products = res.products || [];
+                    const categoryName = res.categoryName || "Đang xác định...";
 
-                    if (data && data.length > 0) {
-                        // 1. Lưu dữ liệu vào Store toàn cục
-                        setVisualData(data, previewUrl);
+                    if (products && products.length > 0) {
+                        // 1. Lưu 3 thông tin vào Store: mảng SP, ảnh preview, tên danh mục
+                        setVisualData(products, previewUrl, categoryName || "Đang xác định...");
 
-                        // 2. Chuyển hướng sang trang kết quả
+                        // 2. Chuyển hướng sang trang kết quả riêng
                         router.push('/search/visual');
 
-                        return `Tìm thấy ${data.length} sản phẩm phù hợp!`;
+                        return `Tìm thấy ${products.length} sản phẩm phù hợp!`;
                     } else {
                         throw new Error("Không có sản phẩm nào phù hợp.");
                     }
