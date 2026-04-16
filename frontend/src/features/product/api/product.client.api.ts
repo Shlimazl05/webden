@@ -25,18 +25,5 @@ export const productClientApi = {
         return response.data.data;
     },
 
-    visualSearch: async (file: File): Promise<IProduct[]> => {
-        const formData = new FormData();
-        formData.append('image', file); // 'image' phải khớp với upload.single('image') ở Backend
-
-        const response = await axiosInstance.post('/search/visual-search', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-
-        // Trả về mảng sản phẩm tương đồng
-        return response.data.data || response.data;
-    }
 
 };

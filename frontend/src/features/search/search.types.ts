@@ -1,8 +1,5 @@
 import { IProduct } from "@/features/product/product.types";
 
-export interface ISearchState {
-    keyword: string;
-    results: IProduct[];
-    totalResults: number;
-    isLoading: boolean;
+export interface IVisualSearchResponse extends IProduct {
+    score: number; // Điểm tương đồng AI
 }

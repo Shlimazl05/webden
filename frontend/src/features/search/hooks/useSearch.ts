@@ -33,7 +33,7 @@ export const useSearch = () => {
                 const actualProducts = res?.products || [];
                 setResults(actualProducts);
 
-                console.log("Kết quả tìm kiếm:", actualProducts); // Ní kiểm tra log này trong F12
+                console.log("Kết quả tìm kiếm:", actualProducts); 
             } catch (error) {
                 console.error("Lỗi API Search:", error);
                 setResults([]);
