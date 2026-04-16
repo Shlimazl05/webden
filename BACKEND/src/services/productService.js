@@ -1,8 +1,44 @@
 
 const Product = require('../models/Product');
+const ProductFeature = require('../models/ProductFeature');
+const { SearchService } = require('./searchService');
 const slugify = require('slugify');
 const mongoose = require('mongoose');
 const removeAccents = require('../utils/removeAccents');
+
+const fs = require('fs');
+const path = require('path');
+// --- HÀM PHỤ: TỰ ĐỘNG XỬ LÝ VECTOR (Dùng chung cho Create/Update) ---
+const syncAIVector = async (product) => {
+    if (!product.imageUrl || !product.imageUrl.startsWith('data:image')) return;
+
+    let tempPath = "";
+    try {
+        // 1. Chuyển Base64 thành file tạm
+        const base64Data = product.imageUrl.replace(/^data:image\/\w+;base64,/, "");
+        const buffer = Buffer.from(base64Data, 'base64');
+        tempPath = path.join(__dirname, `../../scripts/temp_sync_${product._id}.jpg`);
+
+        fs.writeFileSync(tempPath, buffer);
+
+        // 2. Gọi AI trích xuất Vector
+        const vector = await SearchService.getVector(tempPath);
+
+        // 3. Lưu hoặc Cập nhật vào bảng ProductFeature
+        await ProductFeature.findOneAndUpdate(
+            { productId: product._id },
+            { vector: vector },
+            { upsert: true, returnDocument: 'after' }
+        );
+
+        console.log(`🚀 [AI Sync] Đã cập nhật vector cho: ${product.productName}`);
+    } catch (error) {
+        console.error("❌ [AI Sync Error]:", error.message);
+    } finally {
+        // 4. Xóa file tạm
+        if (tempPath && fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+    }
+};
 
 // ------ TẠO SẢN PHẨM -----stockQuantity //
 const createProduct = async (productData) => {
@@ -39,7 +75,11 @@ const createProduct = async (productData) => {
         slug
     });
 
-    return await newProduct.save();
+    // 4. Lưu sản phẩm
+    const savedProduct = await newProduct.save();
+    // 5. TỰ ĐỘNG GỌI AI (Không dùng await để không làm chậm response trả về cho user)
+    syncAIVector(savedProduct);
+    return savedProduct;
 };
 
 
@@ -140,13 +180,28 @@ const updateProduct = async (id, data) => {
         data.productNameSearch = removeAccents(data.productName);
     }
 
-    // 2. Tiến hành cập nhật
-    return await Product.findByIdAndUpdate(id, data, { new: true });
+    const updatedProduct = await Product.findByIdAndUpdate(id, data, { new: true });
+
+    // NẾU CÓ CẬP NHẬT ẢNH MỚI -> GỌI AI TẠO LẠI VECTOR
+    if (data.imageUrl) {
+        syncAIVector(updatedProduct);
+    }
+
+    return updatedProduct;
 };
 
 // ----- XÓA SẢN PHẨM ----- //
 const deleteProduct = async (id) => {
-    return await Product.findByIdAndDelete(id);
+    // Xóa sản phẩm
+    const deletedProduct = await Product.findByIdAndDelete(id);
+
+    // XÓA LUÔN VECTOR LIÊN QUAN TRONG AI DATABASE
+    if (deletedProduct) {
+        await ProductFeature.deleteOne({ productId: id });
+        console.log(`🗑️ Đã xóa dữ liệu AI của sản phẩm: ${id}`);
+    }
+
+    return deletedProduct;
 };
 
 

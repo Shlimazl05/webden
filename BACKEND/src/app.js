@@ -14,6 +14,8 @@ connectDB();
 
 const app = express();
 
+// Cho phép truy cập vào thư mục public
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 // --- 2. MIDDLEWARES ---
 app.use(cors({
     origin: process.env.CLIENT_URL || 'http://localhost:3000',
