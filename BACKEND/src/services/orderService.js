@@ -21,43 +21,7 @@ const generateQrUrl = (finalAmount, orderCode) => {
 /**
  * LẤY DANH SÁCH ĐƠN HÀNG (ADMIN)
  */
-// exports.getAllOrdersAdmin = async (options = {}) => {
-//     const { search = '', status = '', page = 1, limit = 10, customerId = null } = options;
-//     const skip = (page - 1) * limit;
 
-//     const filter = {};
-//     if (status && status !== 'all') filter.status = status;
-//     if (customerId) filter.customerId = customerId;
-//     if (search) {
-//         filter.$or = [
-//             { orderCode: { $regex: new RegExp(search, 'i') } },
-//             { recipientName: { $regex: new RegExp(search, 'i') } },
-//             { phone: { $regex: new RegExp(search, 'i') } },
-//             { note: { $regex: new RegExp(search, 'i') } }
-//         ];
-//     }
-
-//     const [orders, totalOrders] = await Promise.all([
-//         Order.find(filter)
-//             .populate('customerId', 'username email')
-//             .sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
-//         Order.countDocuments(filter)
-//     ]);
-
-//     const ordersWithDetails = await Promise.all(orders.map(async (order) => {
-//         const details = await OrderDetail.find({ orderId: order._id })
-//             .populate('productId', 'productName productCode imageUrl').lean();
-
-//         let checkoutUrl = null;
-//         if (order.paymentMethod === 'SePay' && order.status === 'Pending' && order.paymentStatus !== 'Paid') {
-//             checkoutUrl = generateQrUrl(order.finalAmount, order.orderCode);
-//         }
-
-//         return { ...order, orderDetails: details, checkoutUrl };
-//     }));
-
-//     return { orders: ordersWithDetails, pagination: { totalOrders, totalPages: Math.ceil(totalOrders / limit), currentPage: parseInt(page) } };
-// };
 
 exports.getAllOrdersAdmin = async (options = {}) => {
     const { search = '', status = '', page = 1, limit = 10, customerId = null } = options;

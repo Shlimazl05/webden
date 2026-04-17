@@ -53,9 +53,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({ order, onUpdateS
             </div>
           </div>
 
-          <p className="text-slate-500 text-sm mt-1 italic">
-            {firstItemName} {otherItemsCount > 0 && <span className="text-blue-500 font-semibold">(+{otherItemsCount} món khác)</span>}
-          </p>
+          
         </div>
       </div>
 

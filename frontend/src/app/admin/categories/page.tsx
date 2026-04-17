@@ -36,7 +36,7 @@ export default function CategoryPage() {
       <AdminPageContainer>
 
         {/* --- HEADER: Tiêu đề và nút Thêm mới --- */}
-        <AdminPageHeader title="PHÂN LOẠI SẢN PHẨM">
+        <AdminPageHeader title="DANH MỤC">
           <button
             onClick={feature.handleOpenAdd}
             className="flex items-center gap-2 px-6 h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-sm transition-all active:scale-95 text-[14px] uppercase tracking-wider"

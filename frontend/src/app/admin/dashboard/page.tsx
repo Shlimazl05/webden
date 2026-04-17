@@ -1,84 +1,6 @@
 
 
 
-// "use client";
-// import { useAdminAuth } from '@/features/auth/auth.hooks';
-// import { useAdminStats } from '@/features/dashboard/admin.hook';
-// import { AdminPageContainer, AdminPageHeader } from "@/components/layout/AdminPageContainer";
-
-// // Import các component đã tách
-// import { StatsGrid } from '@/features/dashboard/components/StatsGird'; // Lưu ý: file bạn đang đặt tên là Gird thay vì Grid
-// import { RevenueChart } from '@/features/dashboard/components/RevenueChart';
-// import { CategoryPieChart } from '@/features/dashboard/components/CategoryPieChart';
-// // import { TopProductsList } from '@/features/dashboard/components/TopProductsList';
-// import { BestSellersList } from '@/features/dashboard/components/BestSellersList';
-// const formatVND = (value: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
-
-// export default function DashboardPage() {
-//   const { isAuthorized } = useAdminAuth();
-
-//   // 1. Lấy thêm range và setRange từ hook
-//   const { stats, loading, range, setRange } = useAdminStats();
-
-//   if (!isAuthorized) return null;
-
-//   // Mapping dữ liệu tại đây để giữ logic tập trung
-//   const topProductsData = stats?.bestSellers?.map((item: any) => ({
-//     name: item.name || item.productName || 'Tên sản phẩm',
-//     revenue: item.revenue || item.totalSales || 0
-//   })) || [];
-
-//   return (
-//     <div className="animate-in fade-in duration-500">
-//       <AdminPageContainer>
-
-//         {/* 2. Header Dashboard với Bộ lọc */}
-//         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-//           <AdminPageHeader title="BẢN ĐIỀU KHIỂN" />
-
-//           <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
-//             <span className="text-[10px] font-black text-slate-400 uppercase pl-3 tracking-wider">Hiển thị:</span>
-//             <select
-//               value={range}
-//               onChange={(e) => setRange(Number(e.target.value))}
-//               className="bg-slate-50 border-none rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer min-w-[140px]"
-//             >
-//               <option value={7}>7 ngày qua</option>
-//               <option value={30}>30 ngày qua</option>
-//               <option value={90}>90 ngày qua</option>
-//             </select>
-//           </div>
-//         </div>
-
-//         {/* 3. Các thẻ thống kê (Sẽ tự động cập nhật số liệu theo range) */}
-//         <StatsGrid stats={stats} loading={loading} />
-
-//         <div className="flex flex-col gap-8">
-//           {/* 4. Biểu đồ doanh thu (Sẽ co giãn số lượng cột theo range) */}
-//           <RevenueChart
-//             data={stats?.revenueChart || []}
-//             loading={loading}
-//             formatVND={formatVND}
-//           />
-
-//           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-//             <CategoryPieChart
-//               data={stats?.categoryChart || []}
-//               loading={loading}
-//             />
-//             <BestSellersList
-//               data={topProductsData}
-//               loading={loading}
-//               formatVND={formatVND}
-//             />
-//           </div>
-//         </div>
-//       </AdminPageContainer>
-//     </div>
-//   );
-// }
-
-
 "use client";
 import { useAdminAuth } from '@/features/auth/auth.hooks';
 import { useAdminStats } from '@/features/dashboard/admin.hook';
@@ -105,7 +27,7 @@ export default function DashboardPage() {
 
         {/* 1. Header & Bộ lọc */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <AdminPageHeader title="BẢN ĐIỀU KHIỂN" />
+          <AdminPageHeader title="TỔNG QUAN" />
 
           <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
             <span className="text-[10px] font-black text-slate-400 uppercase pl-3 tracking-wider">Hiển thị:</span>

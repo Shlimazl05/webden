@@ -61,7 +61,7 @@ export default function ProductManagementPage() {
   return (
     <div className="animate-in fade-in duration-700 pb-10">
       <AdminPageContainer>
-        <AdminPageHeader title="Quản lý sản phẩm">
+        <AdminPageHeader title="QUẢN LÍ SẢN PHẨM">
           <button
             onClick={handleOpenAdd}
             className="flex items-center gap-2 px-6 h-11 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95 text-[14px]"

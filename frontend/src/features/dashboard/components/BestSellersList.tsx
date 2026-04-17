@@ -33,9 +33,7 @@ export const BestSellersList = ({ items, loading }: { items: any[], loading: boo
                             </span>
                         </div>
                     </div>
-                    <div className="text-right">
-                        <p className="text-[13px] font-black text-rose-600">{item.revenue.toLocaleString()}đ</p>
-                    </div>
+                    
                 </div>
             ))}
         </div>

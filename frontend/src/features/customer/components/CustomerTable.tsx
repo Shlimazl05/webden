@@ -56,13 +56,10 @@ export const CustomerTable = ({ customers, loading, onStatusChange,onResetPage }
                       {displayName.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-black text-[#001529] text-sm uppercase truncate max-w-[150px]">
+                      <p className="font-black text-[#001529] text-sm truncate max-w-[150px]">
                         {displayName}
                       </p>
-                      {/* ID RÚT GỌN: Chỉ lấy 6 ký tự cuối */}
-                      <p className="text-[9px] text-slate-400 font-bold uppercase mt-0.5 tracking-tighter">
-                        ID: ...{item._id.slice(-6).toUpperCase()}
-                      </p>
+                      
                     </div>
                   </div>
                 </td>

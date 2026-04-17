@@ -24,9 +24,9 @@ exports.getStats = async (days = 30) => {
         const periodStats = await Order.aggregate([
             {
                 $match: {
-                    createdAt: { $gte: startDate },
+                    updatedAt: { $gte: startDate },
                     status: { $ne: 'Cancelled' },
-                    $or: [{ paymentStatus: 'Paid' }, { status: 'Completed' }]
+                    $or: [{ paymentStatus: { $regex: /^paid$/i } }, { status: 'Completed' }]
                 }
             },
             {
@@ -44,7 +44,7 @@ exports.getStats = async (days = 30) => {
             rawDailyRevenue = await Order.aggregate([
                 {
                     $match: {
-                        createdAt: { $gte: startDate },
+                        updatedAt: { $gte: startDate },
                         status: { $ne: 'Cancelled' },
                         $or: [{ paymentStatus: 'Paid' }, { status: 'Completed' }]
                     }
@@ -87,7 +87,7 @@ exports.getStats = async (days = 30) => {
                 { $unwind: '$orderInfo' },
                 {
                     $match: {
-                        'orderInfo.createdAt': { $gte: startDate },
+                        'orderInfo.updatedAt': { $gte: startDate },
                         'orderInfo.status': { $ne: 'Cancelled' },
                         $or: [
                             { 'orderInfo.paymentStatus': 'Paid' },
@@ -166,7 +166,7 @@ exports.getBestSellers = async (limit = 5, days = 30) => {
             { $unwind: '$orderInfo' },
             {
                 $match: {
-                    'orderInfo.createdAt': { $gte: startDate },
+                    'orderInfo.updatedAt': { $gte: startDate },
                     'orderInfo.status': { $ne: 'Cancelled' },
                     $or: [
                         { 'orderInfo.paymentStatus': 'Paid' },
