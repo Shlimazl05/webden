@@ -68,7 +68,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
     return (
         <div className="flex-1 flex flex-col overflow-hidden">
             {/* HEADER */}
-            <div className="px-8 py-5 flex justify-between items-center border-b border-slate-100 bg-white">
+            <div className="px-8 py-5 flex justify-between items-center border-b border-slate-100 bg-white rounded-t-[2.5rem]">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-[var(--color-primary)] text-white rounded-xl  flex items-center justify-center shadow-lg shadow-indigo-100">
                         <Package size={20} strokeWidth={2.5} />
@@ -210,7 +210,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
             </div>
 
             {/* FOOTER */}
-            <div className="px-8 py-5 border-t border-slate-100 bg-slate-50/30 flex justify-end gap-3">
+            <div className="px-8 py-5 border-t border-slate-100 bg-slate-50/30 flex justify-end gap-3 rounded-b-[2.5rem]">
                 <button type="button" onClick={onClose} className="px-6 text-slate-400 font-bold text-xs hover:text-slate-900 transition-all uppercase tracking-widest">Hủy bỏ</button>
                 <button
                     onClick={() => onSubmit(formData)}
