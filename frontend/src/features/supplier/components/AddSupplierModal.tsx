@@ -63,27 +63,18 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
       status: status
     };
 
-    const savePromise = onSubmit(payload as any);
-
-        // 3. Cập nhật thông báo dựa trên biến isEdit
-        toast.promise(savePromise, {
-        loading: 'Đang xử lý dữ liệu...',
-        success: () => {
-            // Trả về câu thông báo đúng với tác vụ đang làm
-            return isEdit ? "CẬP NHẬT THÀNH CÔNG!" : "THÊM THÀNH CÔNG!";
-        },
-        error: (err) => err.response?.data?.message || "LỖI HỆ THỐNG!",
-        }, { style: toastStyle });
-
-        try { 
-        await savePromise; 
-        // onClose(); // Lưu ý: Nếu trong Hook handleSubmit đã có onClose rồi thì ở đây không cần
-        } catch (err) {
-        console.error(err);
-        } finally { 
-        setLoading(false); 
-        }
-    };
+    try {
+      // 3. Chỉ gọi onSubmit và chờ kết quả. 
+      // Việc hiển thị thông báo "Đang xử lý", "Thành công" hay "Thất bại" 
+      // ĐÃ ĐƯỢC thực hiện bên trong Hook 'handleSubmit' rồi.
+      await onSubmit(payload as any);
+    } catch (err) {
+      console.error("Lỗi tại Modal:", err);
+      // Không cần toast.error ở đây vì Hook đã xử lý lỗi hệ thống qua Toast rồi.
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!isOpen) return null;
   const isEdit = !!initialData;
@@ -91,7 +82,7 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/20 animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-[500px] rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200">
-        
+
         {/* Header */}
         <div className="px-8 pt-8 pb-4 flex justify-between items-center border-b border-slate-50">
           <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">
@@ -107,7 +98,7 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
         </div>
 
         <form className="p-8 space-y-5" onSubmit={handleLocalSubmit}>
-          
+
           {/* Tên nhà cung cấp */}
           <div className="space-y-1.5">
             <label className="text-[13px] font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
@@ -177,24 +168,22 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
               <button
                 type="button"
                 onClick={() => setStatus("Active")}
-                className={`h-11 rounded-xl flex items-center justify-center gap-2 font-bold text-[12px] transition-all border ${
-                  status === "Active" 
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
-                  : "bg-white text-slate-400 border-slate-200"
-                }`}
+                className={`h-11 rounded-xl flex items-center justify-center gap-2 font-bold text-[12px] transition-all border ${status === "Active"
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                    : "bg-white text-slate-400 border-slate-200"
+                  }`}
               >
                 <Check size={16} className={status === "Active" ? "block" : "hidden"} />
                 ĐANG GIAO DỊCH
               </button>
-              
+
               <button
                 type="button"
                 onClick={() => setStatus("Hidden")}
-                className={`h-11 rounded-xl flex items-center justify-center gap-2 font-bold text-[12px] transition-all border ${
-                  status === "Hidden" 
-                  ? "bg-slate-100 text-slate-700 border-slate-300" 
-                  : "bg-white text-slate-400 border-slate-200"
-                }`}
+                className={`h-11 rounded-xl flex items-center justify-center gap-2 font-bold text-[12px] transition-all border ${status === "Hidden"
+                    ? "bg-slate-100 text-slate-700 border-slate-300"
+                    : "bg-white text-slate-400 border-slate-200"
+                  }`}
               >
                 <EyeOff size={16} className={status === "Hidden" ? "block" : "hidden"} />
                 TẠM NGỪNG

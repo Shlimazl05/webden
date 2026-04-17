@@ -218,7 +218,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
                     className="h-12 px-10 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95 flex items-center gap-2"
                 >
                     {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-                    {isEdit ? "Cập nhật sản phẩm" : "Lưu vào kho hàng"}
+                    {isEdit ? "Cập nhật sản phẩm" : "Lưu sản phẩm"}
                 </button>
             </div>
         </div>
