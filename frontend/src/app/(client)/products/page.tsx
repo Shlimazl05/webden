@@ -75,7 +75,7 @@
 
 //                     {/* BÊN PHẢI: DANH SÁCH (Trong khung bao) */}
 //                     <div className="col-span-12 lg:col-span-9">
-//                         <div className="bg-white rounded-[40px] p-8 lg:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.02)] border border-slate-50 min-h-[600px]">
+//                         <div className="bg-white rounded-xl p-8 lg:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.02)] border border-slate-50 min-h-[600px]">
 
 //                             <div className="flex justify-between items-center mb-10 px-2">
 //                                 <h3 className="font-black text-indigo-900 uppercase tracking-widest text-[11px] flex items-center gap-3">
@@ -189,7 +189,7 @@ export default function AllProductsPage() {
 
                     {/* BÊN PHẢI: DANH SÁCH */}
                     <div className="col-span-12 lg:col-span-9">
-                        <div className="bg-white rounded-[40px] p-8 lg:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.02)] border border-slate-50 min-h-[600px] flex flex-col">
+                        <div className="bg-white rounded-xl p-8 lg:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.02)] border border-slate-50 min-h-[600px] flex flex-col">
 
                             <div className="flex justify-between items-center mb-10 px-2">
                                 <h3 className="font-black text-indigo-900 uppercase tracking-widest text-[11px] flex items-center gap-3">

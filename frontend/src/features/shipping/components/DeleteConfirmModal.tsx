@@ -28,7 +28,7 @@ export const DeleteConfirmModal = ({
             />
 
             {/* Modal Content: Thu nhỏ max-width xuống 340px, giảm padding */}
-            <div className="relative bg-white w-full max-w-[340px] rounded-[40px] p-8 shadow-2xl transition-all scale-100 animate-in fade-in zoom-in duration-200 border border-slate-100">
+            <div className="relative bg-white w-full max-w-[340px] rounded-xl p-8 shadow-2xl transition-all scale-100 animate-in fade-in zoom-in duration-200 border border-slate-100">
 
                 {/* Nút đóng nhỏ hơn */}
                 <button

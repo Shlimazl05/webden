@@ -10,13 +10,13 @@
 
 //     return (
 //         <main className="min-h-screen bg-slate-50/50 pt-28 pb-20 px-4 md:px-10">
-//             <div className="max-w-[1400px] mx-auto bg-white rounded-[2.5rem] md:rounded-[4rem] shadow-sm border border-slate-100 overflow-hidden p-8 md:p-16">
+//             <div className="max-w-[1400px] mx-auto bg-white rounded-xl  md:rounded-[4rem] shadow-sm border border-slate-100 overflow-hidden p-8 md:p-16">
 
 //                 {/* HEADER: HIỂN THỊ ẢNH ĐÃ TÌM KIẾM */}
 //                 <div className="flex flex-col md:flex-row items-start md:items-center gap-8 mb-16">
 //                     {previewImage && (
 //                         <div className="relative shrink-0">
-//                             <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2rem] overflow-hidden border-4 border-white shadow-2xl">
+//                             <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden border-4 border-white shadow-2xl">
 //                                 <img src={previewImage} alt="Search" className="w-full h-full object-cover" />
 //                                 <div className="absolute bottom-0 right-0 bg-amber-500 p-2 rounded-tl-xl text-white">
 //                                     <Camera size={16} />
@@ -68,14 +68,14 @@ export const VisualSearchResultContent = () => {
 
     return (
         <main className="min-h-screen bg-slate-50/50 pt-16 pb-20 px-4 md:px-10 font-sans">
-            <div className="max-w-[1400px] mx-auto bg-white rounded-[2.5rem] md:rounded-[4rem] shadow-sm border border-slate-100 overflow-hidden p-6 md:p-12">
+            <div className="max-w-[1400px] mx-auto bg-white rounded-xl  md:rounded-[4rem] shadow-sm border border-slate-100 overflow-hidden p-6 md:p-12">
 
                 <div className="flex flex-col md:flex-row items-center gap-6 mb-10 border-b border-slate-50 pb-10">
 
                     {/* --- SỬA Ở ĐÂY: Chỉ render khung ảnh nếu có previewImage --- */}
                     {previewImage && (
                         <div className="relative shrink-0">
-                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2rem] overflow-hidden border-4 border-white shadow-xl ring-1 ring-slate-100">
+                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden border-4 border-white shadow-xl ring-1 ring-slate-100">
                                 <img
                                     src={previewImage}
                                     alt="Search Query"

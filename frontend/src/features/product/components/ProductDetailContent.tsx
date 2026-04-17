@@ -9,7 +9,7 @@ import { useCartStore } from "@/features/cart/hooks/useCartStore";
 export const ProductDetailContent = ({ product }: { product: IProduct }) => {
   const [activeImg, setActiveImg] = useState(product.imageUrl || "/img/placeholder.svg");
   const fetchCartCount = useCartStore((state) => state.fetchCartCount);
-  
+
   return (
     <div className="grid grid-cols-12 gap-8 lg:gap-10">
 
@@ -17,7 +17,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
 
       {/* CỘT TRÁI: Gallery Ảnh (5 cột) */}
       <div className="col-span-12 lg:col-span-5 space-y-6">
-        <div className="aspect-square w-full bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-sm group">
+        <div className="aspect-square w-full bg-white rounded-xl  border border-slate-100 overflow-hidden shadow-sm group">
           <img
             src={activeImg}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -30,7 +30,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
           <div className="flex gap-3 overflow-x-auto custom-scrollbar pb-2 px-1">
             <button
               onClick={() => setActiveImg(product.imageUrl || "")}
-              className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImg === product.imageUrl ? 'border-[var(--color-primary)] shadow-md' : 'border-transparent opacity-50'}`}
+              className={`w-14 h-14 rounded-xl  overflow-hidden border-2 transition-all flex-shrink-0 ${activeImg === product.imageUrl ? 'border-[var(--color-primary)] shadow-md' : 'border-transparent opacity-50'}`}
             >
               <img src={product.imageUrl} className="w-full h-full object-cover" alt="thumb" />
             </button>
@@ -38,7 +38,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
               <button
                 key={idx}
                 onClick={() => setActiveImg(img)}
-                className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImg === img ? 'border-[var(--color-primary)] shadow-md' : 'border-transparent opacity-50'}`}
+                className={`w-14 h-14 rounded-xl  overflow-hidden border-2 transition-all flex-shrink-0 ${activeImg === img ? 'border-[var(--color-primary)] shadow-md' : 'border-transparent opacity-50'}`}
               >
                 <img src={img} className="w-full h-full object-cover" alt="sub" />
               </button>
@@ -78,7 +78,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
 
         {/* Giá và Kho */}
         <div className="grid grid-cols-2 gap-4 w-full">
-          <div className="bg-rose-50/30 p-5 rounded-[2rem] border border-rose-100/50">
+          <div className="bg-rose-50/30 p-5 rounded-xl border border-rose-100/50">
             <p className="ui-label !text-rose-400 mb-1 ml-1">Giá bán </p>
             <div className="ui-price !text-3xl !text-rose-600">
               {product.salePrice?.toLocaleString('vi-VN')}
@@ -86,7 +86,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
             </div>
           </div>
 
-          <div className="bg-indigo-50/30 p-5 rounded-[2rem] border border-indigo-100/50">
+          <div className="bg-indigo-50/30 p-5 rounded-xl border border-indigo-100/50">
             <p className="ui-label !text-indigo-400 mb-1 ml-1">Số lượng sẵn có</p>
             <div className="flex items-center gap-2">
               <Box className="text-indigo-600" size={24} strokeWidth={2} />
@@ -101,7 +101,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
 
       <div className="col-span-12 mt-4 text-left">
         <div className="flex items-center gap-2 mb-4 ml-1">
-          <div className="p-2 bg-indigo-50 text-[var(--color-primary)] rounded-xl shadow-sm border border-indigo-100">
+          <div className="p-2 bg-indigo-50 text-[var(--color-primary)] rounded-xl  shadow-sm border border-indigo-100">
             <ReceiptText size={18} strokeWidth={2.5} />
           </div>
           <h3 className="ui-section-title !m-0 !text-[16px]">Thông số kỹ thuật chi tiết</h3>

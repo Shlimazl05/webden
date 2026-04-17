@@ -2,15 +2,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { User, Phone, Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react"; 
+import { User, Phone, Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { registerApi } from "../auth.api"; 
+import { registerApi } from "../auth.api";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast"; // 1. Import toast
 
 export default function RegisterForm() {
-  const router = useRouter(); 
-  
+  const router = useRouter();
+
   // States
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
@@ -26,17 +26,17 @@ export default function RegisterForm() {
 
     // 2. Thay alert bằng toast cho validation
     if (!username || !phone || !password || !confirmPassword) {
-        toast.error("Vui lòng nhập đầy đủ thông tin");
-        return;
+      toast.error("Vui lòng nhập đầy đủ thông tin");
+      return;
     }
     if (password !== confirmPassword) {
-        toast.error("Mật khẩu xác nhận không khớp");
-        return;
+      toast.error("Mật khẩu xác nhận không khớp");
+      return;
     }
 
     try {
-      setIsLoading(true); 
-      
+      setIsLoading(true);
+
       const response = await registerApi({
         username,
         phone,
@@ -46,12 +46,12 @@ export default function RegisterForm() {
 
       // 3. Thông báo thành công chuyên nghiệp
       toast.success(response.message || "Đăng ký thành công! Đang chuyển hướng...");
-      
+
       // 4. Đợi 1.5 giây để người dùng kịp nhìn thông báo rồi mới sang trang Login
       setTimeout(() => {
-        router.push("/login"); 
+        router.push("/login");
       }, 1500);
-      
+
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || "Đăng ký thất bại";
       // 5. Thông báo lỗi từ server
@@ -64,7 +64,7 @@ export default function RegisterForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fdf6ee] via-[#f8f1e7] to-[#efe5d8] px-4">
       <div className="w-full max-w-md bg-[#fffaf3] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] p-10">
-         <h1 className="text-3xl font-serif text-center text-[#3b2f2f] tracking-widest uppercase font-black">
+        <h1 className="text-3xl font-serif text-center text-[#3b2f2f] tracking-widest uppercase font-black">
           Đăng ký
         </h1>
         <p className="text-center text-sm text-[#7a6a5d] mb-10">Tham gia thế giới ánh sáng nội thất</p>
@@ -137,7 +137,7 @@ export default function RegisterForm() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-6 py-3 rounded-xl font-semibold text-white text-sm
+            className="w-full mt-6 py-3 rounded-xl  font-semibold text-white text-sm
                        bg-gradient-to-r from-[#c9a24d] to-[#e6c77b]
                        hover:from-[#b8943f] hover:to-[#d9b865]
                        disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center shadow-lg transition-all"
@@ -152,8 +152,8 @@ export default function RegisterForm() {
             <Link href="/login" className="font-semibold text-[#3b2f2f] hover:underline">Đăng nhập</Link>
           </p>
 
-          <Link   
-            href="/" 
+          <Link
+            href="/"
             className="inline-flex items-center justify-center text-[#7a6a5d] hover:text-[#3b2f2f] text-sm pt-4 border-t border-[#e0d7cd] transition-colors w-full"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />

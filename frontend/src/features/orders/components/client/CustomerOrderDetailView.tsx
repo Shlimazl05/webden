@@ -24,7 +24,7 @@
 //                     <h2 className="text-lg font-black text-slate-800 uppercase tracking-tight">
 //                         Chi tiết đơn hàng <span className="text-indigo-600">#{order.orderCode}</span>
 //                     </h2>
-                    
+
 //                 </div>
 //             </div>
 
@@ -101,7 +101,7 @@ export const CustomerOrderDetailView: React.FC<Props> = ({ order, onBack, onOpen
     return (
         <div className="flex flex-col h-full bg-white animate-in fade-in duration-500">
             {/* 1. Header: Giữ nguyên Tiêu đề, Mã đơn và các Nút bấm quan trọng */}
-            <div className="p-6 border-b border-slate-50 flex items-center justify-between sticky top-0 bg-white z-20">
+            <div className="px-4 border-b border-slate-50 flex items-center justify-between sticky top-0 bg-white z-20">
                 <div className="flex items-center gap-4">
                     <button onClick={onBack} className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all cursor-pointer">
                         <ArrowLeft size={18} className="text-slate-500" />
@@ -139,18 +139,16 @@ export const CustomerOrderDetailView: React.FC<Props> = ({ order, onBack, onOpen
             </div>
 
             {/* 2. Nội dung chính */}
-            <div className="flex-1 p-6 overflow-y-auto bg-[#fcfcfc] custom-scrollbar">
-                <div className="max-w-3xl mx-auto space-y-6 pb-20">
+            <div className="flex-1 bg-[#fcfcfc] ">
+                <div className="space-y-6">
 
                     {/* HÀNH TRÌNH ĐƠN HÀNG (Sẽ hiện ngay sau Header) */}
-                    <div className="mt-4 mb-10">
-                        <OrderStatusTimeline
-                            status={order.status}
-                            statusHistory={order.statusHistory || []}
-                            createdAt={order.createdAt}
-                        />
-                    </div>
 
+                    <OrderStatusTimeline
+                        status={order.status}
+                        statusHistory={order.statusHistory || []}
+                        createdAt={order.createdAt}
+                    />
                     {/* THÔNG TIN KHÁCH HÀNG & KIỆN HÀNG */}
                     <CustomerInfo order={order} />
                     <OrderPackageDetails order={order} isClientView={true} />

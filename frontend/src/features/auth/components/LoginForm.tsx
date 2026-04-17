@@ -1,5 +1,5 @@
 
-"use client"; 
+"use client";
 // Khai báo đây là Client Component (vì dùng useState, useEffect, sự kiện)
 
 import React, { useState, useEffect } from "react";
@@ -101,13 +101,13 @@ export default function LoginForm() {
           </div>
 
           {/* Nút đăng nhập */}
-          <button 
+          <button
             type="submit"
-            disabled={!isClient || isLoading} 
+            disabled={!isClient || isLoading}
             // Disable khi chưa mount client hoặc đang login
-            suppressHydrationWarning 
+            suppressHydrationWarning
             // Tắt cảnh báo hydration nếu render khác nhau nhẹ
-            className="w-full mt-6 py-3 rounded-xl font-semibold text-white tracking-wide
+            className="w-full mt-6 py-3 rounded-xl  font-semibold text-white tracking-wide
                        bg-gradient-to-r from-[#c9a24d] to-[#e6c77b]
                        hover:from-[#b8943f] hover:to-[#d9b865]
                        transition-all duration-300 shadow-lg flex justify-center items-center"
@@ -133,8 +133,8 @@ export default function LoginForm() {
           </p>
 
           {/* Link quay lại trang chủ */}
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="inline-flex items-center justify-center text-[#7a6a5d] hover:text-[#3b2f2f] text-sm pt-4 border-t border-[#e0d7cd] transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />

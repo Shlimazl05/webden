@@ -48,7 +48,7 @@ export const ProductFilterSidebar = ({
                         )}
                     </div>
 
-                    <div className="bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
+                    <div className="bg-slate-50 px-4 py-2 rounded-xl  border border-slate-100">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Kết quả</span>
                         <span className="text-lg font-black text-indigo-600">
                             {count} <small className="text-[10px] text-slate-400 font-bold uppercase ml-1">Sản phẩm</small>

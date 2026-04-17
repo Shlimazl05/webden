@@ -12,7 +12,7 @@
 //         <div><p className="text-[10px] font-bold text-slate-400 uppercase">Địa chỉ</p><p className="text-[15px] font-bold text-slate-700 leading-snug">{address}</p></div>
 //       </div>
 //     </div>
-//     <div className="p-6 bg-amber-50/30 rounded-[2rem] border border-amber-100/50 relative flex items-start gap-3">
+//     <div className="p-6 bg-amber-50/30 rounded-xl border border-amber-100/50 relative flex items-start gap-3">
 //       <StickyNote size={20} className="text-amber-500 mt-0.5" />
 //       <p className="text-[14px] font-medium text-slate-600 italic">"{note || "Không có lời nhắn."}"</p>
 //     </div>
@@ -58,7 +58,7 @@ export const OrderDeliveryInfo = ({ phone, address, note }: Props) => (
         <div className="w-1.5 h-4 bg-amber-500 rounded-full"></div>
         <h4 className="text-[14px] font-black text-slate-900 uppercase tracking-widest">Ghi chú từ khách</h4>
       </div>
-      <div className="p-6 bg-amber-50/30 rounded-[2rem] border border-amber-100/50 min-h-[120px] relative flex items-start gap-3">
+      <div className="p-6 bg-amber-50/30 rounded-xl border border-amber-100/50 min-h-[120px] relative flex items-start gap-3">
         <StickyNote size={20} strokeWidth={2.5} className="text-amber-500 mt-0.5" />
         <p className="text-[14px] font-bold text-slate-600 italic leading-relaxed">
           "{note || "Khách hàng không để lại lời nhắn."}"

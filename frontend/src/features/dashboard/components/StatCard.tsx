@@ -15,18 +15,18 @@ export const StatCard = ({ label, value, loading, icon, colorClass, bgColorClass
   const hasData = value !== null && value !== undefined && value !== "";
 
   return (
-    <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-md transition-all h-[160px] flex flex-col justify-between overflow-hidden group">
-      
+    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all h-[160px] flex flex-col justify-between overflow-hidden group">
+
       {/* HÀNG TRÊN: ICON + NHÃN */}
       <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 ${bgColorClass} ${colorClass} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+        <div className={`w-10 h-10 ${bgColorClass} ${colorClass} rounded-xl  flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
           {icon}
         </div>
         <p className="text-slate-500 text-[11px] font-black uppercase tracking-[0.15em]">
           {label}
         </p>
       </div>
-      
+
       {/* HÀNG DƯỚI: GIÁ TRỊ (ĐÃ CHỈNH SANG MÀU ĐEN SLATE-950) */}
       <div className="pl-1">
         {loading ? (

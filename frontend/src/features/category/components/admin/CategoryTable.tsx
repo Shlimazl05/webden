@@ -16,7 +16,7 @@ export const CategoryTable = ({ categories, loading, onEdit, onToggleStatus }: C
   // 3. Khai báo state ở cấp cao nhất của Component
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
-  if (loading) return <div className="w-full h-64 bg-slate-50 animate-pulse rounded-[2rem] border border-slate-100" />;
+  if (loading) return <div className="w-full h-64 bg-slate-50 animate-pulse rounded-xl border border-slate-100" />;
 
   const handleQuickToggle = async (cat: ICategory) => {
     const promise = onToggleStatus(cat);
@@ -37,7 +37,7 @@ export const CategoryTable = ({ categories, loading, onEdit, onToggleStatus }: C
   };
 
   return (
-    <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden font-sans relative">
+    <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden font-sans relative">
       <table className="w-full text-left border-collapse">
         <thead className="bg-slate-100 border-b border-slate-200">
           <tr className="text-[#001529] font-black text-[15px] ">
@@ -56,7 +56,7 @@ export const CategoryTable = ({ categories, loading, onEdit, onToggleStatus }: C
                 {/* Visual Thumbnail Column */}
                 <td className="p-6 text-center">
                   <div
-                    className="w-12 h-12 mx-auto rounded-xl bg-slate-100 overflow-hidden border border-slate-200 cursor-zoom-in hover:scale-110 transition-transform shadow-sm"
+                    className="w-12 h-12 mx-auto rounded-xl  bg-slate-100 overflow-hidden border border-slate-200 cursor-zoom-in hover:scale-110 transition-transform shadow-sm"
                     onClick={() => cat.image && setSelectedImg(cat.image)}
                   >
                     {cat.image ? (
@@ -76,8 +76,8 @@ export const CategoryTable = ({ categories, loading, onEdit, onToggleStatus }: C
                 <td className="p-6 text-center">
                   <div
                     className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-[12px] transition-all shadow-sm ${cat.status === 'Active'
-                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                        : "bg-amber-50 text-amber-600 border border-amber-100"
+                      ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                      : "bg-amber-50 text-amber-600 border border-amber-100"
                       }`}
                   >
                     {cat.status === 'Active' ? (
@@ -100,9 +100,9 @@ export const CategoryTable = ({ categories, loading, onEdit, onToggleStatus }: C
                       onClick={() => handleQuickToggle(cat)}
                       // TOOLTIP ở đây
                       title={cat.status === 'Active' ? "Tạm ẩn danh mục này" : "Hiện danh mục này"}
-                      className={`p-2.5 bg-white border border-slate-100 rounded-xl transition-all active:scale-90 hover:shadow-md ${cat.status === 'Active'
-                          ? "text-emerald-500 hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50"
-                          : "text-amber-500 hover:text-amber-600 hover:border-amber-200 hover:bg-amber-50"
+                      className={`p-2.5 bg-white border border-slate-100 rounded-xl  transition-all active:scale-90 hover:shadow-md ${cat.status === 'Active'
+                        ? "text-emerald-500 hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50"
+                        : "text-amber-500 hover:text-amber-600 hover:border-amber-200 hover:bg-amber-50"
                         }`}
                     >
                       {cat.status === 'Active' ? (
@@ -116,7 +116,7 @@ export const CategoryTable = ({ categories, loading, onEdit, onToggleStatus }: C
                       onClick={() => onEdit(cat)}
                       // TOOLTIP ở đây
                       title="Chỉnh sửa thông tin"
-                      className="p-2.5 text-indigo-500 bg-white border border-slate-100 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 hover:shadow-md rounded-xl transition-all active:scale-90"
+                      className="p-2.5 text-indigo-500 bg-white border border-slate-100 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 hover:shadow-md rounded-xl  transition-all active:scale-90"
                     >
                       <Edit3 size={18} strokeWidth={2.5} />
                     </button>
@@ -154,7 +154,7 @@ export const CategoryTable = ({ categories, loading, onEdit, onToggleStatus }: C
             <img
               src={selectedImg}
               // Thay đổi quan trọng: max-w-[95vw] và max-h-[85vh] giúp ảnh chiếm gần hết màn hình
-              className="max-w-[95vw] max-h-[82vh] sm:max-h-[85vh] rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in zoom-in-95 object-contain border-4 border-white/10"
+              className="max-w-[95vw] max-h-[82vh] sm:max-h-[85vh] rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in zoom-in-95 object-contain border-4 border-white/10"
               alt="Large View"
             />
 

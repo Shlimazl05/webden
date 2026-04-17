@@ -127,7 +127,7 @@
 
 //                   {/* Menu Options */}
 //                   <div className="p-2">
-//                     <Link href="/profile" className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors group/item">
+//                     <Link href="/profile" className="flex items-center justify-between px-4 py-3 rounded-xl  hover:bg-slate-800 transition-colors group/item">
 //                       <div className="flex items-center gap-3">
 //                         <div className="p-2 bg-slate-700/50 rounded-lg text-amber-400">
 //                           <UserCircle size={18} />
@@ -137,7 +137,7 @@
 //                       <ChevronRight size={14} className="text-slate-600 group-hover/item:text-amber-400 group-hover/item:translate-x-1 transition-all" />
 //                     </Link>
 
-//                     <Link href="/orders" className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors group/item">
+//                     <Link href="/orders" className="flex items-center justify-between px-4 py-3 rounded-xl  hover:bg-slate-800 transition-colors group/item">
 //                       <div className="flex items-center gap-3">
 //                         <div className="p-2 bg-slate-700/50 rounded-lg text-amber-400">
 //                           <Package size={18} />
@@ -214,7 +214,7 @@ const Navbar = () => {
     searchTerm,
     setSearchTerm,
     handleSearchSubmit,
-    visualSearch 
+    visualSearch
   } = useNavbarLogic();
 
   if (!isLoaded) return <nav className="w-full h-[100px] bg-slate-950 shadow-sm" />;
@@ -336,14 +336,14 @@ const Navbar = () => {
                 {isLoggedIn && user ? (
                   <div className="w-[260px] flex flex-col">
                     <div className="p-2">
-                      <Link href="/profile" className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors group/item">
+                      <Link href="/profile" className="flex items-center justify-between px-4 py-3 rounded-xl  hover:bg-slate-800 transition-colors group/item">
                         <div className="flex items-center gap-3">
                           <div className="p-2 bg-slate-700/50 rounded-lg text-amber-400"><UserCircle size={18} /></div>
                           <span className="font-medium text-sm">Thông tin cá nhân</span>
                         </div>
                         <ChevronRight size={14} className="text-slate-600 group-hover/item:translate-x-1 transition-all" />
                       </Link>
-                      <Link href="/orders" className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors group/item">
+                      <Link href="/orders" className="flex items-center justify-between px-4 py-3 rounded-xl  hover:bg-slate-800 transition-colors group/item">
                         <div className="flex items-center gap-3">
                           <div className="p-2 bg-slate-700/50 rounded-lg text-amber-400"><Package size={18} /></div>
                           <span className="font-medium text-sm">Đơn hàng của tôi</span>

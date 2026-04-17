@@ -94,7 +94,7 @@ export const useImportOrderFeature = () => {
     if (!selectedId) return;
     try {
       await importOrderApi.delete(selectedId);
-      toast.success("ĐÃ XÓA VÀ HOÀN TÁC KHO THÀNH CÔNG", {
+      toast.success("Đã xóa và hoàn tác kho hàng", {
         style: { borderRadius: '12px', background: '#1e293b', color: '#fff', fontWeight: 'bold' }
       });
       

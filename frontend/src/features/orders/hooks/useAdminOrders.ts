@@ -70,11 +70,27 @@ export const useAdminOrder = () => {
     // 1. Loading toast với thông điệp nhẹ nhàng hơn
     const toastId = toast.loading("Đang xử lý đơn hàng...");
 
+    // 1. Tạo logic chọn thông báo dựa trên trạng thái mới (status)
+    const getSuccessMessage = (newStatus: OrderStatus) => {
+      switch (newStatus) {
+        case 'Processing':
+          return "Xác nhận đơn hàng thành công";
+        case 'Shipping':
+          return "Đã bắt đầu giao hàng cho khách";
+        case 'Completed':
+          return "Đơn hàng đã hoàn tất";
+        case 'Cancelled':
+          return "Đã hủy đơn hàng thành công";
+        default:
+          return "Cập nhật trạng thái thành công";
+      }
+    };
+
     try {
       await orderAdminApi.updateStatus(orderId, status);
       
       // 2. Success Toast: Tông màu trắng - xanh lá (kiểu tối giản chuyên nghiệp)
-      toast.success("Xác nhận đơn hàng thành công", {
+      toast.success(getSuccessMessage(status), {
         id: toastId,
         duration: 3000,
         style: {

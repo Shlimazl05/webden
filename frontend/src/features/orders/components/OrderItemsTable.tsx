@@ -7,7 +7,7 @@ export const OrderItemsTable = ({ details }: { details: any[] }) => (
     <h4 className="text-[14px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2 mb-4">
       <Package size={20} strokeWidth={2.5} className="text-indigo-600" /> Kiện hàng ({details?.length || 0})
     </h4>
-    <div className="border border-slate-100 rounded-[2.5rem] overflow-hidden bg-white shadow-sm">
+    <div className="border border-slate-100 rounded-xl  overflow-hidden bg-white shadow-sm">
       <table className="w-full text-left border-collapse">
         <thead>
           <tr className="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -23,7 +23,7 @@ export const OrderItemsTable = ({ details }: { details: any[] }) => (
               <td className="px-8 py-6">
                 <div className="flex items-center gap-6">
                   <div className="w-24 h-24 rounded-2xl border border-slate-100 overflow-hidden bg-slate-50 p-1">
-                    <img src={item.productId?.imageUrl} className="w-full h-full object-cover rounded-xl" alt="product" />
+                    <img src={item.productId?.imageUrl} className="w-full h-full object-cover rounded-xl " alt="product" />
                   </div>
                   <div>
                     <p className="text-[14px] font-black text-slate-900 line-clamp-1">{item.productId?.productName}</p>

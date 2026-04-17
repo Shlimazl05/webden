@@ -37,7 +37,7 @@
 //   ];
 
 //   return (
-//     <div className="bg-white rounded-[40px] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden">
+//     <div className="bg-white rounded-xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden">
 //       <div className="px-10 py-6 border-b border-slate-50 flex items-center justify-between bg-white">
 //         <h2 className="text-sm font-black text-indigo-900 uppercase tracking-[0.2em] flex items-center gap-3">
 //           <div className="w-1.5 h-5 bg-indigo-600 rounded-full" />
@@ -103,11 +103,11 @@
 //     }
 //   };
 
-//   if (loading) return <div className="h-[250px] bg-slate-50 animate-pulse rounded-[40px]" />;
+//   if (loading) return <div className="h-[250px] bg-slate-50 animate-pulse rounded-xl" />;
 //   if (categories.length === 0) return null;
 
 //   return (
-//     <div className="bg-white rounded-[40px] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden group/container relative">
+//     <div className="bg-white rounded-xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden group/container relative">
 
 //       {/* HEADER: Tiêu đề và Mũi tên điều hướng */}
 //       <div className="px-10 py-6 border-b border-slate-50 flex items-center justify-between bg-white relative z-10">
@@ -198,11 +198,11 @@ export const CategoryGrid = () => {
     }
   };
 
-  if (loading) return <div className="h-[250px] bg-slate-50 animate-pulse rounded-[40px]" />;
+  if (loading) return <div className="h-[250px] bg-slate-50 animate-pulse rounded-xl" />;
   if (categories.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-[40px] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden group/container relative">
+    <div className="bg-white rounded-xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden group/container relative">
 
       {/* HEADER */}
       <div className="px-10 py-6 border-b border-slate-50 flex items-center justify-between bg-white relative z-10">

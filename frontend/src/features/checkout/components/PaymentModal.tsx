@@ -62,7 +62,7 @@ export const PaymentModal = ({ qrUrl, orderCode, onClose }: PaymentModalProps) =
 
     return (
         <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-            <div className="bg-white rounded-[40px] p-10 max-w-sm w-full text-center shadow-2xl relative animate-in zoom-in duration-300">
+            <div className="bg-white rounded-xl p-10 max-w-sm w-full text-center shadow-2xl relative animate-in zoom-in duration-300">
 
                 {/* TRƯỜNG HỢP 1: ĐANG CHỜ THANH TOÁN */}
                 {paymentStatus === 'pending' && (
@@ -76,7 +76,7 @@ export const PaymentModal = ({ qrUrl, orderCode, onClose }: PaymentModalProps) =
                         <h3 className="text-xl font-black text-slate-900 uppercase mb-1">Thanh toán Online</h3>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Mã đơn: {orderCode}</p>
                         <div className="bg-slate-50 p-4 rounded-3xl mb-6 border border-slate-100">
-                            <img src={qrUrl} alt="QR Code" className="w-full h-auto rounded-xl shadow-sm" />
+                            <img src={qrUrl} alt="QR Code" className="w-full h-auto rounded-xl  shadow-sm" />
                         </div>
                         <p className="text-[11px] text-slate-500 italic mb-6">Đơn hàng sẽ tự động hủy sau 10 phút nếu không nhận được thanh toán.</p>
                         <button onClick={onClose} className="w-full py-4 text-slate-400 font-bold text-xs uppercase hover:text-indigo-600 transition-colors">Đóng và kiểm tra sau</button>
@@ -90,7 +90,7 @@ export const PaymentModal = ({ qrUrl, orderCode, onClose }: PaymentModalProps) =
                             <CheckCircle2 className="text-emerald-500" size={48} />
                         </div>
                         <h3 className="text-2xl font-black text-slate-900 uppercase mb-2">Đặt hàng thành công!</h3>
-                        
+
                         <button onClick={() => router.push('/orders')} className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100">Tiếp tục</button>
                     </div>
                 )}

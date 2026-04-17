@@ -57,7 +57,7 @@ export default function CategoryDetailPage({ params }: PageProps) {
         <main className="max-w-[1440px] mx-auto px-6 py-10 min-h-screen bg-slate-50/30 animate-in fade-in duration-700">
 
             {/* 1. Header Danh mục (Ảnh & Mô tả) */}
-            {category && <CategoryHero category={category} />}
+            {/* {category && <CategoryHero category={category} />} */}
 
             <div className="flex flex-col lg:flex-row gap-10 mt-12">
 

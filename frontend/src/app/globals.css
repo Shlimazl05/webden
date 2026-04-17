@@ -78,7 +78,7 @@
 
   .ui-card {
     @apply bg-white border border-[var(--border-subtle)] p-5 transition-shadow hover:shadow-sm;
-    border-radius: 2rem;
+    border-radius: 0.75rem;
   }
 
   .ui-section-title {

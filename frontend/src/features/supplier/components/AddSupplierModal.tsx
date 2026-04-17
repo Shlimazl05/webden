@@ -110,7 +110,7 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
               value={nameSL}
               onChange={(e) => setNameSL(e.target.value)}
               placeholder="Ví dụ: Công ty Đèn Châu Âu"
-              className="w-full h-11 px-4 bg-white border border-slate-300 rounded-xl outline-none font-semibold text-slate-900 text-[15px] focus:border-indigo-600 focus:ring-2 focus:ring-indigo-50 transition-all"
+              className="w-full h-11 px-4 bg-white border border-slate-300 rounded-xl  outline-none font-semibold text-slate-900 text-[15px] focus:border-indigo-600 focus:ring-2 focus:ring-indigo-50 transition-all"
             />
           </div>
 
@@ -126,7 +126,7 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="090..."
-                className="w-full h-11 px-4 bg-white border border-slate-300 rounded-xl outline-none font-semibold text-slate-900 text-[15px] focus:border-indigo-600 transition-all"
+                className="w-full h-11 px-4 bg-white border border-slate-300 rounded-xl  outline-none font-semibold text-slate-900 text-[15px] focus:border-indigo-600 transition-all"
               />
             </div>
             <div className="space-y-1.5">
@@ -139,7 +139,7 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="ncc@gmail.com"
-                className="w-full h-11 px-4 bg-white border border-slate-300 rounded-xl outline-none font-semibold text-slate-900 text-[15px] focus:border-indigo-600 transition-all"
+                className="w-full h-11 px-4 bg-white border border-slate-300 rounded-xl  outline-none font-semibold text-slate-900 text-[15px] focus:border-indigo-600 transition-all"
               />
             </div>
           </div>
@@ -155,7 +155,7 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="Nhập địa chỉ chi tiết..."
-              className="w-full p-4 bg-white border border-slate-300 rounded-xl outline-none font-semibold text-slate-900 text-[15px] focus:border-indigo-600 transition-all resize-none"
+              className="w-full p-4 bg-white border border-slate-300 rounded-xl  outline-none font-semibold text-slate-900 text-[15px] focus:border-indigo-600 transition-all resize-none"
             />
           </div>
 
@@ -168,9 +168,9 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
               <button
                 type="button"
                 onClick={() => setStatus("Active")}
-                className={`h-11 rounded-xl flex items-center justify-center gap-2 font-bold text-[12px] transition-all border ${status === "Active"
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                    : "bg-white text-slate-400 border-slate-200"
+                className={`h-11 rounded-xl  flex items-center justify-center gap-2 font-bold text-[12px] transition-all border ${status === "Active"
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                  : "bg-white text-slate-400 border-slate-200"
                   }`}
               >
                 <Check size={16} className={status === "Active" ? "block" : "hidden"} />
@@ -180,9 +180,9 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
               <button
                 type="button"
                 onClick={() => setStatus("Hidden")}
-                className={`h-11 rounded-xl flex items-center justify-center gap-2 font-bold text-[12px] transition-all border ${status === "Hidden"
-                    ? "bg-slate-100 text-slate-700 border-slate-300"
-                    : "bg-white text-slate-400 border-slate-200"
+                className={`h-11 rounded-xl  flex items-center justify-center gap-2 font-bold text-[12px] transition-all border ${status === "Hidden"
+                  ? "bg-slate-100 text-slate-700 border-slate-300"
+                  : "bg-white text-slate-400 border-slate-200"
                   }`}
               >
                 <EyeOff size={16} className={status === "Hidden" ? "block" : "hidden"} />
@@ -197,7 +197,7 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
               type="button"
               disabled={loading}
               onClick={onClose}
-              className="flex-1 h-12 text-slate-500 font-bold text-[13px] hover:bg-slate-50 rounded-xl transition-all"
+              className="flex-1 h-12 text-slate-500 font-bold text-[13px] hover:bg-slate-50 rounded-xl  transition-all"
             >
               HỦY BỎ
             </button>
@@ -205,7 +205,7 @@ export const AddSupplierModal = ({ isOpen, onClose, initialData, onSubmit }: Pro
             <button
               type="submit"
               disabled={loading}
-              className="flex-[1.5] h-12 bg-indigo-600 text-white rounded-xl font-bold text-[13px] shadow-sm hover:bg-indigo-700 transition-all flex items-center justify-center gap-2"
+              className="flex-[1.5] h-12 bg-indigo-600 text-white rounded-xl  font-bold text-[13px] shadow-sm hover:bg-indigo-700 transition-all flex items-center justify-center gap-2"
             >
               {loading ? (
                 <Loader2 className="animate-spin" size={18} />

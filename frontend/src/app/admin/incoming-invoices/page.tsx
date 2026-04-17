@@ -1,7 +1,7 @@
 
 "use client";
 import React from 'react';
-import { Plus, LayoutGrid } from "lucide-react"; // Thêm icon để trang trí header
+import { Plus, LayoutGrid, FileText } from "lucide-react";
 import { useAdminAuth } from "@/features/auth/auth.hooks";
 import { useImportOrderFeature } from "@/features/import-order/useImportOrder";
 import { ImportOrderTable } from "@/features/import-order/components/ImportOrderTable";
@@ -20,16 +20,29 @@ export default function ImportOrdersPage() {
   return (
     <div className="animate-in fade-in duration-700">
       <AdminPageContainer>
-        {/* Cập nhật Header: Bỏ Uppercase, tăng độ dày font */}
-        <AdminPageHeader title="QUẢN LÍ NHẬP KHO">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div className="flex items-center gap-3">
+            {/* Box Icon: Màu Indigo đồng bộ với Sidebar */}
+            <div className="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl  flex items-center justify-center shadow-sm border border-indigo-100 flex-shrink-0">
+              <FileText size={22} strokeWidth={2.5} />
+            </div>
+
+            {/* Tiêu đề: Đen đậm, viết hoa, sát nhau */}
+            <h1 className="text-[22px] font-black text-slate-800 tracking-tight uppercase leading-none">
+              Quản lý nhập kho
+            </h1>
+          </div>
+
+          {/* Nút Lập phiếu mới (Giữ nguyên logic của bạn) */}
           <button
             onClick={f.handleOpenAdd}
-            className="flex items-center gap-2 px-5 h-11 bg-indigo-600 text-white rounded-xl font-bold text-[14px] hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all active:scale-95"
+            className="flex items-center gap-2 px-5 h-11 bg-indigo-600 text-white rounded-xl  font-bold text-[14px] hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all active:scale-95"
           >
             <Plus size={20} strokeWidth={2.5} />
             Lập phiếu nhập mới
           </button>
-        </AdminPageHeader>
+        </div>
 
         {/* Khu vực tìm lọc: Gọn gàng hơn */}
         <div className="mb-8 flex items-center justify-between">

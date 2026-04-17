@@ -88,7 +88,7 @@
 
 //               {/* Tooltip khi thu nhỏ */}
 //               {!isExpanded && (
-//                 <div className="absolute left-full ml-4 px-3 py-2 bg-slate-900 text-white text-[12px] font-black rounded-xl opacity-0 group-hover:opacity-100 whitespace-nowrap z-50 pointer-events-none shadow-2xl transition-all uppercase tracking-widest">
+//                 <div className="absolute left-full ml-4 px-3 py-2 bg-slate-900 text-white text-[12px] font-black rounded-xl  opacity-0 group-hover:opacity-100 whitespace-nowrap z-50 pointer-events-none shadow-2xl transition-all uppercase tracking-widest">
 //                   {item.name}
 //                 </div>
 //               )}
@@ -199,7 +199,7 @@ export const AdminSidebar = ({ isExpanded, setIsExpanded }: SidebarProps) => {
               )}
 
               {!isExpanded && (
-                <div className="absolute left-full ml-4 px-3 py-2 bg-slate-900 text-white text-[12px] font-black rounded-xl opacity-0 group-hover:opacity-100 whitespace-nowrap z-50 pointer-events-none shadow-2xl transition-all uppercase tracking-widest">
+                <div className="absolute left-full ml-4 px-3 py-2 bg-slate-900 text-white text-[12px] font-black rounded-xl  opacity-0 group-hover:opacity-100 whitespace-nowrap z-50 pointer-events-none shadow-2xl transition-all uppercase tracking-widest">
                   {item.name}
                 </div>
               )}

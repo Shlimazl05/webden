@@ -5,7 +5,7 @@ import { User, Phone, MapPin, MessageSquare } from "lucide-react";
 
 export const CustomerInfo: React.FC<{ order: IOrder }> = ({ order }) => {
     return (
-        <div className="ui-card rounded-[2rem] space-y-6 border border-slate-100 shadow-sm bg-white overflow-hidden">
+        <div className="ui-card space-y-6 border border-slate-100 shadow-sm bg-white overflow-hidden">
             {/* 1. Tiêu đề mục */}
             <h3 className="ui-section-title flex items-center gap-2">
                 <div className="w-1.5 h-4 bg-indigo-500 rounded-full"></div>
@@ -14,7 +14,7 @@ export const CustomerInfo: React.FC<{ order: IOrder }> = ({ order }) => {
 
             <div className="space-y-6">
                 {/* 2. Khối người nhận hàng */}
-                <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50">
+                <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-xl border border-slate-100/50">
                     <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-indigo-500 shadow-sm flex-shrink-0">
                         <User size={18} />
                     </div>
@@ -60,7 +60,7 @@ export const CustomerInfo: React.FC<{ order: IOrder }> = ({ order }) => {
 
                 {/* 4. Ghi chú đơn hàng */}
                 <div className="pt-2">
-                    <div className={`flex items-start gap-4 p-4 rounded-2xl border transition-all ${order.note
+                    <div className={`flex items-start gap-4 p-4 rounded-xl border transition-all ${order.note
                         ? 'bg-amber-50/40 border-amber-100'
                         : 'bg-slate-50 border-slate-100'
                         }`}>

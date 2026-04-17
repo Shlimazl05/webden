@@ -27,7 +27,7 @@ export const EditProductModal = ({ isOpen, onClose, initialData, categories, ref
 
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white w-full max-w-5xl max-h-[92vh] rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95">
+            <div className="bg-white w-full max-w-5xl max-h-[92vh] rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95">
                 <ProductForm
                     isEdit={true}
                     initialData={initialData}

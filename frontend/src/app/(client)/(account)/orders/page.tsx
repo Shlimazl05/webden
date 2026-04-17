@@ -34,12 +34,12 @@ export default function OrdersPage() {
     } = useCustomerOrders();
 
     return (
-        <div className="min-h-screen bg-white pb-20">
-            <div className="max-w-5xl mx-auto px-4 pt-10 space-y-8">
+        <div className="w-full bg-white">
+            <div className="space-y-8">
 
                 {/* Header Tiêu đề */}
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-indigo-600 border border-slate-100">
+                    <div className="w-12 h-12 rounded-2xl bg-indigo-100 shadow-sm flex items-center justify-center text-indigo-600">
                         <ShoppingBag size={24} />
                     </div>
                     <div>
@@ -54,7 +54,7 @@ export default function OrdersPage() {
                 </div>
 
                 {/* DANH SÁCH CARD */}
-                <div className="min-h-[450px] space-y-4">
+                <div className="h-auto space-y-4">
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-32 text-indigo-500">
                             <Loader2 className="animate-spin mb-4 w-10 h-10 stroke-[3]" />
@@ -71,9 +71,9 @@ export default function OrdersPage() {
                             />
                         ))
                     ) : (
-                        <div className="bg-white rounded-[2.5rem] p-20 border border-slate-100">
-                            <EmptyOrderState />
-                        </div>
+                        // <div className="bg-white rounded-xl  p-20 border border-slate-100">
+                        <EmptyOrderState />
+                        // </div>
                     )}
                 </div>
 
@@ -101,7 +101,7 @@ export default function OrdersPage() {
             {/* MODAL XÁC NHẬN HỦY ĐƠN (Sử dụng đúng state cancelModal từ hook) */}
             {cancelModal.isOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+                    <div className="bg-white rounded-xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
                         <div className="p-8 text-center">
                             <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
                                 <AlertCircle size={32} strokeWidth={2.5} />

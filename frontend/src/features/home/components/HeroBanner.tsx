@@ -10,7 +10,7 @@ const BANNER_IMAGES = [
   "/img/banners/banner1.png",
   "/img/banners/banner3.png",
   "/img/banners/banner2.png",
-  
+
   "/img/banners/banner4.png",
   "/img/banners/banner5.png"
 ];
@@ -19,7 +19,7 @@ export default function HeroBanner() {
   const { currentIndex, goToSlide } = useBanner(BANNER_IMAGES.length);
 
   return (
-    <div className="relative w-full aspect-[2/1] md:aspect-[16/7] rounded-[40px] overflow-hidden shadow-sm border-4 border-white group">
+    <div className="relative w-full aspect-[2/1] md:aspect-[16/7] rounded-3xl overflow-hidden shadow-md">
 
       {BANNER_IMAGES.map((img, index) => (
         <div
@@ -47,8 +47,8 @@ export default function HeroBanner() {
             key={i}
             onClick={() => goToSlide(i)}
             className={`cursor-pointer transition-all duration-300 rounded-full h-2 ${i === currentIndex
-                ? 'bg-white w-8'
-                : 'bg-white/40 w-2 hover:bg-white/60'
+              ? 'bg-white w-8'
+              : 'bg-white/40 w-2 hover:bg-white/60'
               }`}
           />
         ))}

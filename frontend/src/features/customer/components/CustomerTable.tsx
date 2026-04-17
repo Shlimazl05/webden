@@ -13,16 +13,16 @@ interface Props {
   onResetPage: () => void;
 }
 
-export const CustomerTable = ({ customers, loading, onStatusChange,onResetPage }: Props) => {
-  if (loading) return <div className="w-full h-64 bg-slate-50 animate-pulse rounded-[2.5rem]" />;
+export const CustomerTable = ({ customers, loading, onStatusChange, onResetPage }: Props) => {
+  if (loading) return <div className="w-full h-64 bg-slate-50 animate-pulse rounded-xl " />;
 
   // Trường hợp không tìm thấy khách hàng khi Search
   if (!customers || customers.length === 0) {
     return (
-     <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-        <EmptyState 
+      <div className="bg-white rounded-xl  border border-slate-100 shadow-sm overflow-hidden">
+        <EmptyState
           title="Không tìm thấy khách hàng"
-          
+
           onBack={onResetPage} // 3. Truyền trực tiếp hàm từ Props vào đây
         />
       </div>
@@ -30,7 +30,7 @@ export const CustomerTable = ({ customers, loading, onStatusChange,onResetPage }
   }
 
   return (
-    <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl  border border-slate-100 shadow-sm overflow-hidden">
       <table className="w-full text-left">
         <thead className="bg-slate-100 border-b border-slate-200">
           <tr className="text-[#001529] font-black text-[15px] ">
@@ -46,7 +46,7 @@ export const CustomerTable = ({ customers, loading, onStatusChange,onResetPage }
           {customers?.map((item) => {
             // Xử lý tên hiển thị: Ưu tiên name, không có thì dùng username
             const displayName = item.name || item.username || "Khách hàng";
-            
+
             return (
               <tr key={item._id} className="hover:bg-slate-50/50 transition-colors">
                 <td className="p-6">
@@ -59,14 +59,14 @@ export const CustomerTable = ({ customers, loading, onStatusChange,onResetPage }
                       <p className="font-black text-[#001529] text-sm truncate max-w-[150px]">
                         {displayName}
                       </p>
-                      
+
                     </div>
                   </div>
                 </td>
                 <td className="p-6">
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2 text-[11px] font-bold text-slate-600">
-                      <Mail size={13} className="text-blue-500" /> 
+                      <Mail size={13} className="text-blue-500" />
                       <span className="truncate max-w-[180px]">{item.email || '---'}</span>
                     </div>
                     <div className="flex items-center gap-2 text-[11px] font-bold text-slate-600">
@@ -83,25 +83,23 @@ export const CustomerTable = ({ customers, loading, onStatusChange,onResetPage }
                   {item.totalSpent?.toLocaleString('vi-VN') || 0}đ
                 </td>
                 <td className="p-6">
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase flex items-center gap-1.5 w-fit ${
-                    item.status === 'Active' ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
-                  }`}>
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase flex items-center gap-1.5 w-fit ${item.status === 'Active' ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
+                    }`}>
                     <span className={`w-1 h-1 rounded-full ${item.status === 'Active' ? 'bg-emerald-600' : 'bg-red-600'}`} />
                     {item.status === 'Active' ? 'Hoạt động' : 'Đã khóa'}
                   </span>
                 </td>
                 <td className="p-6 text-center">
-                  <button 
+                  <button
                     onClick={() => onStatusChange(item._id)}
                     title={item.status === 'Active' ? "Khóa tài khoản" : "Mở khóa tài khoản"}
-                    className={`p-2.5 rounded-xl transition-all hover:scale-110 shadow-sm ${
-                      item.status === 'Active' 
-                        ? "text-red-500 bg-red-50 hover:bg-red-100"      
-                        : "text-emerald-500 bg-emerald-50 hover:bg-emerald-100" 
-                    }`}
+                    className={`p-2.5 rounded-xl  transition-all hover:scale-110 shadow-sm ${item.status === 'Active'
+                      ? "text-red-500 bg-red-50 hover:bg-red-100"
+                      : "text-emerald-500 bg-emerald-50 hover:bg-emerald-100"
+                      }`}
                   >
-                    {item.status === 'Active' 
-                      ? <UserX size={18} strokeWidth={2.5} /> 
+                    {item.status === 'Active'
+                      ? <UserX size={18} strokeWidth={2.5} />
                       : <UserCheck size={18} strokeWidth={2.5} />
                     }
                   </button>

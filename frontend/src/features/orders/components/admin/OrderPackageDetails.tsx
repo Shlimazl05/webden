@@ -11,17 +11,15 @@ interface Props {
 export const OrderPackageDetails: React.FC<Props> = ({ order, isClientView = false }) => {
     return (
         /* 1. Khung ngoài sử dụng ui-card */
-        <div className="ui-card overflow-hidden border-slate-100 shadow-sm bg-white">
+        <div className="ui-card space-y-6 border border-slate-100 shadow-sm bg-white overflow-hidden">
             {/* Tiêu đề mục sử dụng ui-section-title */}
-            <div className="p-8 pb-4">
-                <h3 className="ui-section-title flex items-center gap-2">
-                    <div className="w-1.5 h-4 bg-emerald-500 rounded-full"></div>
-                    Chi tiết kiện hàng
-                </h3>
-            </div>
+            <h3 className="ui-section-title flex items-center gap-2">
+                <div className="w-1.5 h-4 bg-emerald-500 rounded-full"></div>
+                Chi tiết kiện hàng
+            </h3>
 
             {/* 2. Danh sách sản phẩm */}
-            <div className="px-8 pb-4 space-y-6">
+            <div className="space-y-6">
                 {order.orderDetails?.map((item: any, idx: number) => {
                     const product = item.productId;
                     const name = product?.productName || "Sản phẩm không xác định";
@@ -31,7 +29,7 @@ export const OrderPackageDetails: React.FC<Props> = ({ order, isClientView = fal
                     return (
                         <div key={idx} className="flex items-center gap-5 group transition-all">
                             {/* Ảnh sản phẩm */}
-                            <div className="w-20 h-20 bg-slate-50 rounded-xl border border-slate-100 flex-shrink-0 overflow-hidden shadow-sm">
+                            <div className="w-20 h-20 bg-slate-50 rounded-xl  border border-slate-100 flex-shrink-0 overflow-hidden shadow-sm">
                                 {image ? (
                                     <img src={image} alt={name} className="w-full h-full object-cover" />
                                 ) : (
@@ -75,7 +73,7 @@ export const OrderPackageDetails: React.FC<Props> = ({ order, isClientView = fal
             </div>
 
             {/* 3. KHU VỰC TỔNG KẾT */}
-            <div className="mx-6 mb-6 p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100/50">
+            <div className="bg-slate-50/50 rounded-xl border-t border-slate-100 pt-4">
                 <div className="flex flex-col items-end space-y-4">
 
                     <div className="flex items-center justify-end w-full">

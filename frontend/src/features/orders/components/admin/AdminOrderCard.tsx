@@ -23,10 +23,10 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({ order, onUpdateS
   const otherItemsCount = order.orderDetails.length - 1;
 
   return (
-    
-    <div 
+
+    <div
       onClick={onClick}
-      className="ui-card cursor-pointer bg-white border border-slate-100 rounded-[2rem] p-5 flex items-center justify-between hover:shadow-lg hover:shadow-slate-100 transition-all mb-4 group">
+      className="ui-card cursor-pointer bg-white border border-slate-100 rounded-xl p-5 flex items-center justify-between hover:shadow-lg hover:shadow-slate-100 transition-all mb-4 group">
       <div className="flex items-center gap-5 flex-1">
         {/* Icon Trạng thái */}
         <div className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 ${config.bgColor}`}>
@@ -53,7 +53,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({ order, onUpdateS
             </div>
           </div>
 
-          
+
         </div>
       </div>
 
@@ -64,7 +64,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({ order, onUpdateS
           {order.status === 'Pending' && (
             <button
               onClick={() => onUpdateStatus(order._id, 'Processing')}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-xl  text-xs font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
             >
               <PackageCheck size={14} /> XÁC NHẬN
             </button>

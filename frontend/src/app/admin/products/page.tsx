@@ -61,10 +61,16 @@ export default function ProductManagementPage() {
   return (
     <div className="animate-in fade-in duration-700 pb-10">
       <AdminPageContainer>
-        <AdminPageHeader title="QUẢN LÍ SẢN PHẨM">
+        <AdminPageHeader
+          title="Quản lý sản phẩm"
+          icon={<PackageSearch size={22} strokeWidth={2.5} />}
+          colorClass="text-emerald-600"
+          bgColorClass="bg-emerald-50"
+        >
+          {/* Nút bấm hành động (Giữ nguyên logic của bạn) */}
           <button
             onClick={handleOpenAdd}
-            className="flex items-center gap-2 px-6 h-11 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95 text-[14px]"
+            className="flex items-center gap-2 px-6 h-11 bg-indigo-600 text-white rounded-xl  font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95 text-[13px] uppercase tracking-wider"
           >
             <Plus size={20} strokeWidth={2.5} />
             Thêm sản phẩm mới
@@ -89,7 +95,7 @@ export default function ProductManagementPage() {
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 {[...Array(10)].map((_, i) => (
-                  <div key={i} className="aspect-[3/4.5] bg-slate-50 animate-pulse rounded-[2rem] border border-slate-100" />
+                  <div key={i} className="aspect-[3/4.5] bg-slate-50 animate-pulse rounded-xl border border-slate-100" />
                 ))}
               </div>
             ) : products && products.length > 0 ? (
@@ -111,7 +117,7 @@ export default function ProductManagementPage() {
                   <PackageSearch size={54} className="text-slate-200" />
                 </div>
                 <h3 className="ui-label !text-slate-400 mb-4">Kho hàng đang trống</h3>
-                <button onClick={handleOpenAdd} className="px-6 py-2.5 bg-white text-indigo-600 border border-indigo-100 rounded-xl font-bold text-xs hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
+                <button onClick={handleOpenAdd} className="px-6 py-2.5 bg-white text-indigo-600 border border-indigo-100 rounded-xl  font-bold text-xs hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
                   Bắt đầu tạo sản phẩm
                 </button>
               </div>
@@ -139,7 +145,7 @@ export default function ProductManagementPage() {
         actions={!isEditingDetail && ( // Đã xóa f.
           <button
             onClick={handleEditFromDetail} // Đã xóa f.
-            className="h-11 px-8 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center gap-2 text-sm"
+            className="h-11 px-8 bg-indigo-600 text-white rounded-xl  font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center gap-2 text-sm"
           >
             <Edit3 size={18} /> Chỉnh sửa thông tin
           </button>

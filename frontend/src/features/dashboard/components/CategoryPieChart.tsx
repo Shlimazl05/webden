@@ -22,7 +22,7 @@ interface CategoryPieChartProps {
 
 export const CategoryPieChart = ({ data, loading }: CategoryPieChartProps) => {
     return (
-        <div className="bg-white border border-slate-100 rounded-[2rem] shadow-sm p-6 relative">
+        <div className="bg-white border border-slate-100 rounded-xl shadow-sm p-6 relative">
             <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-amber-50 text-amber-600 rounded-lg">
                     <PieChartIcon size={20} strokeWidth={2.5} />
@@ -52,18 +52,18 @@ export const CategoryPieChart = ({ data, loading }: CategoryPieChartProps) => {
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Pie>
-                                <Tooltip
-                                    formatter={(value: any) => [
-                                        new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value),
-                                        "Doanh thu"
-                                    ]}
-                                />
-                                <Legend
-                                    layout="vertical"
-                                    verticalAlign="middle"
-                                    align="right"
-                                    iconType="circle"
-                                />
+                            <Tooltip
+                                formatter={(value: any) => [
+                                    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value),
+                                    "Doanh thu"
+                                ]}
+                            />
+                            <Legend
+                                layout="vertical"
+                                verticalAlign="middle"
+                                align="right"
+                                iconType="circle"
+                            />
                         </PieChart>
                     </ResponsiveContainer>
                 ) : (

@@ -4,30 +4,30 @@ import React, { useState } from 'react';
 import { useAdminAuth } from "@/features/auth/auth.hooks";
 import { useCustomerManagement } from "@/features/customer/hooks/useAdminCustomer";
 import { CustomerTable } from "@/features/customer/components/CustomerTable";
-import { SearchBar } from "@/components/ui/SearchBar"; 
-import { Pagination } from "@/components/ui/Pagination"; 
+import { SearchBar } from "@/components/ui/SearchBar";
+import { Pagination } from "@/components/ui/Pagination";
 import { Users2, ArrowRight } from "lucide-react";
 
-import { 
-  AdminPageContainer, 
-  AdminPageHeader 
+import {
+  AdminPageContainer,
+  AdminPageHeader
 } from "@/components/layout/AdminPageContainer";
 
 export default function CustomerPage() {
   const { isAuthorized } = useAdminAuth();
-  
+
   // 1. Quản lý trạng thái trang hiện tại
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   // 2. TRUYỀN currentPage vào hook để mỗi khi trang đổi, hook sẽ tự gọi API lấy dữ liệu mới
-  const { 
-    customers, 
+  const {
+    customers,
     totalPages, // Lấy tổng số trang thực tế từ Backend trả về
-    loading, 
-    handleToggleStatus, 
+    loading,
+    handleToggleStatus,
     setSearchTerm,
     clearSearch
-  } = useCustomerManagement(currentPage); 
+  } = useCustomerManagement(currentPage);
 
   const handleSearch = (val: string) => {
     setSearchTerm(val);
@@ -44,11 +44,11 @@ export default function CustomerPage() {
   return (
     <div className="animate-in fade-in duration-500">
       <AdminPageContainer>
-        
-        <AdminPageHeader 
+
+        <AdminPageHeader
           title={
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-cyan-50 text-cyan-500 rounded-xl flex items-center justify-center shadow-sm border border-cyan-100">
+              <div className="w-10 h-10 bg-cyan-50 text-cyan-500 rounded-xl  flex items-center justify-center shadow-sm border border-cyan-100">
                 <Users2 size={22} strokeWidth={2.5} />
               </div>
               <span >QUẢN LÝ KHÁCH HÀNG</span>
@@ -57,31 +57,31 @@ export default function CustomerPage() {
         />
 
         <div className="mb-8 max-w-sm">
-          <SearchBar 
-            onSearch={handleSearch} 
-            placeholder="Tìm kiếm theo tên hoặc SĐT..." 
+          <SearchBar
+            onSearch={handleSearch}
+            placeholder="Tìm kiếm theo tên hoặc SĐT..."
           />
         </div>
 
         <div className="mt-4">
 
-          <div className="max-h-[550px] overflow-y-auto custom-scrollbar pr-2 border border-slate-50 rounded-[2.5rem] mb-6">
-            <CustomerTable 
-              customers={customers} 
-              loading={loading} 
-              onStatusChange={handleToggleStatus} 
-              
-              onResetPage={() => setCurrentPage(1)} 
+          <div className="max-h-[550px] overflow-y-auto custom-scrollbar pr-2 border border-slate-50 rounded-xl  mb-6">
+            <CustomerTable
+              customers={customers}
+              loading={loading}
+              onStatusChange={handleToggleStatus}
+
+              onResetPage={() => setCurrentPage(1)}
             />
           </div>
         </div>
 
         {/* 3. CẬP NHẬT PHẦN PHÂN TRANG */}
         <div className="border-t border-slate-50 pt-4">
-          <Pagination 
+          <Pagination
             currentPage={currentPage}
             // Dùng totalPages từ hook (Backend trả về), không để số 5 cố định nữa
-            totalPages={totalPages || 1} 
+            totalPages={totalPages || 1}
             onPageChange={(page) => setCurrentPage(page)}
           />
         </div>

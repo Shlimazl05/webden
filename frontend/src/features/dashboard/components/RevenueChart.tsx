@@ -2,7 +2,7 @@
 // import { AreaChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 // export const RevenueChart = ({ data, loading, formatVND }: any) => (
-//     <div className="bg-white border border-slate-100 rounded-[2rem] shadow-sm p-6 relative">
+//     <div className="bg-white border border-slate-100 rounded-xl shadow-sm p-6 relative">
 //         <div className="flex items-center gap-3 mb-6">
 //             <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
 //                 <TrendingUp size={20} strokeWidth={2.5} />
@@ -42,7 +42,7 @@ import {
 } from 'recharts';
 
 export const RevenueChart = ({ data, loading, formatVND }: any) => (
-    <div className="bg-white border border-slate-100 rounded-[2rem] shadow-sm p-6 relative">
+    <div className="bg-white border border-slate-100 rounded-xl shadow-sm p-6 relative">
         <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
                 <TrendingUp size={20} strokeWidth={2.5} />

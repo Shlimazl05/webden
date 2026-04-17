@@ -53,7 +53,7 @@ export default function HomePage() {
         </section>
 
         {/* 3. Sản phẩm mới nhất */}
-        <section className="bg-white rounded-[40px] p-8 lg:p-12 shadow-[0_20px_60px_rgba(0,0,0,0.02)] border border-slate-50">
+        <section className="bg-white rounded-xl p-8 lg:p-12 shadow-[0_20px_60px_rgba(0,0,0,0.02)] border border-slate-50">
           <div className="flex items-center justify-between mb-12 border-b border-slate-50 pb-8">
             <h2 className="text-3xl font-black text-indigo-900 uppercase tracking-tighter">
               Sản phẩm mới nhất

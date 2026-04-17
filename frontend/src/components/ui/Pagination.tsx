@@ -41,7 +41,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
         type="button"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-400 hover:text-indigo-600 hover:border-indigo-200 disabled:opacity-20 transition-all active:scale-90"
+        className="w-10 h-10 flex items-center justify-center rounded-xl  border border-slate-200 bg-white text-slate-400 hover:text-indigo-600 hover:border-indigo-200 disabled:opacity-20 transition-all active:scale-90"
       >
         <ChevronLeft size={20} strokeWidth={2.5} />
       </button>
@@ -62,11 +62,10 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
               key={index}
               type="button"
               onClick={() => onPageChange(page)}
-              className={`w-10 h-10 rounded-xl font-black text-[14px] transition-all border ${
-                isActive
+              className={`w-10 h-10 rounded-xl  font-black text-[14px] transition-all border ${isActive
                   ? "bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-100 scale-110"
                   : "bg-white border-slate-200 text-slate-500 hover:border-indigo-300 hover:text-indigo-600"
-              }`}
+                }`}
             >
               {page}
             </button>
@@ -79,7 +78,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
         type="button"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-400 hover:text-indigo-600 hover:border-indigo-200 disabled:opacity-20 transition-all active:scale-90"
+        className="w-10 h-10 flex items-center justify-center rounded-xl  border border-slate-200 bg-white text-slate-400 hover:text-indigo-600 hover:border-indigo-200 disabled:opacity-20 transition-all active:scale-90"
       >
         <ChevronRight size={20} strokeWidth={2.5} />
       </button>

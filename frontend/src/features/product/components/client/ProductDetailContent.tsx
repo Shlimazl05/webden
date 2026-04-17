@@ -54,7 +54,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
 
             if (res.success) {
                 if (showToast) {
-                    await fetchCartCount(); 
+                    await fetchCartCount();
                     toast.success(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`, {
                         style: { borderRadius: '15px', background: '#1e293b', color: '#fff', fontWeight: 'bold' }
                     });
@@ -79,7 +79,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
 
     return (
         <div className="max-w-[1200px] mx-auto pt-[64px] lg:pt-[70px] pb-10 px-4 animate-in fade-in duration-700">
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden p-6 lg:p-8">
+            <div className="bg-white rounded-xl  border border-slate-100 shadow-sm overflow-hidden p-6 lg:p-8">
                 <div className="grid grid-cols-12 gap-8 lg:gap-12 items-start">
 
                     {/* CỘT TRÁI - ẢNH */}
@@ -88,7 +88,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
                         onMouseEnter={() => setIsAutoPlay(false)}
                         onMouseLeave={() => setIsAutoPlay(true)}
                     >
-                        <div className="w-full aspect-square bg-slate-50 rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-inner">
+                        <div className="w-full aspect-square bg-slate-50 rounded-xl  border border-slate-100 overflow-hidden shadow-inner">
                             <img
                                 key={activeImg}
                                 src={activeImg}
@@ -103,7 +103,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
                                     <button
                                         key={idx}
                                         onMouseEnter={() => setActiveIndex(idx)}
-                                        className={`w-12 h-12 lg:w-14 lg:h-14 flex-shrink-0 rounded-xl border-2 transition-all overflow-hidden ${activeIndex === idx
+                                        className={`w-12 h-12 lg:w-14 lg:h-14 flex-shrink-0 rounded-xl  border-2 transition-all overflow-hidden ${activeIndex === idx
                                             ? "border-indigo-600 shadow-md scale-110"
                                             : "border-transparent opacity-50 hover:opacity-100"
                                             }`}
@@ -140,14 +140,14 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
                                 <div className="flex items-center bg-slate-50 rounded-2xl p-1 border border-slate-100 shadow-sm w-fit h-11">
                                     <button
                                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                        className="h-full px-4 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-indigo-600"
+                                        className="h-full px-4 hover:bg-white rounded-xl  transition-all text-slate-400 hover:text-indigo-600"
                                     >
                                         <Minus size={14} strokeWidth={3} />
                                     </button>
                                     <span className="w-10 text-center font-black text-slate-900">{quantity}</span>
                                     <button
                                         onClick={() => setQuantity(quantity + 1)}
-                                        className="h-full px-4 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-indigo-600"
+                                        className="h-full px-4 hover:bg-white rounded-xl  transition-all text-slate-400 hover:text-indigo-600"
                                     >
                                         <Plus size={14} strokeWidth={3} />
                                     </button>
@@ -182,7 +182,7 @@ export const ProductDetailContent = ({ product }: { product: IProduct }) => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden p-8 mt-6">
+            <div className="bg-white rounded-xl  border border-slate-100 shadow-sm overflow-hidden p-8 mt-6">
                 <div className="flex items-center gap-2 border-l-4 border-indigo-500 pl-5 mb-6">
                     <FileText size={18} className="text-indigo-500" strokeWidth={2.5} />
                     <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">Thông tin chi tiết</h3>

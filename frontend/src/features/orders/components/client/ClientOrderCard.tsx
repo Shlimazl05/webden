@@ -57,7 +57,7 @@
 //         }
 //     }, [order.status, order.paymentStatus, order.paymentMethod, order.createdAt]);
 //     return (
-//         <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden mb-5 transition-all hover:shadow-md group">
+//         <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden mb-5 transition-all hover:shadow-md group">
 
 //             {/* 1. HEADER SECTION (Thông tin chung) */}
 //             <div
@@ -85,7 +85,7 @@
 //                     {order.paymentMethod === 'SePay' && order.status === 'Pending' && order.paymentStatus !== 'Paid' && (
 //                         <button
 //                             onClick={(e) => { e.stopPropagation(); onPay(order); }}
-//                             className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-[10px] font-black uppercase hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-lg shadow-indigo-100"
+//                             className="px-4 py-2 rounded-xl  bg-indigo-600 text-white text-[10px] font-black uppercase hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-lg shadow-indigo-100"
 //                         >
 //                             <CreditCard size={14} strokeWidth={2.5} /> THANH TOÁN
 //                         </button>
@@ -94,7 +94,7 @@
 //                     {order.status === 'Pending' && (
 //                         <button
 //                             onClick={(e) => { e.stopPropagation(); onCancel(order._id); }}
-//                             className="px-4 py-2 rounded-xl bg-rose-50 text-rose-500 text-[10px] font-black uppercase hover:bg-rose-100 transition-all flex items-center gap-2"
+//                             className="px-4 py-2 rounded-xl  bg-rose-50 text-rose-500 text-[10px] font-black uppercase hover:bg-rose-100 transition-all flex items-center gap-2"
 //                         >
 //                             <XCircle size={14} strokeWidth={2.5} /> Hủy đơn
 //                         </button>
@@ -201,10 +201,10 @@ export const ClientOrderCard: React.FC<ClientOrderCardProps> = ({ order, onClick
     return (
         <div
             onClick={() => onClick?.(order)}
-            className="ui-card rounded-[2rem] mb-5 p-0 overflow-hidden cursor-pointer hover:shadow-md transition-all active:scale-[0.99] border border-slate-100"
+            className="ui-card p-5 overflow-hidden cursor-pointer hover:shadow-md transition-all active:scale-[0.99] border border-slate-200"
         >
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-slate-50 bg-slate-50/30">
+            <div className="flex items-center justify-between border-b border-slate-50 bg-slate-50/30">
                 <div className="flex items-center gap-2">
                     <Hash size={14} className="text-indigo-500" strokeWidth={3} />
                     <span className="font-bold text-slate-800 text-sm">{order.orderCode}</span>
@@ -239,29 +239,29 @@ export const ClientOrderCard: React.FC<ClientOrderCardProps> = ({ order, onClick
             )}
 
             {/* Danh sách sản phẩm */}
-            <div className="px-5">
-                {visibleDetails.map((item: any, idx) => (
-                    <div key={idx} className="flex items-start gap-4 py-4 border-b border-slate-50 last:border-0">
-                        <img
-                            src={item.productId?.imageUrl}
-                            alt="product"
-                            className="w-16 h-16 rounded-2xl object-cover border border-slate-100 flex-shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-slate-800 line-clamp-2 leading-snug">
-                                {item.productId?.productName}
-                            </p>
-                            <p className="text-[11px] font-bold text-slate-400 mt-1.5">Số lượng: {item.quantity}</p>
-                        </div>
-                        <div className="text-right">
-                            <p className="ui-currency text-slate-900 text-sm">
-                                {(item.unitPrice ).toLocaleString()}
-                                <span className="currency-symbol">đ</span>
-                            </p>
-                        </div>
+            {/* <div className="px-5"> */}
+            {visibleDetails.map((item: any, idx) => (
+                <div key={idx} className="flex items-start gap-4 py-5 border-b border-slate-100 last:border-0">
+                    <img
+                        src={item.productId?.imageUrl}
+                        alt="product"
+                        className="w-16 h-16 rounded-2xl object-cover border border-slate-100 flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-slate-800 line-clamp-2 leading-snug">
+                            {item.productId?.productName}
+                        </p>
+                        <p className="text-[11px] font-bold text-slate-400 mt-1.5">Số lượng: {item.quantity}</p>
                     </div>
-                ))}
-            </div>
+                    <div className="text-right">
+                        <p className="ui-currency text-slate-900 text-sm">
+                            {(item.unitPrice).toLocaleString()}
+                            <span className="currency-symbol">đ</span>
+                        </p>
+                    </div>
+                </div>
+            ))}
+            {/* </div> */}
 
             {/* Xem thêm */}
             {order.orderDetails.length > 2 && (
@@ -274,12 +274,12 @@ export const ClientOrderCard: React.FC<ClientOrderCardProps> = ({ order, onClick
             )}
 
             {/* Footer: Action Buttons & Total */}
-            <div className="p-5 bg-slate-50/30 flex items-center justify-between border-t border-slate-100">
+            <div className="pt-5 bg-slate-50/30 flex items-center justify-between border-t border-slate-100">
                 <div className="flex items-center gap-2">
                     {order.status === 'Pending' && (
                         <button
                             onClick={(e) => { e.stopPropagation(); onCancel(order._id); }}
-                            className="px-4 py-2 rounded-xl text-rose-500 hover:bg-rose-50 text-[11px] font-black uppercase transition-all flex items-center gap-2"
+                            className="px-4 py-2 rounded-xl  text-rose-500 hover:bg-rose-50 text-[11px] font-black uppercase transition-all flex items-center gap-2"
                         >
                             <XCircle size={14} strokeWidth={2.5} /> Hủy
                         </button>
@@ -287,7 +287,7 @@ export const ClientOrderCard: React.FC<ClientOrderCardProps> = ({ order, onClick
                     {order.paymentMethod === 'SePay' && order.status === 'Pending' && !isExpired && (
                         <button
                             onClick={(e) => { e.stopPropagation(); onPay(order); }}
-                            className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-[11px] font-black uppercase hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-lg shadow-indigo-100"
+                            className="px-5 py-2.5 rounded-xl  bg-indigo-600 text-white text-[11px] font-black uppercase hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-lg shadow-indigo-100"
                         >
                             <CreditCard size={14} strokeWidth={2.5} /> Thanh toán
                         </button>
@@ -295,7 +295,7 @@ export const ClientOrderCard: React.FC<ClientOrderCardProps> = ({ order, onClick
                 </div>
 
                 <div className="text-right">
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-tight mb-1">Tổng thanh toán</span>
+                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-tight ">Tổng thanh toán</span>
                     <span className="text-xl font-black text-indigo-600 tabular-nums">
                         {order.finalAmount.toLocaleString()}
                         <span className="text-[12px] ml-0.5 underline font-bold">đ</span>

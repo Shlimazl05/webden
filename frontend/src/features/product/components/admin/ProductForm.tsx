@@ -70,7 +70,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
             {/* HEADER */}
             <div className="px-8 py-5 flex justify-between items-center border-b border-slate-100 bg-white">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[var(--color-primary)] text-white rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
+                    <div className="w-10 h-10 bg-[var(--color-primary)] text-white rounded-xl  flex items-center justify-center shadow-lg shadow-indigo-100">
                         <Package size={20} strokeWidth={2.5} />
                     </div>
                     <h2 className="text-xl font-bold text-slate-900 tracking-tight">
@@ -93,7 +93,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
                             <label className="ui-label !text-slate-700 flex items-center gap-2">Ảnh chính sản phẩm *</label>
                             <div
                                 onClick={() => mainImageRef.current?.click()}
-                                className="aspect-square w-full bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center overflow-hidden relative group hover:border-[var(--color-primary)] transition-all cursor-pointer"
+                                className="aspect-square w-full bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center overflow-hidden relative group hover:border-[var(--color-primary)] transition-all cursor-pointer"
                             >
                                 {previews.main ? (
                                     <img src={previews.main} className="w-full h-full object-cover" alt="Main" />
@@ -111,7 +111,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
                             <label className="ui-label !text-slate-700">Ảnh bổ sung</label>
                             <div className="grid grid-cols-3 gap-2">
                                 {previews.subs.map((img, index) => (
-                                    <div key={index} className="aspect-square bg-slate-100 rounded-xl overflow-hidden relative group">
+                                    <div key={index} className="aspect-square bg-slate-100 rounded-xl  overflow-hidden relative group">
                                         <img src={img} className="w-full h-full object-cover" alt="Sub" />
                                         <button type="button" onClick={() => {
                                             const newSubs = previews.subs.filter((_, i) => i !== index);
@@ -120,7 +120,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
                                         }} className="absolute inset-0 bg-rose-500/80 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-all"><Trash2 size={16} /></button>
                                     </div>
                                 ))}
-                                <button type="button" onClick={() => subImageRef.current?.click()} className="aspect-square bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400 hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all">
+                                <button type="button" onClick={() => subImageRef.current?.click()} className="aspect-square bg-slate-50 rounded-xl  border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400 hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all">
                                     <Plus size={20} />
                                 </button>
                                 <input type="file" ref={subImageRef} hidden multiple accept="image/*" onChange={handleSubImagesChange} />
@@ -136,7 +136,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
                                 <input
                                     type="text" value={formData.productName}
                                     onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
-                                    className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all"
+                                    className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl  font-medium outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all"
                                     placeholder="Nhập tên sản phẩm..."
                                 />
                             </div>
@@ -146,7 +146,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
                                 <select
                                     value={formData.categoryId}
                                     onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                                    className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium cursor-pointer"
+                                    className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl  outline-none font-medium cursor-pointer"
                                 >
                                     <option value="">-- Chọn danh mục --</option>
                                     {categories.map((cat: any) => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
@@ -163,7 +163,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
                                         // Bảo vệ lớp 2: Ép giá trị không bao giờ âm
                                         setFormData({ ...formData, salePrice: Math.max(0, val) });
                                     }}
-                                    className="w-full h-11 px-4 bg-rose-50/20 border border-rose-100 rounded-xl outline-none font-bold text-rose-600"
+                                    className="w-full h-11 px-4 bg-rose-50/20 border border-rose-100 rounded-xl  outline-none font-bold text-rose-600"
                                 />
                             </div>
 
@@ -176,7 +176,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
                                         const val = Number(e.target.value);
                                         setFormData({ ...formData, stockQuantity: Math.max(0, val) });
                                     }}
-                                    className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                                    className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl  outline-none"
                                 />
                             </div>
 
@@ -185,7 +185,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
                                 <div className="flex gap-2">
                                     {['Active', 'Hidden'].map(s => (
                                         <button key={s} type="button" onClick={() => setFormData({ ...formData, status: s })}
-                                            className={`flex-1 h-11 rounded-xl text-xs font-bold transition-all border-2 ${formData.status === s ? 'bg-indigo-50 border-[var(--color-primary)] text-[var(--color-primary)]' : 'bg-white border-slate-100 text-slate-400'}`}>
+                                            className={`flex-1 h-11 rounded-xl  text-xs font-bold transition-all border-2 ${formData.status === s ? 'bg-indigo-50 border-[var(--color-primary)] text-[var(--color-primary)]' : 'bg-white border-slate-100 text-slate-400'}`}>
                                             {s === 'Active' ? 'Đang bán' : 'Tạm ẩn'}
                                         </button>
                                     ))}
@@ -215,7 +215,7 @@ export const ProductForm = ({ initialData, isEdit, loading, onSubmit, onClose, c
                 <button
                     onClick={() => onSubmit(formData)}
                     disabled={loading}
-                    className="h-12 px-10 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95 flex items-center gap-2"
+                    className="h-12 px-10 bg-[var(--color-primary)] text-white rounded-xl  font-bold text-sm shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95 flex items-center gap-2"
                 >
                     {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
                     {isEdit ? "Cập nhật sản phẩm" : "Lưu sản phẩm"}

@@ -37,7 +37,7 @@ export const AddProductModal = ({ isOpen, onClose, categories, refreshData }: an
           - flex flex-col: Để chia Header, Body, Footer theo chiều dọc.
           - overflow-hidden: Để các góc rounded không bị nội dung bên trong tràn qua.
       */}
-      <div className="bg-white w-full max-w-5xl max-h-[90vh] flex flex-col rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+      <div className="bg-white w-full max-w-5xl max-h-[90vh] flex flex-col rounded-xl  shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
 
         {/* 
             Gọi ProductForm: 

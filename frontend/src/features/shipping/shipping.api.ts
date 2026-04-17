@@ -13,6 +13,13 @@ export const shippingApi = {
         return res.data;
     },
 
+    // 3. Cập nhật quy tắc hiện có 
+    updateRule: async (id: string, data: { minAmount: number; fee: number }) => {
+        // Gửi yêu cầu PUT tới /shipping/:id kèm theo dữ liệu mới
+        const res = await axiosInstance.put(`/shipping/${id}`, data);
+        return res.data;
+    },
+
     deleteRule: async (id: string) => {
         const res = await axiosInstance.delete(`/shipping/${id}`);
         return res.data;

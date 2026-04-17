@@ -35,7 +35,7 @@ export default function CheckoutPage() {
         <div className="max-w-5xl mx-auto px-6 py-10 min-h-screen relative font-['Be_Vietnam_Pro']">
             {/* Header - Thanh thoát */}
             <div className="flex items-center gap-4 mb-8">
-                <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
+                <div className="w-10 h-10 bg-indigo-600 rounded-xl  flex items-center justify-center shadow-lg shadow-indigo-100">
                     <ShoppingBag className="text-white" size={20} />
                 </div>
                 <div>
@@ -44,10 +44,10 @@ export default function CheckoutPage() {
                 </div>
             </div>
 
-            
+
             <form onSubmit={handleFormSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
 
-                
+
                 <div className="lg:col-span-7">
                     <div className="h-full bg-white rounded-[32px] border border-slate-100 p-8 shadow-sm flex flex-col">
                         <div className="flex-1">
@@ -68,10 +68,10 @@ export default function CheckoutPage() {
                     </div>
                 </div>
 
-                
+
                 <div className="lg:col-span-5 flex flex-col gap-4">
 
-                    
+
                     <div className="bg-white rounded-[32px] border border-slate-100 p-6 shadow-sm">
                         <PaymentMethodForm
                             value={formData.paymentMethod}
@@ -79,9 +79,9 @@ export default function CheckoutPage() {
                         />
                     </div>
 
-                    
+
                     <div className="bg-indigo-950 rounded-[32px] p-6 text-white shadow-xl shadow-indigo-100 relative overflow-hidden flex-1 flex flex-col justify-center">
-                       
+
                         <div className="absolute -right-2 -top-2 w-20 h-20 bg-indigo-800 rounded-full blur-3xl opacity-40"></div>
 
                         <div className="relative z-10">
@@ -93,18 +93,18 @@ export default function CheckoutPage() {
                             </div>
 
                             <div className="flex items-baseline gap-1 mb-6">
-                                
+
                                 <span className="text-3xl font-bold tracking-tighter">
                                     {calculatedTotal.toLocaleString()}
                                 </span>
                                 <span className="text-base font-bold opacity-60">đ</span>
                             </div>
 
-                            
+
                             <button
                                 type="submit"
                                 disabled={isSubmitting || items.length === 0}
-                                className={`w-full py-3.5 rounded-xl font-bold text-[14px] transition-all flex items-center justify-center gap-2 ${(isSubmitting || items.length === 0)
+                                className={`w-full py-3.5 rounded-xl  font-bold text-[14px] transition-all flex items-center justify-center gap-2 ${(isSubmitting || items.length === 0)
                                     ? 'bg-indigo-900/50 text-indigo-700 cursor-not-allowed'
                                     : 'bg-white text-indigo-950 hover:bg-indigo-50 active:scale-[0.98]'
                                     }`}

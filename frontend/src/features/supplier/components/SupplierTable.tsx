@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const SupplierTable = ({ suppliers, loading, onEdit, onDelete, onToggle }: Props) => {
-  if (loading) return <div className="w-full h-64 bg-slate-50 animate-pulse rounded-[2rem] border border-slate-100" />;
+  if (loading) return <div className="w-full h-64 bg-slate-50 animate-pulse rounded-xl border border-slate-100" />;
 
   const handleQuickToggle = async (sup: ISupplier) => {
     const promise = onToggle(sup);
@@ -29,7 +29,7 @@ export const SupplierTable = ({ suppliers, loading, onEdit, onDelete, onToggle }
   };
 
   return (
-    <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden font-sans">
+    <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden font-sans">
       <table className="w-full text-left border-collapse">
         <thead className="bg-slate-100 border-b border-slate-200">
           <tr className="text-slate-700 font-bold text-[13px] uppercase tracking-widest">
@@ -39,7 +39,7 @@ export const SupplierTable = ({ suppliers, loading, onEdit, onDelete, onToggle }
             <th className="p-6 w-[15%] text-center">Thao tác</th>
           </tr>
         </thead>
-        
+
         <tbody className="divide-y divide-slate-50">
           {suppliers && suppliers.length > 0 ? (
             suppliers.map((sup) => (
@@ -48,17 +48,17 @@ export const SupplierTable = ({ suppliers, loading, onEdit, onDelete, onToggle }
                 <td className="p-6 font-black text-slate-900 text-[15px] leading-tight">
                   {sup.name}
                 </td>
-                
+
                 {/* 2. Liên hệ: Icon Mail có màu, chữ đậm hơn */}
                 <td className="p-6">
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center gap-2 text-slate-700 text-sm font-bold">
-                      <Phone size={14} className="text-indigo-500" strokeWidth={2.5} /> 
+                      <Phone size={14} className="text-indigo-500" strokeWidth={2.5} />
                       {sup.phone}
                     </div>
                     {sup.email && (
                       <div className="flex items-center gap-2 text-slate-600 text-[12px] font-bold">
-                        <Mail size={14} className="text-sky-500" strokeWidth={2.5} /> 
+                        <Mail size={14} className="text-sky-500" strokeWidth={2.5} />
                         {sup.email}
                       </div>
                     )}
@@ -72,31 +72,30 @@ export const SupplierTable = ({ suppliers, loading, onEdit, onDelete, onToggle }
                     <span>{sup.address}</span>
                   </div>
                 </td>
-                
+
                 {/* 4. Thao tác */}
                 <td className="p-6 text-center">
                   <div className="flex justify-center gap-2">
                     <button
                       onClick={() => handleQuickToggle(sup)}
-                      className={`p-2.5 rounded-xl border transition-all active:scale-90 ${
-                        sup.status === 'Active' 
-                        ? "text-emerald-500 bg-white border-slate-100 hover:border-emerald-200 hover:bg-emerald-50" 
+                      className={`p-2.5 rounded-xl  border transition-all active:scale-90 ${sup.status === 'Active'
+                        ? "text-emerald-500 bg-white border-slate-100 hover:border-emerald-200 hover:bg-emerald-50"
                         : "text-amber-500 bg-white border-slate-100 hover:border-amber-200 hover:bg-amber-50"
-                      }`}
+                        }`}
                     >
                       {sup.status === 'Active' ? <Eye size={17} strokeWidth={2.5} /> : <EyeOff size={17} strokeWidth={2.5} />}
                     </button>
 
-                    <button 
+                    <button
                       onClick={() => onEdit(sup)}
-                      className="p-2.5 text-indigo-500 bg-white border border-slate-100 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 rounded-xl transition-all active:scale-90"
+                      className="p-2.5 text-indigo-500 bg-white border border-slate-100 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 rounded-xl  transition-all active:scale-90"
                     >
                       <Edit3 size={17} strokeWidth={2.5} />
                     </button>
 
-                    <button 
+                    <button
                       onClick={() => onDelete(sup._id)}
-                      className="p-2.5 text-rose-500 bg-white border border-slate-100 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 rounded-xl transition-all active:scale-90"
+                      className="p-2.5 text-rose-500 bg-white border border-slate-100 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 rounded-xl  transition-all active:scale-90"
                     >
                       <Trash2 size={17} strokeWidth={2.5} />
                     </button>

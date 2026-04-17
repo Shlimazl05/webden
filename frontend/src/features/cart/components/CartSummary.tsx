@@ -80,7 +80,7 @@ export const CartSummary = ({ subTotal, selectedCount, shippingFee = 0 }: any) =
         {/* Tạm tính */}
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+            <div className="w-9 h-9 rounded-xl  bg-blue-50 flex items-center justify-center text-blue-600">
               <ReceiptText size={18} />
             </div>
             <span className="text-slate-600 font-medium">Tạm tính</span>
@@ -93,7 +93,7 @@ export const CartSummary = ({ subTotal, selectedCount, shippingFee = 0 }: any) =
         {/* Phí vận chuyển */}
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <div className="w-9 h-9 rounded-xl  bg-emerald-50 flex items-center justify-center text-emerald-600">
               <Truck size={18} />
             </div>
             <span className="text-slate-600 font-medium">Phí vận chuyển</span>
@@ -107,7 +107,7 @@ export const CartSummary = ({ subTotal, selectedCount, shippingFee = 0 }: any) =
       {/* Tổng cộng */}
       <div className="flex justify-between items-center mb-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#1e1b4b] flex items-center justify-center text-[#facc15]">
+          <div className="w-10 h-10 rounded-xl  bg-[#1e1b4b] flex items-center justify-center text-[#facc15]">
             <CreditCard size={20} />
           </div>
           <span className="text-slate-900 font-bold text-lg">Tổng cộng</span>

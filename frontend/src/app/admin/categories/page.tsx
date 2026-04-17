@@ -36,10 +36,16 @@ export default function CategoryPage() {
       <AdminPageContainer>
 
         {/* --- HEADER: Tiêu đề và nút Thêm mới --- */}
-        <AdminPageHeader title="DANH MỤC">
+        <AdminPageHeader
+          title="Quản lý danh mục"
+          icon={<Layers size={22} strokeWidth={2.5} />}
+          colorClass="text-orange-600"
+          bgColorClass="bg-orange-50"
+        >
+          {/* Nút bấm hành động (Giữ nguyên logic và CSS của bạn, thêm bóng đổ nhẹ cho đẹp) */}
           <button
             onClick={feature.handleOpenAdd}
-            className="flex items-center gap-2 px-6 h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-sm transition-all active:scale-95 text-[14px] uppercase tracking-wider"
+            className="flex items-center gap-2 px-6 h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl  font-bold shadow-lg shadow-indigo-100 transition-all active:scale-95 text-[13px] uppercase tracking-wider"
           >
             <Plus size={20} strokeWidth={3} />
             Thêm danh mục
@@ -56,7 +62,7 @@ export default function CategoryPage() {
 
         </div>
 
-        
+
         <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
           {/* Bộ lọc trạng thái kiểu Tab Switcher */}
           <div className="flex bg-slate-100 p-1 rounded-2xl w-fit shadow-inner">
@@ -64,7 +70,7 @@ export default function CategoryPage() {
               <button
                 key={s}
                 onClick={() => feature.setStatusFilter(s as any)}
-                className={`px-6 py-2 rounded-xl text-[12px] font-bold transition-all duration-300 ${feature.statusFilter === s
+                className={`px-6 py-2 rounded-xl  text-[12px] font-bold transition-all duration-300 ${feature.statusFilter === s
                   ? "bg-white text-indigo-600 shadow-sm"
                   : "text-slate-500 hover:text-slate-700"
                   }`}
@@ -91,7 +97,7 @@ export default function CategoryPage() {
         {/* --- 3. BẢNG DỮ LIỆU --- */}
         <div className="custom-scrollbar pr-2 mt-6">
           {feature.loading ? (
-            <div className="w-full h-64 bg-slate-50 animate-pulse rounded-[2rem] border border-slate-100" />
+            <div className="w-full h-64 bg-slate-50 animate-pulse rounded-xl border border-slate-100" />
           ) : (
             <CategoryTable
               categories={feature.categories}

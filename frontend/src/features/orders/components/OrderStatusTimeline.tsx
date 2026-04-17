@@ -95,7 +95,7 @@
 
 //       {/* THÔNG BÁO HỦY ĐƠN (Chỉ hiện khi đơn bị Cancelled) */}
 //       {status === 'Cancelled' && (
-//         <div className="mt-12 flex flex-col items-center p-8 bg-rose-50/50 rounded-[2.5rem] border border-rose-100 max-w-md mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+//         <div className="mt-12 flex flex-col items-center p-8 bg-rose-50/50 rounded-xl  border border-rose-100 max-w-md mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
 //           <div className="flex items-center gap-2 text-rose-600 mb-2">
 //             <XCircle size={24} strokeWidth={3} />
 //             <span className="text-[14px] font-black uppercase tracking-widest">Đơn hàng đã bị hủy</span>
@@ -135,8 +135,8 @@ export const OrderStatusTimeline = ({ status, statusHistory, createdAt }: OrderS
   const currentIndex = statusOrder.indexOf(status);
 
   return (
-    <div className="pt-10 border-t border-slate-100 mt-10">
-      <div className="relative flex justify-between w-full max-w-4xl mx-auto px-4">
+    <div className="mt-6">
+      <div className="relative flex justify-between w-full px-4">
         {steps.map((step, index) => {
           const stepOrderIndex = statusOrder.indexOf(step.id);
 
@@ -197,7 +197,7 @@ export const OrderStatusTimeline = ({ status, statusHistory, createdAt }: OrderS
 
       {/* THÔNG BÁO HỦY ĐƠN (Xử lý bỏ chữ "Hệ thống:") */}
       {status === 'Cancelled' && (
-        <div className="mt-12 flex flex-col items-center p-8 bg-rose-50/50 rounded-[2.5rem] border border-rose-100 max-w-md mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="mt-12 flex flex-col items-center p-8 bg-rose-50/50 rounded-xl  border border-rose-100 max-w-md mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="flex items-center gap-2 text-rose-600 mb-2">
             <XCircle size={24} strokeWidth={3} />
             <span className="text-[14px] font-black uppercase tracking-widest">Đơn hàng đã bị hủy</span>

@@ -8,7 +8,7 @@ export const ProductList = ({ products, loading }: { products: IProduct[], loadi
         return (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="aspect-[3/5] bg-slate-50 animate-pulse rounded-xl" />
+                    <div key={i} className="aspect-[3/5] bg-slate-50 animate-pulse rounded-xl " />
                 ))}
             </div>
         );

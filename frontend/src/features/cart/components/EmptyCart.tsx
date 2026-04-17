@@ -38,7 +38,7 @@ export const EmptyCart = () => {
     <div className="flex flex-col items-center justify-center py-32 px-6 text-center animate-in fade-in duration-700">
       {/* Icon Container với hiệu ứng đổ bóng và gradient nhẹ */}
       <div className="relative mb-8">
-        <div className="w-28 h-28 bg-indigo-50/50 rounded-[40px] flex items-center justify-center text-indigo-500 relative z-10 border border-indigo-100/50">
+        <div className="w-28 h-28 bg-indigo-50/50 rounded-xl flex items-center justify-center text-indigo-500 relative z-10 border border-indigo-100/50">
           <ShoppingBag size={42} strokeWidth={1.2} />
         </div>
         {/* Sparkles icon trang trí */}

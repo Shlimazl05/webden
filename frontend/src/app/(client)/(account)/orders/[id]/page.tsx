@@ -50,7 +50,7 @@ export default function OrderDetailPage() {
     }
 
     return (
-        <div className="h-screen bg-white">
+        <div className="h-auto bg-white">
             {/* View chi tiết bạn đã gửi */}
             <CustomerOrderDetailView
                 order={order}
@@ -71,7 +71,7 @@ export default function OrderDetailPage() {
             {/* Modal Xác nhận hủy đơn (Dùng chung logic UI với trang List) */}
             {cancelModal.isOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+                    <div className="bg-white rounded-xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
                         <div className="p-8 text-center">
                             <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
                                 <AlertCircle size={32} strokeWidth={2.5} />

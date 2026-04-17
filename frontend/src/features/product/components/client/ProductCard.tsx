@@ -16,7 +16,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <Link
             href={`/products/${product._id}`}
             // CẬP NHẬT: Thêm hover:-translate-y-1 và hover:shadow-xl để card nổi lên khi rê chuột
-            className="group bg-white rounded-xl border-2 border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full"
+            className="group bg-white rounded-xl  border-2 border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full"
         >
             {/* 1. Ảnh sản phẩm - Tỷ lệ 3/4 */}
             <div className="relative aspect-[3/4] overflow-hidden bg-slate-50">

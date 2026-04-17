@@ -24,7 +24,7 @@ export const SearchResultContent = () => {
         <main className="min-h-screen bg-slate-50/50 pt-28 pb-20 px-4 md:px-10">
 
             {/* KHUNG CHÍNH: Bo góc cực lớn giống ảnh (rounded-[3rem]) */}
-            <div className="max-w-[1400px] mx-auto bg-white rounded-[2.5rem] md:rounded-[4rem] shadow-sm border border-slate-100 overflow-hidden p-8 md:p-16">
+            <div className="max-w-[1400px] mx-auto bg-white rounded-xl  md:rounded-[4rem] shadow-sm border border-slate-100 overflow-hidden p-8 md:p-16">
 
                 {/* HEADER: Tiêu đề và nút theo style trong ảnh */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">

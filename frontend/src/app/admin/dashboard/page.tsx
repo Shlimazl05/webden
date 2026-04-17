@@ -34,7 +34,7 @@
 //             <select
 //               value={range}
 //               onChange={(e) => setRange(Number(e.target.value))}
-//               className="bg-slate-50 border-none rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer min-w-[140px]"
+//               className="bg-slate-50 border-none rounded-xl  px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer min-w-[140px]"
 //             >
 //               <option value={7}>7 ngày qua</option>
 //               <option value={30}>30 ngày qua</option>
@@ -62,7 +62,7 @@
 //             />
 
 //             {/* 4B. Danh sách sản phẩm bán chạy (Được bọc trong Card cho đẹp) */}
-//             <div className="bg-white border border-slate-100 rounded-[2rem] shadow-sm p-6 flex flex-col h-[400px]">
+//             <div className="bg-white border border-slate-100 rounded-xl shadow-sm p-6 flex flex-col h-[400px]">
 //               <div className="flex items-center gap-3 mb-4 px-2">
 //                 <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
 //                   <Award size={20} strokeWidth={2.5} />
@@ -95,7 +95,7 @@ import { StatsGrid } from '@/features/dashboard/components/StatsGird';
 import { RevenueChart } from '@/features/dashboard/components/RevenueChart';
 import { CategoryPieChart } from '@/features/dashboard/components/CategoryPieChart';
 import { BestSellersList } from '@/features/dashboard/components/BestSellersList';
-import { Award } from 'lucide-react';
+import { Award, LayoutGrid } from 'lucide-react';
 
 const formatVND = (value: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 
@@ -110,17 +110,20 @@ export default function DashboardPage() {
     <div className="animate-in fade-in duration-500">
       <AdminPageContainer>
 
-        {/* 1. Header & Bộ lọc */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <AdminPageHeader title="TỔNG QUAN" />
-
+        {/* 1. Header & Bộ lọc (Đã tối ưu hóa bằng Component mới) */}
+        <AdminPageHeader
+          title="Tổng quan"
+          icon={<LayoutGrid size={22} strokeWidth={2.5} />}
+          colorClass="text-indigo-600"
+          bgColorClass="bg-indigo-50"
+        >
+          {/* Bộ lọc thời gian truyền vào làm children, nó sẽ tự động nằm bên phải */}
           <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
             <span className="text-[10px] font-black text-slate-400 uppercase pl-3 tracking-wider">Hiển thị:</span>
             <select
               value={range}
-              // QUAN TRỌNG: Không dùng Number() ở đây nữa để nhận được giá trị chuỗi 'all', 'today',...
               onChange={(e) => setRange(e.target.value)}
-              className="bg-slate-50 border-none rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer min-w-[160px]"
+              className="bg-slate-50 border-none rounded-xl  px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer min-w-[160px]"
             >
               <option value="today">Hôm nay</option>
               <option value="7days">7 ngày qua</option>
@@ -129,7 +132,7 @@ export default function DashboardPage() {
               <option value="all">Tất cả thời gian</option>
             </select>
           </div>
-        </div>
+        </AdminPageHeader>
 
         {/* 2. Thẻ thống kê */}
         <StatsGrid stats={stats} loading={loading} />
@@ -150,7 +153,7 @@ export default function DashboardPage() {
             />
 
             {/* 4B. Danh sách sản phẩm bán chạy */}
-            <div className="bg-white border border-slate-100 rounded-[2rem] shadow-sm p-6 flex flex-col h-[400px]">
+            <div className="bg-white border border-slate-100 rounded-xl shadow-sm p-6 flex flex-col h-[400px]">
               <div className="flex items-center gap-3 mb-4 px-2">
                 <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
                   <Award size={20} strokeWidth={2.5} />
