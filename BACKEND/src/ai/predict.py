@@ -33,10 +33,12 @@ def process():
     model_path = r"D:\webden\BACKEND\src\ai\models\resnet50_best.pth"
 
     transform = transforms.Compose([
-        # Bước 1: Resize cạnh dài nhất về 224, giữ nguyên tỉ lệ
+        
         transforms.Resize(224), 
-        # Bước 2: Pad thêm khoảng trắng để thành hình vuông 224x224
-        transforms.Pad(padding=0, fill=0, padding_mode='constant'),
+        # Bước 2: Cắt lấy vùng chính giữa 224x224 
+        # (Giúp đồng bộ hoàn toàn với quá trình Validation khi train)
+        transforms.CenterCrop(224), 
+
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
