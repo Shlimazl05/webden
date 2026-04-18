@@ -1,17 +1,105 @@
+const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+
+// Import đúng service và model của bạn
+const { SearchService } = require('../src/services/searchService');
+const Product = require('../src/models/Product');
+const ProductFeature = require('../src/models/ProductFeature');
+
+async function runIndexing() {
+    try {
+        console.log("🚀 Bắt đầu quá trình Re-index dữ liệu theo chuẩn AI mới...");
+
+        // 1. Kết nối Database
+        // Giữ nguyên connection string của bạn
+        await mongoose.connect('mongodb+srv://admin:12345@cluster0.jfagf8r.mongodb.net/LightStore?appName=Cluster0');
+        console.log("✅ Đã kết nối Database thành công!");
+
+        // 2. Lấy tất cả sản phẩm
+        const products = await Product.find({ status: 'Active' });
+        console.log(`🔍 Tìm thấy ${products.length} sản phẩm cần cập nhật Vector.`);
+
+        // 3. Vòng lặp xử lý
+        for (let i = 0; i < products.length; i++) {
+            const p = products[i];
+            let tempFilePath = null;
+
+            try {
+                // Kiểm tra imageUrl có tồn tại không
+                if (!p.imageUrl) {
+                    console.warn(`⚠️ Bỏ qua SP ${p.productName} vì không có ảnh.`);
+                    continue;
+                }
+
+                // Chuyển Base64 thành file tạm để Python đọc được
+                const base64Data = p.imageUrl.replace(/^data:image\/\w+;base64,/, "");
+                const buffer = Buffer.from(base64Data, 'base64');
+                tempFilePath = path.join(__dirname, `temp_reindex_${p._id}.jpg`);
+                fs.writeFileSync(tempFilePath, buffer);
+
+                // GỌI AI: Lúc này SearchService sẽ gọi predict.py mới (có Resize 224 và Normalize)
+                const aiData = await SearchService.getVector(tempFilePath);
+
+                // CẬP NHẬT DATABASE
+                // Chúng ta dùng findOneAndUpdate với upsert: true để đè dữ liệu cũ
+                await ProductFeature.findOneAndUpdate(
+                    { productId: p._id },
+                    {
+                        vector: aiData.vector,
+                        // Lưu thêm nhãn để sau này tìm kiếm theo Category cho nhanh
+                        label: aiData.category_label
+                    },
+                    { upsert: true, new: true }
+                );
+
+                console.log(`[${i + 1}/${products.length}] ✅ Đã cập nhật chuẩn mới: ${p.productName}`);
+
+            } catch (err) {
+                console.error(`❌ Lỗi tại SP ${p.productName}:`, err.message);
+            } finally {
+                // Xóa file tạm sau khi xong mỗi sản phẩm
+                if (tempFilePath && fs.existsSync(tempFilePath)) {
+                    fs.unlinkSync(tempFilePath);
+                }
+            }
+        }
+
+        console.log("\n✨ HOÀN THÀNH ĐỒNG BỘ DỮ LIỆU!");
+        console.log("💡 Bây giờ tất cả sản phẩm trong DB đã có Vector chuẩn hóa (Normalize) và Resize 224x224.");
+        console.log("🚀 Kết quả tìm kiếm của bạn sẽ chính xác hơn rất nhiều.");
+        process.exit(0);
+
+    } catch (error) {
+        console.error("🔥 Lỗi nghiêm trọng trong quá trình Re-index:", error);
+        process.exit(1);
+    }
+}
+
+runIndexing();
+
+
+
+
+
 // const mongoose = require('mongoose');
 // const fs = require('fs');
 // const path = require('path');
 
-// // Đảm bảo đường dẫn này trỏ đúng vào file search.service.js vừa sửa ở trên
 // const { SearchService } = require('../src/services/searchService');
 // const Product = require('../src/models/Product');
 // const ProductFeature = require('../src/models/ProductFeature');
 
 // async function runIndexing() {
 //     try {
-//         // Thay chuỗi kết nối nếu DB của bạn có mật khẩu hoặc tên khác
+//         // Kết nối Database
 //         await mongoose.connect('mongodb+srv://admin:12345@cluster0.jfagf8r.mongodb.net/LightStore?appName=Cluster0');
 //         console.log("🚀 Đã kết nối Database thành công!");
+
+//         // Xóa sạch dữ liệu cũ trong bảng Feature để đảm bảo đồng bộ với model mới
+//         // (Bạn có thể bỏ dòng này nếu muốn giữ lại dữ liệu cũ, nhưng khuyên nên xóa khi đổi Model)
+//         // await ProductFeature.deleteMany({});
+//         // console.log("🧹 Đã làm sạch dữ liệu Vector cũ.");
 
 //         const products = await Product.find({});
 //         console.log(`🔍 Đang bắt đầu xử lý ${products.length} sản phẩm...`);
@@ -19,7 +107,7 @@
 //         for (let i = 0; i < products.length; i++) {
 //             const p = products[i];
 
-//             // Tạo file tạm từ Base64
+//             // 1. Tạo file tạm từ Base64
 //             const base64Data = p.imageUrl.replace(/^data:image\/\w+;base64,/, "");
 //             const buffer = Buffer.from(base64Data, 'base64');
 //             const tempFilePath = path.join(__dirname, `temp_${p._id}.jpg`);
@@ -27,18 +115,23 @@
 //             fs.writeFileSync(tempFilePath, buffer);
 
 //             try {
-//                 const vector = await SearchService.getVector(tempFilePath);
+//                 // 2. Gọi AI lấy dữ liệu (Trả về Object { category_label, vector })
+//                 const aiData = await SearchService.getVector(tempFilePath);
 
+//                 // 3. LƯU VÀO DATABASE - Chỉ lấy trường .vector (mảng 2048 số)
 //                 await ProductFeature.findOneAndUpdate(
 //                     { productId: p._id },
-//                     { vector: vector },
+//                     {
+//                         vector: aiData.vector // <--- SỬA Ở ĐÂY: Lấy đúng mảng số
+//                     },
 //                     { upsert: true }
 //                 );
 
-//                 console.log(`[${i + 1}/${products.length}] ✅ Thành công: ${p.productName}`);
+//                 console.log(`[${i + 1}/${products.length}] ✅ Thành công: ${p.productName} (Loại: ${aiData.category_label})`);
 //             } catch (err) {
 //                 console.error(`❌ Lỗi tại SP ${p.productName}:`, err.message);
 //             } finally {
+//                 // 4. Xóa file tạm ngay lập tức
 //                 if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
 //             }
 //         }
@@ -52,68 +145,3 @@
 // }
 
 // runIndexing();
-
-
-const mongoose = require('mongoose');
-const fs = require('fs');
-const path = require('path');
-
-const { SearchService } = require('../src/services/searchService');
-const Product = require('../src/models/Product');
-const ProductFeature = require('../src/models/ProductFeature');
-
-async function runIndexing() {
-    try {
-        // Kết nối Database
-        await mongoose.connect('mongodb+srv://admin:12345@cluster0.jfagf8r.mongodb.net/LightStore?appName=Cluster0');
-        console.log("🚀 Đã kết nối Database thành công!");
-
-        // Xóa sạch dữ liệu cũ trong bảng Feature để đảm bảo đồng bộ với model mới
-        // (Bạn có thể bỏ dòng này nếu muốn giữ lại dữ liệu cũ, nhưng khuyên nên xóa khi đổi Model)
-        // await ProductFeature.deleteMany({});
-        // console.log("🧹 Đã làm sạch dữ liệu Vector cũ.");
-
-        const products = await Product.find({});
-        console.log(`🔍 Đang bắt đầu xử lý ${products.length} sản phẩm...`);
-
-        for (let i = 0; i < products.length; i++) {
-            const p = products[i];
-
-            // 1. Tạo file tạm từ Base64
-            const base64Data = p.imageUrl.replace(/^data:image\/\w+;base64,/, "");
-            const buffer = Buffer.from(base64Data, 'base64');
-            const tempFilePath = path.join(__dirname, `temp_${p._id}.jpg`);
-
-            fs.writeFileSync(tempFilePath, buffer);
-
-            try {
-                // 2. Gọi AI lấy dữ liệu (Trả về Object { category_label, vector })
-                const aiData = await SearchService.getVector(tempFilePath);
-
-                // 3. LƯU VÀO DATABASE - Chỉ lấy trường .vector (mảng 2048 số)
-                await ProductFeature.findOneAndUpdate(
-                    { productId: p._id },
-                    {
-                        vector: aiData.vector // <--- SỬA Ở ĐÂY: Lấy đúng mảng số
-                    },
-                    { upsert: true }
-                );
-
-                console.log(`[${i + 1}/${products.length}] ✅ Thành công: ${p.productName} (Loại: ${aiData.category_label})`);
-            } catch (err) {
-                console.error(`❌ Lỗi tại SP ${p.productName}:`, err.message);
-            } finally {
-                // 4. Xóa file tạm ngay lập tức
-                if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
-            }
-        }
-
-        console.log("✨ TẤT CẢ ĐÃ XỬ LÝ XONG!");
-        process.exit(0);
-    } catch (error) {
-        console.error("🔥 Lỗi nghiêm trọng:", error);
-        process.exit(1);
-    }
-}
-
-runIndexing();

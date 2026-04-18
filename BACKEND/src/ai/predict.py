@@ -1,63 +1,5 @@
 
 
-# import torch
-# import torch.nn as nn
-# from torchvision import models, transforms
-# from PIL import Image
-# import sys
-# import json
-
-# # Danh sách 8 loại đèn bạn đã train (phải đúng thứ tự lúc train)
-# CLASS_NAMES = ['DenBan', 'DenChieuTuong', 'DenChumCD', 'DenChumHD', 'DenTha', 'DenTuong', 'OpTranLED', 'OpTranPL']
-
-# def get_model(model_path):
-#     model = models.resnet50()
-#     num_ftrs = model.fc.in_features
-#     model.fc = nn.Linear(num_ftrs, 8) 
-#     checkpoint = torch.load(model_path, map_location='cpu')
-#     model.load_state_dict(checkpoint)
-#     model.eval()
-#     return model
-
-# def process():
-#     img_path = sys.argv[1]
-#     model_path = sys.argv[2]
-    
-#     transform = transforms.Compose([
-#         transforms.Resize(256),
-#         transforms.CenterCrop(224),
-#         transforms.ToTensor(),
-#         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-#     ])
-
-#     model = get_model(model_path)
-#     img = Image.open(img_path).convert('RGB')
-#     img_tensor = transform(img).unsqueeze(0)
-
-#     with torch.no_grad():
-#         # Bước 1: Lấy kết quả phân loại (8 lớp)
-#         logits = model(img_tensor)
-#         _, predicted_idx = torch.max(logits, 1)
-#         label = CLASS_NAMES[predicted_idx.item()]
-
-#         # Bước 2: Lấy Vector đặc trưng (Trích xuất từ lớp trước FC)
-#         # Tạo một model phụ để lấy feature
-#         modules = list(model.children())[:-1] 
-#         feature_extractor = nn.Sequential(*modules)
-#         vector = feature_extractor(img_tensor)
-        
-#         vector_list = vector.flatten().tolist()
-        
-#         # Trả về cả 2 thông tin
-#         print(json.dumps({
-#             "vector": vector_list,
-#             "category_label": label
-#         }))
-
-# if __name__ == "__main__":
-#     process()
-
-
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
@@ -91,8 +33,10 @@ def process():
     model_path = r"D:\webden\BACKEND\src\ai\models\resnet50_best.pth"
 
     transform = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
+        # Bước 1: Resize cạnh dài nhất về 224, giữ nguyên tỉ lệ
+        transforms.Resize(224), 
+        # Bước 2: Pad thêm khoảng trắng để thành hình vuông 224x224
+        transforms.Pad(padding=0, fill=0, padding_mode='constant'),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
@@ -117,7 +61,15 @@ def process():
             x = model.layer3(x)
             x = model.layer4(x)
             x = model.avgpool(x) # Lớp này cho ra vector 2048
-            vector_list = torch.flatten(x, 1).flatten().tolist()
+            # vector_list = torch.flatten(x, 1).flatten().tolist()
+
+            x = torch.flatten(x, 1) # Kết quả là [1, 2048]
+            
+            # --- THÊM DÒNG NÀY ĐỂ CHUẨN HÓA ---
+            x = torch.nn.functional.normalize(x, p=2, dim=1) 
+            # ----------------------------------
+
+            vector_list = x.flatten().tolist()
             
             print(json.dumps({
                 "category_label": label,
