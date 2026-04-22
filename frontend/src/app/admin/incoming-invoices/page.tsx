@@ -63,11 +63,13 @@ export default function ImportOrdersPage() {
         </div>
 
         {/* Bảng dữ liệu - Đã được tối ưu Typography bên trong */}
-        <ImportOrderTable
-          orders={f.orders}
-          loading={f.loading}
-          onDelete={f.handleOpenDelete}
-        />
+        <div className="w-full overflow-x-auto custom-scrollbar mt-6">
+          <ImportOrderTable
+            orders={f.orders}
+            loading={f.loading}
+            onDelete={f.handleOpenDelete}
+          />
+        </div>
 
         {/* Phân trang: Tăng khoảng cách để không bị dính vào bảng */}
         <div className="mt-10 mb-10 border-t border-slate-100 pt-6">

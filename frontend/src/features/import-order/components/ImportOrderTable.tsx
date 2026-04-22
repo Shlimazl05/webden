@@ -37,7 +37,7 @@ export const ImportOrderTable = ({ orders, loading, onDelete }: any) => {
             {/* --- PHẦN THẺ CHÍNH (HEADER CARD) --- */}
             <div
               onClick={() => toggleRow(order._id)}
-              className="p-5 sm:p-7 cursor-pointer flex flex-nowrap items-center gap-4 sm:gap-8"
+              className="p-5 sm:p-7 cursor-pointer flex flex-wrap items-center gap-4 sm:gap-8"
             >
               {/* Mã phiếu */}
               <div className="flex items-center gap-4 min-w-[150px] shrink-0">

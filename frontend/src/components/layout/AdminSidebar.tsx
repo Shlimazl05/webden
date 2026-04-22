@@ -59,7 +59,7 @@ export const AdminSidebar = ({ isExpanded, setIsExpanded }: SidebarProps) => {
       <div className="p-6 mb-4 flex justify-center">
         <div className={`bg-white border border-slate-200 shadow-sm rounded-full overflow-hidden flex items-center justify-center transition-all duration-500 ${isExpanded ? "w-20 h-20" : "w-12 h-12"}`}>
           <img
-            src="/logo.png"
+            src="/img/logo-webden.png"
             alt="Logo"
             className="w-full h-full object-cover"
             onError={(e) => {
