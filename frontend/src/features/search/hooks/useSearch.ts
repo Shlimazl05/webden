@@ -27,9 +27,7 @@ export const useSearch = () => {
                     limit: 20
                 });
 
-                // --- FIX LỖI Ở ĐÂY ---
-                // Vì productClientApi trả về response.data.data (là object {products, pagination})
-                // Nên ta phải trỏ vào .products
+                
                 const actualProducts = res?.products || [];
                 setResults(actualProducts);
 

@@ -1,14 +1,11 @@
 
 
-// const { spawn } = require('child_process');
-// const path = require('path');
+
 // const ProductFeature = require('../models/ProductFeature');
 // const Product = require('../models/Product');
 // const Category = require('../models/Category');
-// // ai
 // const aiClient = require('../utils/aiClient');
 
-// // Bản đồ ánh xạ giữa Label của AI và Slug của Category trong Database
 // const CATEGORY_MAPPING = {
 //     'DenBan': 'den-ban',
 //     'DenChieuTuong': 'den-chieu-tuong',
@@ -21,11 +18,9 @@
 // };
 
 // const SearchService = {
-//     // 1. Hàm tính độ tương đồng Cosine
+//     // 1. Tính Cosine Similarity
 //     cosineSimilarity(vecA, vecB) {
-//         let dotProduct = 0;
-//         let normA = 0;
-//         let normB = 0;
+//         let dotProduct = 0, normA = 0, normB = 0;
 //         for (let i = 0; i < vecA.length; i++) {
 //             dotProduct += vecA[i] * vecB[i];
 //             normA += vecA[i] * vecA[i];
@@ -35,105 +30,79 @@
 //         return isNaN(similarity) ? 0 : similarity;
 //     },
 
-//     // 2. Hàm gọi Python lấy dữ liệu AI (Vector + Category Label)
+//     // 2. Gọi AI lấy Vector
 //     async getVector(imagePath) {
-//         return new Promise((resolve, reject) => {
-//             const modelPath = path.join(__dirname, '../ai/models/model.pth');
-//             const scriptPath = path.join(__dirname, '../ai/predict.py');
-
-//             const py = spawn('python', [scriptPath, imagePath, modelPath]);
-
-//             let result = "";
-//             let error = "";
-
-//             py.stdout.on('data', (data) => result += data.toString());
-//             py.stderr.on('data', (data) => error += data.toString());
-
-//             py.on('close', (code) => {
-//                 if (code !== 0) return reject(new Error(error || "AI Script failed"));
-//                 try {
-//                     // Trả về object: { vector: [...], category_label: "..." }
-//                     resolve(JSON.parse(result));
-//                 } catch (e) {
-//                     reject(new Error("Lỗi định dạng JSON từ AI"));
-//                 }
-//             });
-//         });
+//         try {
+//             const response = await aiClient.post('/predict', { path: imagePath });
+//             return response.data;
+//         } catch (error) {
+//             console.error("❌ Lỗi khi gọi AI Server:", error.message);
+//             throw new Error("Không thể kết nối với hệ thống nhận diện.");
+//         }
 //     },
 
-//     // 3. Hàm so sánh Vector và chỉ tìm trong danh mục tương ứng
+//     // 3. Tìm kiếm và xử lý logic nhận diện
 //     async findSimilarProducts(aiData) {
 //         const { vector, category_label } = aiData;
+//         const SIMILARITY_THRESHOLD = 0.80; // 👈 NGƯỠNG CHẶN (Nếu thấp hơn 80% thì coi như không tìm thấy)
 
-//         // BƯỚC 1: Tìm Category ID dựa trên nhãn AI trả về
+//         // BƯỚC 1: Kiểm tra danh mục
 //         const targetSlug = CATEGORY_MAPPING[category_label];
 //         const category = await Category.findOne({ slug: targetSlug });
 
 //         if (!category) {
-//             console.error(`❌ AI nhận diện loại: ${category_label} nhưng không tìm thấy slug: ${targetSlug} trong DB`);
-//             return [];
+//             return { success: false, message: "Không nhận diện được loại sản phẩm này.", products: [] };
 //         }
 
-//         // BƯỚC 2: Tìm tất cả sản phẩm thuộc danh mục này
-//         // Lưu ý: Lấy thêm productName để phục vụ việc in log ở Terminal
+//         // BƯỚC 2: Lấy sản phẩm trong danh mục
 //         const productsInCat = await Product.find({
 //             categoryId: category._id,
 //             status: 'Active'
-//         }).select('_id productName');
+//         }).select('_id productName').lean();
+
+//         if (productsInCat.length === 0) {
+//             return { success: false, message: `Danh mục ${category.name} hiện chưa có sản phẩm.`, products: [] };
+//         }
 
 //         const validProductIds = productsInCat.map(p => p._id.toString());
 
-//         // BƯỚC 3: Chỉ lấy vector của những sản phẩm nằm trong danh mục này
+//         // BƯỚC 3: Tính toán độ tương đồng
 //         const filteredFeatures = await ProductFeature.find({
 //             productId: { $in: validProductIds }
 //         });
 
-//         if (filteredFeatures.length === 0) {
-//             console.log(`⚠️ Không có dữ liệu vector nào cho danh mục: ${category.name}`);
-//             return [];
-//         }
-
-//         // BƯỚC 4: Tính điểm tương đồng và sắp xếp toàn bộ danh sách
 //         const scoredResults = filteredFeatures.map(feature => ({
 //             productId: feature.productId.toString(),
 //             score: this.cosineSimilarity(vector, feature.vector)
 //         }))
-//             .sort((a, b) => b.score - a.score); // Sắp xếp từ cao xuống thấp
+//             .sort((a, b) => b.score - a.score);
 
-//         // ============================================================
-//         // 📊 ĐOẠN CODE HIỂN THỊ CHỈ SỐ TƯƠNG ĐỒNG Ở TERMINAL
-//         // ============================================================
-//         console.log(`\n────────────────────────────────────────────────`);
-//         console.log(`📡 [AI VISUAL SEARCH REPORT]`);
-//         console.log(`🎯 Nhận diện danh mục: ${category_label} (${category.name})`);
-//         console.log(`📈 Top 5 sản phẩm tương đồng nhất:`);
+//         // 🎯 KIỂM TRA NGƯỠNG TIN CẬY
+//         // Nếu sản phẩm giống nhất mà điểm vẫn thấp hơn threshold -> Coi như ảnh không liên quan (cây quạt, con chó...)
+//         if (scoredResults.length === 0 || scoredResults[0].score < SIMILARITY_THRESHOLD) {
+//             console.log(`⚠️ Ảnh không giống bất kỳ sản phẩm nào trong DB (Max score: ${scoredResults[0]?.score.toFixed(4)})`);
+//             return {
+//                 success: false,
+//                 message: "Xin lỗi, chúng tôi không tìm thấy sản phẩm nào tương đồng với ảnh bạn cung cấp.",
+//                 products: []
+//             };
+//         }
 
-//         scoredResults.slice(0, 5).forEach((item, index) => {
-//             // Tìm tên sản phẩm từ danh sách đã lấy ở Bước 2
-//             const pInfo = productsInCat.find(p => p._id.toString() === item.productId);
-//             // Chuyển điểm số sang phần trăm (Ví dụ: 0.985 -> 98.50%)
-//             const scorePercent = (item.score * 100).toFixed(2);
-
-//             console.log(`${index + 1}. [${scorePercent}%] - ${pInfo ? pInfo.productName : 'Sản phẩm ẩn'}`);
-//         });
-//         console.log(`────────────────────────────────────────────────\n`);
-//         // ============================================================
-
-//         // Lấy Top 10 kết quả cuối cùng để trả về Frontend
+//         // BƯỚC 4: Lấy Top 10
 //         const top10Results = scoredResults.slice(0, 10);
 //         const resultIds = top10Results.map(item => item.productId);
-
-//         // BƯỚC 5: Lấy thông tin chi tiết sản phẩm
 //         const products = await Product.find({ _id: { $in: resultIds } }).lean();
 
-//         // Giữ đúng thứ tự điểm số từ cao xuống thấp
 //         const sortedProducts = top10Results.map(result => {
 //             return products.find(p => p._id.toString() === result.productId);
 //         }).filter(Boolean);
 
+//         // Trả về kết quả thành công
 //         return {
+//             success: true,
+//             message: `Tìm thấy các sản phẩm thuộc dòng ${category.name}`,
 //             products: sortedProducts,
-//             categoryName: category.name // Trả về "Đèn bàn", "Đèn thả"...
+//             categoryName: category.name
 //         };
 //     }
 // };
@@ -141,15 +110,11 @@
 // module.exports = { SearchService };
 
 
-
-
 const ProductFeature = require('../models/ProductFeature');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
-// ai - Kết nối tới Python API
 const aiClient = require('../utils/aiClient');
 
-// Bản đồ ánh xạ giữa Label của AI và Slug của Category trong Database
 const CATEGORY_MAPPING = {
     'DenBan': 'den-ban',
     'DenChieuTuong': 'den-chieu-tuong',
@@ -162,12 +127,9 @@ const CATEGORY_MAPPING = {
 };
 
 const SearchService = {
-    // 1. Hàm tính độ tương đồng Cosine
-    // Lưu ý: Vì vector đã được L2 normalize từ Python, hàm này sẽ trả về giá trị từ 0 đến 1
+    // 1. Tính Cosine Similarity
     cosineSimilarity(vecA, vecB) {
-        let dotProduct = 0;
-        let normA = 0;
-        let normB = 0;
+        let dotProduct = 0, normA = 0, normB = 0;
         for (let i = 0; i < vecA.length; i++) {
             dotProduct += vecA[i] * vecB[i];
             normA += vecA[i] * vecA[i];
@@ -177,83 +139,95 @@ const SearchService = {
         return isNaN(similarity) ? 0 : similarity;
     },
 
-    // 2. Hàm gọi Python lấy dữ liệu AI qua FastAPI
+    // 2. Gọi AI lấy Vector
     async getVector(imagePath) {
         try {
-            // imagePath nên là đường dẫn tuyệt đối trên server
             const response = await aiClient.post('/predict', { path: imagePath });
-            return response.data; // Trả về { category_label, vector }
+            return response.data;
         } catch (error) {
-            console.error("❌ Lỗi khi gọi AI Server:", error.message);
-            // Ném lỗi để Controller có thể bắt được và trả về lỗi 500 cho khách
-            throw new Error("Hệ thống nhận diện hình ảnh đang bận, vui lòng thử lại sau.");
+            console.error(" Lỗi khi gọi AI Server:", error.message);
+            throw new Error("Không thể kết nối với hệ thống nhận diện.");
         }
     },
 
-    // 3. Hàm so sánh Vector và chỉ tìm trong danh mục tương ứng
+    // 3. Tìm kiếm và xử lý logic nhận diện
     async findSimilarProducts(aiData) {
         const { vector, category_label } = aiData;
+        const SIMILARITY_THRESHOLD = 0.85; // Ngưỡng chặn ảnh không liên quan
 
         // BƯỚC 1: Tìm Category ID dựa trên nhãn AI trả về
         const targetSlug = CATEGORY_MAPPING[category_label];
         const category = await Category.findOne({ slug: targetSlug });
 
         if (!category) {
-            console.error(`❌ AI nhận diện loại: ${category_label} nhưng không tìm thấy slug: ${targetSlug} trong DB`);
-            return { products: [], categoryName: "Không xác định" };
+            console.error(` AI nhận diện loại: ${category_label} nhưng không tìm thấy slug: ${targetSlug} trong DB`);
+            return { success: false, message: "Không nhận diện được loại sản phẩm này.", products: [] };
         }
 
         // BƯỚC 2: Tìm tất cả sản phẩm Active thuộc danh mục này
         const productsInCat = await Product.find({
             categoryId: category._id,
             status: 'Active'
-        }).select('_id productName').lean(); // Dùng .lean() để tăng tốc độ query
+        }).select('_id productName').lean();
+
+        if (productsInCat.length === 0) {
+            return { success: false, message: `Danh mục ${category.name} hiện chưa có sản phẩm.`, products: [] };
+        }
 
         const validProductIds = productsInCat.map(p => p._id.toString());
 
-        // BƯỚC 3: Lấy vector đặc trưng của các sản phẩm này
+        // BƯỚC 3: Tính toán độ tương đồng cho tất cả sản phẩm trong danh mục
         const filteredFeatures = await ProductFeature.find({
             productId: { $in: validProductIds }
         });
 
-        if (filteredFeatures.length === 0) {
-            console.log(`⚠️ Không có dữ liệu vector nào cho danh mục: ${category.name}`);
-            return { products: [], categoryName: category.name };
-        }
-
-        // BƯỚC 4: Tính điểm tương đồng và sắp xếp
         const scoredResults = filteredFeatures.map(feature => ({
             productId: feature.productId.toString(),
             score: this.cosineSimilarity(vector, feature.vector)
         }))
-            .sort((a, b) => b.score - a.score);
+            .sort((a, b) => b.score - a.score); // Sắp xếp giảm dần theo điểm số
 
-        // Hiển thị Log báo cáo ở Terminal
-        console.log(`\n────────────────────────────────────────────────`);
-        console.log(`📡 [AI VISUAL SEARCH REPORT]`);
-        console.log(`🎯 Nhận diện danh mục: ${category_label} (${category.name})`);
-        console.log(`📈 Top 5 sản phẩm tương đồng nhất:`);
+        // ============================================================
+        //  HIỂN THỊ CHỈ SỐ TƯƠNG ĐỒNG Ở TERMINAL
+        // ============================================================
+        if (scoredResults.length > 0) {
+            console.log(`\n────────────────────────────────────────────────`);
+            console.log(`[AI VISUAL SEARCH REPORT]`);
+            console.log(` Nhận diện danh mục: ${category_label} (${category.name})`);
+            console.log(`Top 5 sản phẩm tương đồng nhất:`);
 
-        scoredResults.slice(0, 5).forEach((item, index) => {
-            const pInfo = productsInCat.find(p => p._id.toString() === item.productId);
-            const scorePercent = (item.score * 100).toFixed(2);
-            console.log(`${index + 1}. [${scorePercent}%] - ${pInfo ? pInfo.productName : 'Sản phẩm ẩn'}`);
-        });
-        console.log(`────────────────────────────────────────────────\n`);
+            scoredResults.slice(0, 10).forEach((item, index) => {
+                const pInfo = productsInCat.find(p => p._id.toString() === item.productId);
+                const scorePercent = (item.score * 100).toFixed(2);
+                console.log(`${index + 1}. [${scorePercent}%] - ${pInfo ? pInfo.productName : 'Sản phẩm ẩn'}`);
+            });
+            console.log(`────────────────────────────────────────────────\n`);
+        }
+        // ============================================================
 
-        // Lấy Top 10 kết quả
+        // 🎯 KIỂM TRA NGƯỠNG TIN CẬY (Sau khi đã log để debug)
+        if (scoredResults.length === 0 || scoredResults[0].score < SIMILARITY_THRESHOLD) {
+            console.log(`⚠️ Ảnh bị chặn do không đủ độ tin cậy (Max score: ${scoredResults[0]?.score.toFixed(4)})`);
+            return {
+                success: false,
+                message: "Không tìm thấy sản phẩm nào tương đồng với ảnh bạn cung cấp.",
+                products: []
+            };
+        }
+
+        // BƯỚC 4: Lấy Top 10 kết quả trả về cho Frontend
         const top10Results = scoredResults.slice(0, 10);
         const resultIds = top10Results.map(item => item.productId);
-
-        // BƯỚC 5: Lấy thông tin chi tiết sản phẩm cuối cùng
         const products = await Product.find({ _id: { $in: resultIds } }).lean();
 
-        // Sắp xếp lại danh sách sản phẩm theo thứ tự điểm số từ cao xuống thấp
+        // Sắp xếp lại danh sách sản phẩm theo thứ tự điểm số
         const sortedProducts = top10Results.map(result => {
             return products.find(p => p._id.toString() === result.productId);
         }).filter(Boolean);
 
         return {
+            success: true,
+            message: `Tìm thấy các sản phẩm thuộc dòng ${category.name}`,
             products: sortedProducts,
             categoryName: category.name
         };

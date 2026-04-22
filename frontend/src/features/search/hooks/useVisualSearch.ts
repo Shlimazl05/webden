@@ -1,15 +1,17 @@
 
 
 
+
 // import { useState, useRef } from 'react';
-// import { useRouter } from 'next/navigation'; // Import router
+// import { useRouter } from 'next/navigation';
 // import toast from 'react-hot-toast';
 // import { searchApi } from '../api/searchAI.api';
 // import { IProduct } from '../../product/product.types';
-// import { useVisualSearchStore } from '../store/useVisualSearchStore'; // Import Store
+// import { useVisualSearchStore } from '../store/useVisualSearchStore';
 
 // export const useVisualSearch = () => {
 //     const router = useRouter();
+//     // Lấy hàm setVisualData từ Store
 //     const setVisualData = useVisualSearchStore((state) => state.setVisualData);
 
 //     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,7 +40,7 @@
 //             return;
 //         }
 
-//         // Tạo URL preview để hiển thị ở trang kết quả
+//         // Tạo URL preview ảnh để hiển thị ở trang kết quả
 //         const previewUrl = URL.createObjectURL(file);
 
 //         closeModal();
@@ -50,17 +52,20 @@
 //             searchPromise,
 //             {
 //                 loading: 'Hệ thống AI đang phân tích hình ảnh...',
-//                 success: (results: any) => {
-//                     const data = results.data?.data || results.data || results;
+//                 success: (res: any) => {
+//                     // Cấu trúc dữ liệu mới từ Backend: { products: [...], categoryName: "..." }
+//                     // res.data thường là bọc ngoài của Axios
+//                     const products = res.products || [];
+//                     const categoryName = res.categoryName || "Đang xác định...";
 
-//                     if (data && data.length > 0) {
-//                         // 1. Lưu dữ liệu vào Store toàn cục
-//                         setVisualData(data, previewUrl);
+//                     if (products && products.length > 0) {
+//                         // 1. Lưu 3 thông tin vào Store: mảng SP, ảnh preview, tên danh mục
+//                         setVisualData(products, previewUrl, categoryName || "Đang xác định...");
 
-//                         // 2. Chuyển hướng sang trang kết quả
+//                         // 2. Chuyển hướng sang trang kết quả riêng
 //                         router.push('/search/visual');
 
-//                         return `Tìm thấy ${data.length} sản phẩm phù hợp!`;
+//                         return `Tìm thấy ${products.length} sản phẩm phù hợp!`;
 //                     } else {
 //                         throw new Error("Không có sản phẩm nào phù hợp.");
 //                     }
@@ -114,13 +119,13 @@
 // };
 
 
-
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { searchApi } from '../api/searchAI.api';
 import { IProduct } from '../../product/product.types';
 import { useVisualSearchStore } from '../store/useVisualSearchStore';
+import { IVisualSearchResponse } from '../search.types';
 
 export const useVisualSearch = () => {
     const router = useRouter();
@@ -130,6 +135,9 @@ export const useVisualSearch = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const [isVisualLoading, setIsVisualLoading] = useState(false);
+
+    // Lưu ý: visualResults ở đây là state cục bộ, 
+    // thực tế bạn đã dùng Store để chuyển trang nên có thể để hoặc xóa.
     const [visualResults, setVisualResults] = useState<IProduct[]>([]);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -153,7 +161,7 @@ export const useVisualSearch = () => {
             return;
         }
 
-        // Tạo URL preview ảnh để hiển thị ở trang kết quả
+        // 1. Tạo URL preview cho ảnh
         const previewUrl = URL.createObjectURL(file);
 
         closeModal();
@@ -165,35 +173,41 @@ export const useVisualSearch = () => {
             searchPromise,
             {
                 loading: 'Hệ thống AI đang phân tích hình ảnh...',
-                success: (res: any) => {
-                    // Cấu trúc dữ liệu mới từ Backend: { products: [...], categoryName: "..." }
-                    // res.data thường là bọc ngoài của Axios
-                    const products = res.products || [];
-                    const categoryName = res.categoryName || "Đang xác định...";
+                success: (res: IVisualSearchResponse) => {
+                    const previewUrl = URL.createObjectURL(file);
 
-                    if (products && products.length > 0) {
-                        // 1. Lưu 3 thông tin vào Store: mảng SP, ảnh preview, tên danh mục
-                        setVisualData(products, previewUrl, categoryName || "Đang xác định...");
+                    // 1. ĐỔ TẤT CẢ DỮ LIỆU VÀO STORE (Kể cả khi success = false)
+                    // Cần đảm bảo file Store của bạn đã cập nhật hàm setVisualData nhận 5 tham số
+                    setVisualData(
+                        res.products || [],
+                        previewUrl,
+                        res.categoryName || "Đang xác định...",
+                        res.success, // 👈 Thêm biến success
+                        res.message  // 👈 Thêm biến message
+                    );
 
-                        // 2. Chuyển hướng sang trang kết quả riêng
-                        router.push('/search/visual');
+                    // 2. LUÔN CHUYỂN HƯỚNG SANG TRANG KẾT QUẢ
+                    router.push('/search/visual');
 
-                        return `Tìm thấy ${products.length} sản phẩm phù hợp!`;
-                    } else {
-                        throw new Error("Không có sản phẩm nào phù hợp.");
+                    // 3. Trả về thông báo cho Toast xanh (Success Toast)
+                    if (!res.success) {
+                        return "Đã phân tích xong (Không có sản phẩm phù hợp).";
                     }
+                    return res.message || "Tìm thấy các sản phẩm phù hợp!";
                 },
                 error: (err) => err.message || "Lỗi hệ thống nhận diện AI.",
             },
             {
-                style: { minWidth: '300px' },
+                style: { minWidth: '350px' },
                 success: { duration: 5000 },
+                error: { duration: 5000 },
             }
         ).finally(() => {
             setIsVisualLoading(false);
         });
     };
 
+    // ... các hàm handleFileChange, handleDragOver, handleDrop giữ nguyên ...
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) processFile(file);

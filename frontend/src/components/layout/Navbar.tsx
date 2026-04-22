@@ -187,6 +187,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useNavbarLogic } from '@/features/navigation/hooks/useNavbarLogic';
 import VisualSearchModal from '@/features/search/components/VisualSearchModal'; // Import Modal mới
@@ -226,12 +227,26 @@ const Navbar = () => {
           }`}
       >
         {/* 1. Branding / Logo */}
-        <div className="flex-shrink-0 w-[180px]">
+        {/* <div className="flex-shrink-0 w-[180px]">
           <Link href="/" className="inline-flex items-center hover:scale-105 transition-transform duration-300">
             <div className="w-[60px] h-[60px] bg-gradient-to-br from-amber-400 to-yellow-600 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(251,191,36,0.4)] overflow-hidden border border-white/20">
               <div className="text-[10px] font-black text-center text-slate-900 leading-tight tracking-tighter uppercase">
                 Stellar<br />Lights
               </div>
+            </div>
+          </Link>
+        </div> */}
+        <div className="flex-shrink-0 w-[180px]">
+          <Link href="/" className="inline-flex items-center hover:scale-110 transition-transform duration-300">
+            {/* Khung tròn bao quanh ảnh */}
+            <div className="w-[60px] h-[60px] relative rounded-full overflow-hidden border-2 border-amber-400/50 shadow-[0_0_15px_rgba(251,191,36,0.3)] bg-white">
+              <Image
+                src="/img/logo-webden.png"
+                alt="LUXE Logo"
+                fill
+                className="object-cover" // Cắt ảnh để vừa khít hình tròn mà không bị méo
+                priority
+              />
             </div>
           </Link>
         </div>

@@ -56,7 +56,7 @@ export const CustomerTable = ({ customers, loading, onStatusChange, onResetPage 
                       {displayName.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-black text-[#001529] text-sm truncate max-w-[150px]">
+                      <p className="p-6 font-bold text-slate-800 text-[15px]  max-w-[150px]">
                         {displayName}
                       </p>
 

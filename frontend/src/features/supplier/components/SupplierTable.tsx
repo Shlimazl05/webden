@@ -45,7 +45,7 @@ export const SupplierTable = ({ suppliers, loading, onEdit, onDelete, onToggle }
             suppliers.map((sup) => (
               <tr key={sup._id} className="hover:bg-slate-50/50 transition-colors group">
                 {/* 1. Tên NCC: Bỏ truncate để hiện đầy đủ */}
-                <td className="p-6 font-black text-slate-900 text-[15px] leading-tight">
+                <td className="p-6 font-bold text-slate-800 text-[15px]  max-w-[150px]">
                   {sup.name}
                 </td>
 
