@@ -13,7 +13,7 @@ const path = require('path');
 const syncAIVector = async (product) => {
     // Chỉ xử lý nếu có ảnh và là dạng Base64
     if (!product.imageUrl || !product.imageUrl.startsWith('data:image')) {
-        console.log(`⚠️ Bỏ qua tạo vector cho SP: ${product.productName} (Ảnh không phải Base64)`);
+        console.log(` Bỏ qua tạo vector cho SP: ${product.productName} (Ảnh không phải Base64)`);
         return;
     }
 
@@ -27,7 +27,7 @@ const syncAIVector = async (product) => {
         tempPath = path.resolve(__dirname, `../../scripts/temp_sync_${product._id}.jpg`);
         fs.writeFileSync(tempPath, buffer);
 
-        console.log(`⏳ AI đang học sản phẩm: ${product.productName}...`);
+        console.log(` AI đang học sản phẩm: ${product.productName}...`);
 
         // 2. Gọi AI trích xuất (Trả về Object { category_label, vector })
         const aiData = await SearchService.getVector(tempPath);
@@ -41,9 +41,9 @@ const syncAIVector = async (product) => {
             { upsert: true, returnDocument: 'after' }
         );
 
-        console.log(`🚀 [AI Sync Success] Đã cập nhật vector cho: ${product.productName} (Loại: ${aiData.category_label})`);
+        console.log(` [AI Sync Success] Đã cập nhật vector cho: ${product.productName} (Loại: ${aiData.category_label})`);
     } catch (error) {
-        console.error(`❌ [AI Sync Error] Tại SP ${product.productName}:`, error.message);
+        console.error(` [AI Sync Error] Tại SP ${product.productName}:`, error.message);
     } finally {
         // 4. Xóa file tạm ngay lập tức để giải phóng bộ nhớ server
         if (tempPath && fs.existsSync(tempPath)) {
