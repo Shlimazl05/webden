@@ -205,7 +205,7 @@ export const Footer = () => {
                     {/* Copyright */}
                     <div className="mt-16 pt-8 border-t border-slate-300 flex justify-between items-center opacity-50">
                         <span className="text-[12px] font-bold uppercase  text-slate-700">
-                            © {new Date().getFullYear()} Stellar Lights
+                            © {new Date().getFullYear()} LUXE
                         </span>
 
                     </div>

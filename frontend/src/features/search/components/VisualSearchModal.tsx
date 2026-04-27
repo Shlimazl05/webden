@@ -91,7 +91,7 @@ const VisualSearchModal: React.FC<VisualSearchModalProps> = ({
                 {/* Footer - Chữ xám thanh lịch */}
                 <div className="px-8 py-4 bg-slate-50/80 border-t border-slate-100 text-center">
                     <p className="text-[10px] text-slate-400 font-medium italic font-sans leading-relaxed px-4">
-                        Hệ thống AI sẽ tự động phân tích và tìm các mẫu đèn nội thất tương đồng nhất từ thư viện Stellar Lights
+                        Hệ thống AI sẽ tự động phân tích và tìm các mẫu đèn nội thất tương đồng nhất từ thư viện LUXE
                     </p>
                 </div>
             </div>

@@ -30,11 +30,11 @@ export const ProductCard = ({ product, onDelete, onToggleStatus, onEdit, onView 
         }`}
     >
       {/* 1. Ảnh sản phẩm */}
-      <div className="relative w-full aspect-[3/4] rounded-xl  overflow-hidden bg-slate-50 mb-3">
+      <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-[#f8fafc] mb-3 flex items-center justify-center">
         <img
           src={product.imageUrl || "/img/placeholder.svg"}
           alt={product.productName}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
         />
 
         {/* Chỉ hiện Badge nếu Danh mục bị ẩn */}

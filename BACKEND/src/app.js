@@ -44,7 +44,7 @@ const orderService = require('./services/orderService');
 const searchRoutes = require('./routes/searchRoutes');
 // Cổng chào API
 app.get('/', (req, res) => res.status(200).json({ 
-    message: "Stellar Lights API is running..." 
+    message: "LUXE API is running..." 
 }));
 
 // Đăng ký các tuyến đường

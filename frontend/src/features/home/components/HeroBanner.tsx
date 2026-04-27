@@ -30,7 +30,7 @@ export default function HeroBanner() {
           {/* Dùng Next.js Image để cực kỳ chuyên nghiệp */}
           <Image
             src={img}
-            alt={`Stellar Lights Banner ${index + 1}`}
+            alt={`LUXE Banner ${index + 1}`}
             fill // Tự động lấp đầy khung cha h-[400px]
             priority={index === 0} // Ưu tiên load ảnh đầu tiên ngay lập tức
             className="object-cover transition-transform duration-[5000ms] group-hover:scale-105"

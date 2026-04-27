@@ -56,7 +56,7 @@ async def predict(data: ImagePath):
             x = model.layer4(x)
             x = model.avgpool(x)
             x = torch.flatten(x, 1)
-            x = torch.nn.functional.normalize(x, p=2, dim=1)
+            x = torch.nn.functional.normalize(x, p=2, dim=1) # tính L2
             
             vector_list = x.flatten().tolist()
 

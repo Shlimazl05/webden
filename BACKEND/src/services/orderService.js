@@ -169,21 +169,35 @@ exports.startOrderCleanupTask = () => {
 
 
 exports.createOrder = async (orderData, customerId) => {
-    // 1. Tạo mã đơn hàng duy nhất
+    // 1. Tạo mã đơn hàng
     const orderCode = `STL-${Date.now().toString().slice(-6)}`;
 
-    // 2. Tạo đơn hàng chính trong DB
+    // 2. LOGIC QUAN TRỌNG: Backend tự tính lại tiền dựa trên danh sách items được chọn
+    // Điều này chặn đứng lỗi nếu Frontend gửi nhầm tổng tiền
+    const items = orderData.items || [];
+    const calculatedTotal = items.reduce((sum, item) => {
+        return sum + (item.quantity * item.price);
+    }, 0);
+
+    // 3. Tạo đơn hàng (Gán thủ công các trường để kiểm soát dữ liệu)
     const newOrder = await Order.create({
-        ...orderData,
         orderCode,
         customerId,
+        recipientName: orderData.recipientName,
+        phone: orderData.phone,
+        address: orderData.address,
+        note: orderData.note,
+        paymentMethod: orderData.paymentMethod,
+        // Dùng số tiền Backend vừa tính toán lại
+        totalAmount: calculatedTotal,
+        finalAmount: calculatedTotal,
         paymentStatus: 'Pending',
         status: 'Pending'
     });
 
-    // 3. Lưu chi tiết sản phẩm (OrderDetails)
-    if (orderData.items && orderData.items.length > 0) {
-        const detailRecords = orderData.items.map(item => ({
+    // 4. Lưu chi tiết sản phẩm (OrderDetail)
+    if (items.length > 0) {
+        const detailRecords = items.map(item => ({
             orderId: newOrder._id,
             productId: item.productId,
             quantity: item.quantity,
@@ -191,41 +205,27 @@ exports.createOrder = async (orderData, customerId) => {
         }));
         await OrderDetail.insertMany(detailRecords);
 
-        // --- XỬ LÝ XÓA GIỎ HÀNG SAU KHI ĐẶT ---
+        // 5. XỬ LÝ XÓA GIỎ HÀNG (Chỉ xóa những món nằm trong đơn hàng này)
         try {
-            // Lấy ra danh sách các ID của bản ghi trong bảng CartDetail
-            const cartDetailIds = orderData.items
-                .map(item => item.cartDetailId)
-                .filter(id => id); // Lọc bỏ các giá trị null/undefined
-
+            const cartDetailIds = items.map(item => item.cartDetailId).filter(id => id);
             if (cartDetailIds.length > 0) {
-                // Xóa TRỰC TIẾP các bản ghi trong CartDetail dựa trên _id
-                // Vì cartDetailId là khóa chính (_id) nên ta không cần tìm CartId vòng vo nữa
-                const deleteResult = await CartDetail.deleteMany({
+                // CHỈ xóa những dòng chi tiết giỏ hàng có ID trong danh sách mua
+                await CartDetail.deleteMany({
                     _id: { $in: cartDetailIds }
                 });
-
-                console.log(`[Cart Success] Đã xóa ${deleteResult.deletedCount} sản phẩm đã mua khỏi giỏ hàng.`);
-            } else {
-                console.warn("[Cart Warning] Payload không chứa cartDetailId nên không thể xóa giỏ hàng.");
+                console.log(`[Success] Đã xóa đúng ${cartDetailIds.length} món khỏi giỏ.`);
             }
         } catch (cartError) {
-            console.error("Lỗi khi xử lý xóa giỏ hàng:", cartError.message);
-            // Không throw lỗi ở đây để khách hàng vẫn thấy đặt hàng thành công
+            console.error("Lỗi xóa giỏ hàng:", cartError.message);
         }
     }
 
-    // 4. LOGIC CHUYỂN LINK THANH TOÁN (Gói Free dùng QR tĩnh)
-    const bankAcc = process.env.BANK_NUMBER;
-    const bankName = process.env.BANK_NAME;
+    // 6. Link thanh toán
     const checkoutUrl = orderData.paymentMethod === 'SePay'
-        ? `https://qr.sepay.vn/img?acc=${bankAcc}&bank=${bankName}&amount=${Math.round(newOrder.finalAmount)}&des=${newOrder.orderCode}`
+        ? `https://qr.sepay.vn/img?acc=${process.env.BANK_NUMBER}&bank=${process.env.BANK_NAME}&amount=${Math.round(calculatedTotal)}&des=${newOrder.orderCode}`
         : null;
 
-    return {
-        order: newOrder,
-        checkoutUrl: checkoutUrl
-    };
+    return { order: newOrder, checkoutUrl };
 };
 
 /**

@@ -19,7 +19,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             className="group bg-white rounded-xl  border-2 border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full"
         >
             {/* 1. Ảnh sản phẩm - Tỷ lệ 3/4 */}
-            <div className="relative aspect-[3/4] overflow-hidden bg-slate-50">
+            <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-[#f8fafc] mb-3 flex items-center justify-center">
                 <img
                     src={product.imageUrl || "/img/placeholder.svg"}
                     alt={product.productName}

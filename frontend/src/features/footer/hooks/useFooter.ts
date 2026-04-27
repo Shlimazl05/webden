@@ -12,13 +12,13 @@ export const useFooter = () => {
             { title: "Vận chuyển nhanh.", subtitle: "Giao hàng trong ngày.", iconType: 'shipping' },
         ],
         brand: {
-            name: "STELLAR LIGHTS",
+            name: "LUXE",
             description: "Đơn vị cung cấp giải pháp chiếu sáng nội thất cao cấp, mang nghệ thuật ánh sáng vào không gian sống của bạn."
         },
         contact: {
             address: "Đ. 3 Tháng 2, Xuân Khánh, Ninh Kiều, Cần Thơ",
             hotline: "0988.123.456",
-            email: "info@stellarlights.vn"
+            email: "info@luxe.vn"
         },
         paymentMethods: ["Thanh toán trực tiếp", "Quét mã QR (Sepay)"]
     };
