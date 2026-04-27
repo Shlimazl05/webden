@@ -1,14 +1,22 @@
+# IDEs và Editors (Rất nên có để tránh xung đột cấu hình cá nhân)
+.vscode/
+.idea/
+
+
 # Bỏ qua thư viện (Cực kỳ quan trọng)
 node_modules/
 
 # Bỏ qua file môi trường (Bảo mật)
 .env
 .env.local
+.env.production
+.env.development
 
 # Bỏ qua file build của Next.js và Backend
 .next/
 dist/
 build/
+out/
 
 # Bỏ qua các file rác của hệ điều hành
 .DS_Store
