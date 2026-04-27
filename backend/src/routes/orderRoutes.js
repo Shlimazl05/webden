@@ -1,15 +1,4 @@
-// const express = require('express');
-// const router = express.Router();
-// const orderController = require('../controllers/orderController');
-// const { protect } = require('../middleware/authMiddleware');
 
-// // Tuyến đường dành cho Admin quản lý
-// router.get('/admin/all',protect, orderController.getAdminOrders);
-// router.patch('/admin/:id/status', protect, orderController.updateStatus);
-
-// // Route cho khách hàng (Cần middleware đăng nhập)
-// router.post('/create',protect, orderController.createNewOrder);
-// module.exports = router;
 
 
 const express = require('express');

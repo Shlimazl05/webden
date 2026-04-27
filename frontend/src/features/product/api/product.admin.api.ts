@@ -1,15 +1,3 @@
-// import axiosInstance from "@/lib/axiosInstance";
-// import { IProduct } from "@/features/product/product.types";
-
-// export const productApi = {
-//   getAll: async (): Promise<IProduct[]> => {
-//     const response = await axiosInstance.get('/products');
-//     return response.data;
-//   },
-//   delete: async (id: string): Promise<void> => {
-//     await axiosInstance.delete(`/products/${id}`);
-//   }
-// };
 
 
 import axiosInstance from "@/lib/axiosInstance";

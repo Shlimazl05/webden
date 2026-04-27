@@ -15,41 +15,6 @@ const createCategory = async (data) => {
     return await newCategory.save();
 };
 
-// CẬP NHẬT: Thêm tham số search, page, limit
-// const getAllCategories = async (options = {}) => {
-//     // Ép kiểu limit và page về số nguyên để tránh lỗi tính toán
-//     const search = options.search ? options.search.trim() : '';
-//     const page = parseInt(options.page) || 1;
-//     const limit = parseInt(options.limit) || 10;
-    
-//     const filter = {};
-//     if (search) {
-//         // Sử dụng RegExp để tìm kiếm linh hoạt và không phân biệt hoa thường
-//         filter.name = { $regex: new RegExp(search, 'i') };
-//     }
-
-//     const skip = (page - 1) * limit;
-
-//     const [categories, totalCategories] = await Promise.all([
-//         Category.find(filter)
-//             .sort({ createdAt: -1 })
-//             .skip(skip)
-//             .limit(limit),
-//         Category.countDocuments(filter)
-//     ]);
-
-//     const totalPages = Math.ceil(totalCategories / limit);
-
-//     return {
-//         categories,
-//         pagination: {
-//             totalCategories,
-//             totalPages,
-//             currentPage: page,
-//             limit
-//         }
-//     };
-// };
 
 const getAllCategories = async (options = {}) => {
     const search = options.search ? options.search.trim() : '';

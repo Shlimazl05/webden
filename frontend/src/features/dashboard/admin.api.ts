@@ -1,19 +1,4 @@
-// import axiosInstance from "@/lib/axiosInstance";
 
-
-// import axiosInstance from "@/lib/axiosInstance";
-
-// export const adminDashboardApi = {
-//     // Truyền tham số days vào URL dưới dạng query parameter
-//     getStats: async (days: number) => {
-//         // Sử dụng template string để nối chuỗi: ?range=30
-//         const res = await axiosInstance.get(`/dashboard/stats?range=${days}`);
-//         return res.data;
-//     }
-// };
-
-
-// D:\webden\frontend\src\features\dashboard\admin.api.ts
 import axiosInstance from "@/lib/axiosInstance";
 
 export const adminDashboardApi = {
